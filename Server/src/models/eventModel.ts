@@ -58,6 +58,6 @@ const eventSchema = new mongoose.Schema({
 },{timestamps: true});
 eventSchema.index({ category: 1, startDate: 1 });
 
-const eventModel = mongoose.models.Event || mongoose.model("Event",eventSchema);
+const eventModel = mongoose.models.event || mongoose.model("event",eventSchema);
 
 export default eventModel;

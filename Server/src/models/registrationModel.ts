@@ -24,4 +24,6 @@ const registrationSchema = new mongoose.Schema({
 },{timestamps: true});
 registrationSchema.index({studentId: 1, eventId: 1},{unique: true})
 
-const registrationModel = mongoose.models.Registration || mongoose.model("Registration",registrationSchema);
+const registrationModel = mongoose.models.registration || mongoose.model("registration",registrationSchema);
+
+export default registrationModel;

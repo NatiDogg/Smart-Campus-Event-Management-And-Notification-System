@@ -20,6 +20,6 @@ const recommendationSchema = new mongoose.Schema({
 },{timestamps: true})
 recommendationSchema.index({ studentId: 1 }, { unique: true });
 
-const recommendationModel = mongoose.models.Recommendation || mongoose.model("Recommendation",recommendationSchema);
+const recommendationModel = mongoose.models.recommendation || mongoose.model("recommendation",recommendationSchema);
 
 export default recommendationModel;

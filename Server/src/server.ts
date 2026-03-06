@@ -4,6 +4,7 @@ import {config} from 'dotenv'
 import { env } from './utils/zodEnvFilesValidator.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
+import connectToDb from './config/connectDb.js';
 config();
 
 const app:Express = express();
@@ -20,15 +21,13 @@ app.use(cookieParser())
 app.use(cors(corsOptions))
 
 //routes
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
-});
+
 
 
 
 const startServer = async()=>{
        try {
-          
+          //await connectToDb();
         app.listen(port,()=>{
             console.log("Server has started and listening to port "+port);
         })

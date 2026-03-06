@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import userModel from "./userModel.js";
 
-const adminModel = userModel.discriminators?.Admin || userModel.discriminator("Admin", new mongoose.Schema({
+const adminModel = userModel.discriminators?.admin || userModel.discriminator("admin", new mongoose.Schema({
          
         phoneNumber:{
             type:String,
