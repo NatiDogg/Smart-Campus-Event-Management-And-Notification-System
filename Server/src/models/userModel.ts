@@ -19,13 +19,14 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type: String,
-        enum: ["Student","Organizer","Admin"]
+        enum: ["student","organizer","admin"],
+        required: true
     }
 
 
 },{timestamps: true, discriminatorKey: "role"});
 
-const userModel = mongoose.models.User || mongoose.model("User",userSchema);
+const userModel = mongoose.models.user || mongoose.model("user",userSchema);
 
 export default userModel;
 

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import userModel from "./userModel.js";
 
-const organizerModel = userModel.discriminators?.Organizer || userModel.discriminator("Organizer", new mongoose.Schema({
+const organizerModel = userModel.discriminators?.organizer || userModel.discriminator("organizer", new mongoose.Schema({
          
         organizationName:{
             type:String,

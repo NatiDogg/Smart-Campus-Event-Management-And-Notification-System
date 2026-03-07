@@ -18,4 +18,6 @@ const interestSchema = new mongoose.Schema({
 },{timestamps: true});
 interestSchema.index({studentId: 1, eventId: 1},{unique: true})
 
-const interestModel = mongoose.models.Interest || mongoose.model("Interest",interestSchema);
+const interestModel = mongoose.models.interest || mongoose.model("interest",interestSchema);
+
+export default interestModel;

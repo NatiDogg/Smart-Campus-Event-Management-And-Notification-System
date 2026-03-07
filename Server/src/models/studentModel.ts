@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import userModel from "./userModel.js";
 
-const studentModel = userModel.discriminators?.Student || userModel.discriminator("Student", new mongoose.Schema({
+const studentModel = userModel.discriminators?.student || userModel.discriminator("student", new mongoose.Schema({
        
        department: {
         type: String
@@ -10,20 +10,21 @@ const studentModel = userModel.discriminators?.Student || userModel.discriminato
         type: Number
        },
        studentId: {
-        type: String
+        type: String,
+        unique: true
        },
        interests:[
          {
-            type: mongoose.Schema.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
-            default:[]
+            
          }
        ],
-       fcmTokens:[
-          {
-            type: String
-          }
-       ]
+       fcmTokens:{
+          type: [String],
+          default: []
+       }
+       
 }));
 
 export default studentModel;

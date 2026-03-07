@@ -24,6 +24,6 @@ const analyticsReportSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const analyticsReportModel = mongoose.models.Analytics || mongoose.model("Analytics", analyticsReportSchema);
+const analyticsReportModel = mongoose.models.analytics || mongoose.model("analytics", analyticsReportSchema);
 
 export default analyticsReportModel;
