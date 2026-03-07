@@ -5,6 +5,7 @@ import { env } from './utils/zodEnvFilesValidator.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import connectToDb from './config/connectDb.js';
+import authRouter from './routes/authRoutes.js';
 config();
 
 const app:Express = express();
@@ -21,7 +22,7 @@ app.use(cookieParser())
 app.use(cors(corsOptions))
 
 //routes
-
+app.use("/api/auth",authRouter);
 
 
 

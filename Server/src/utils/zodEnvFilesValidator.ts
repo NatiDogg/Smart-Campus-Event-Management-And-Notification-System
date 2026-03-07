@@ -7,7 +7,12 @@ const envSchema = z.object({
     MONGODB_URI: z.string().min(4),
     JWT_ACCESS_SECRET_KEY: z.string().min(4),
     JWT_REFRESH_SECRET_KEY: z.string().min(4),
-    NODE_ENV: z.string().min(4)
+    NODE_ENV: z.string().min(4),
+    CLOUD_SECRET_KEY: z.string().min(4),
+    CLOUD_API_KEY: z.string().min(4),
+    CLOUD_NAME: z.string().min(4)
+
+
 
 })
 

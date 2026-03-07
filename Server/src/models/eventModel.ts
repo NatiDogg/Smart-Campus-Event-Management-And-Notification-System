@@ -10,9 +10,13 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: true
       },
-      image:{
+      imageUrl:{
         type: String,
         required: true
+      },
+      imagePublicId:{
+         type: String,
+         required: true
       },
       location:{
          type:String,
@@ -40,6 +44,10 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         required: true
       },
+      time:{
+        type:String,
+        required: true
+      },
       startDate:{
         type: Date,
         required: true,
@@ -57,7 +65,7 @@ const eventSchema = new mongoose.Schema({
 
 },{timestamps: true});
 eventSchema.index({ category: 1, startDate: 1 });
-
+eventSchema.index({title: 1, startDate:1}, {unique: true});
 const eventModel = mongoose.models.event || mongoose.model("event",eventSchema);
 
 export default eventModel;

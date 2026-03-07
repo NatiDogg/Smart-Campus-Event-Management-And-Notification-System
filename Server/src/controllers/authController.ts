@@ -25,7 +25,7 @@ export const signInHandler = async(req: Request, res:Response)=>{
                 secure: isProd,
                 maxAge: 7 * 24 * 60 * 60 * 1000
              });
-             res.status(201).json({
+             return res.status(201).json({
                 success: result.success,
                 message: result.message,
                 user: result.user,
@@ -73,7 +73,7 @@ export const loginHandler = async(req:Request, res:Response)=>{
                 secure: isProd,
                 maxAge: 7 * 24 * 60 * 60 * 1000
              });
-             res.status(200).json({
+             return res.status(200).json({
                 success: result.success,
                 message: result.message,
                 user: result.user,
@@ -115,7 +115,7 @@ export const refreshTokenHandler = async(req:Request, res:Response)=>{
                 secure: isProd,
                 maxAge: 7 * 24 * 60 * 60 * 1000
              });
-             res.status(200).json({
+             return res.status(200).json({
                 success: result.success,
                 message: result.message,
                 user: result.user,

@@ -4,15 +4,15 @@ import {z} from 'zod'
 
 export const authRegisterSchema = z.object({
      
-    fullName: z.string().min(5),
-    studentId: z.string().min(5),
+    fullName: z.string().min(5,"Full Name must be at least 5 characters"),
+    studentId: z.string().min(5,"Student Id must be at least 5 characters"),
     email: z.email(),
-    password: z.string().min(6)
+    password: z.string().min(6, "Password must be at least 6 characters")
 })
 
 export const authLoginSchema = z.object({
     email: z.email(),
-    password: z.string().min(6)
+    password: z.string().min(6, "Password must be at least 6 characters")
 })
 
 
