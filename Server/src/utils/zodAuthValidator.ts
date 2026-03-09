@@ -15,6 +15,12 @@ export const authLoginSchema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters")
 })
 
+export const adminLoginSchema = z.object({
+    email: z.email(),
+    password: z.string().min(6, "Password must be at least 6 characters")
+})
+
 
 export type authUserRegisterType = z.infer<typeof authRegisterSchema>
 export type authUserLoginType = z.infer<typeof authLoginSchema>
+export type authAdminLoginType = z.infer<typeof adminLoginSchema>

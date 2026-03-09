@@ -16,7 +16,7 @@ class EventService {
       );
     }
     const category = await CategoryService.findMatchingCategory(
-      eventData.category
+      eventData.category.trim()
     );
     if (!category) {
       throw new AppError(
@@ -28,7 +28,9 @@ class EventService {
     let public_id: string | undefined
 
     try {
+       
       const result = await uploadToCloudinary(fileBuffer, "events");
+     
       const { secure_url } = result;
       public_id = result.public_id
       const newlyCreatedEvent = await create({
@@ -68,8 +70,9 @@ class EventService {
        if(!event){
          throw new AppError("Event Not Found!",404)
        }
-
-       const isTheSameOrganizer = event.organizedBy.toString() === organizerId
+       
+       const isTheSameOrganizer = event.organizedBy._id.toString() === organizerId
+       
         if (!isTheSameOrganizer) {
           throw new AppError("You do not have permission to update this event", 403);
        }

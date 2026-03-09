@@ -24,7 +24,7 @@ const eventSchema = new mongoose.Schema({
       },
       category:{
          type: mongoose.Schema.Types.ObjectId,
-         ref: "Category",
+         ref: "category",
          required: true,
          index: true
       },
@@ -36,7 +36,7 @@ const eventSchema = new mongoose.Schema({
       },
       organizedBy:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Organizer",
+        ref: "organizer",
         required: true,
         index: true
       },

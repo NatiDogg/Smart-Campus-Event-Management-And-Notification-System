@@ -4,6 +4,7 @@ import { eventCreationType,eventupdateType } from "../utils/zodEventValidator.js
 import { Types } from "mongoose";
 
 
+
 export type CreateEventDTO =  Omit<eventCreationType, "category"> & {
     category: mongoose.Types.ObjectId;
     imageUrl: string;
@@ -31,7 +32,7 @@ export const findEventById = (eventId:string)=>{
 export const updateOrganizerEvent = (eventData: eventupdateType, eventId: string)=>{
     const id = new Types.ObjectId(eventId);
     
-    return eventModel.findByIdAndUpdate(id, eventData,{returnDocument: "after"})
+    return eventModel.findByIdAndUpdate(id, eventData,{returnDocument: "after"}).populate({path: "organizedBy", select: "fullName email organizationName"})
 }
 export const deleteOrganizerEvent = (eventId: string, organizerId: string)=>{
      return eventModel.findOneAndDelete({

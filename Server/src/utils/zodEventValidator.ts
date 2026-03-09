@@ -6,7 +6,7 @@ export const createEventSchema = z.object({
     description: z.string().min(10, "Description must be at least 10 characters"),
     location: z.string().min(3),
     category: z.string().min(4, "Category is required"),
-    capacity: z.number().min(1,"Capacity must be at least 1"),
+    capacity: z.coerce.number().min(1,"Capacity must be at least 1"),
     time: z.string().min(3,"Time is required"),
     startDate: z.coerce.date(),
     endDate: z.coerce.date()

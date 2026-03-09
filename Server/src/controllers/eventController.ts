@@ -152,7 +152,8 @@ export const getAllEventsHandler = async(req:Request, res:Response)=>{
        }
 }
 
-export const getSingleEventHandler = async (req:Request<{id: string}>, res:Response)=>{
+export const getSingleEventHandler = async (req:AuthRequest<{id: string}>, res:Response)=>{
+       const {id: studentId} = req.userAccessInfo
         const {id: eventId} = req.params
           if(!isValid(eventId)){
              return res.status(400).json({
@@ -161,7 +162,7 @@ export const getSingleEventHandler = async (req:Request<{id: string}>, res:Respo
              })
          }
         try {
-            const result = await EventService.getSingleEvent(eventId);
+            const result = await EventService.getSingleEvent(eventId,studentId);
             res.status(200).json(result);
         } catch (error) {
             

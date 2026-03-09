@@ -11,6 +11,7 @@ const organizerModel = userModel.discriminators?.organizer || userModel.discrimi
             type:String,
             required: true
         }
+        
 
 
 }))

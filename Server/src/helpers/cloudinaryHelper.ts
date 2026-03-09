@@ -5,7 +5,7 @@ export const uploadToCloudinary = ( fileBuffer: Buffer,  folder: string = "uploa
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        resource_type: "image",
+        resource_type: "auto",
         folder: folder,
       },
       (error: UploadApiErrorResponse | undefined, result: UploadApiResponse | undefined) => {

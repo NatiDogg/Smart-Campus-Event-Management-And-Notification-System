@@ -3,6 +3,8 @@ import AppError from "../utils/appError.js";
 import { hashPassword,matchPassword } from "../utils/bcryptjs.js";
 import { createAccessToken, createRefreshToken, verifyRefreshToken } from "../utils/jwt.js";
 import type { authUserRegisterType,authUserLoginType } from "../utils/zodAuthValidator.js";
+import { env } from "../utils/zodEnvFilesValidator.js";
+import { createNewAdmin } from "../repositories/adminRepository.js";
 
 import UserService from "./userService.js";
 class AuthService{
@@ -14,6 +16,8 @@ class AuthService{
             throw new AppError("User Already Registered!",400);
 
           }
+          
+          
           const hashedPassword = await hashPassword(userData.password);
 
           if(!hashedPassword){
@@ -35,12 +39,33 @@ class AuthService{
 
        async login(userData:authUserLoginType){
          const normalizedEmail = userData.email.toLowerCase();
+         if(normalizedEmail === env.ADMIN_EMAIL && userData.password === env.ADMIN_PASS){
+             const admin = await UserService.findUserByEmail(normalizedEmail);
+             if(!admin){
+                 const hashedPassword = await hashPassword(userData.password);
+                 const newlyCreatedAdmin = await createNewAdmin({
+                   ...userData,
+                   password: hashedPassword,
+                   fullName: "System Admin",
+                 
+                 });
+                 if (!newlyCreatedAdmin) {
+                   throw new AppError("System initialization failed!", 500);
+                 }
+      
+                return this.generateTokenResponse(
+                  newlyCreatedAdmin,
+                   "User Logged In Successfully!"
+                );
+             }
+         }
          const user = await UserService.findUserByEmail(normalizedEmail);
+
 
          if(!user){
           throw new AppError("Invalid Credentials!",401);
          }
-
+        
          const isPasswordCorrect = await matchPassword(userData.password, user.password);
 
          if(!isPasswordCorrect){

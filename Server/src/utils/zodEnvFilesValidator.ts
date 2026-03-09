@@ -10,7 +10,9 @@ const envSchema = z.object({
     NODE_ENV: z.string().min(4),
     CLOUD_SECRET_KEY: z.string().min(4),
     CLOUD_API_KEY: z.string().min(4),
-    CLOUD_NAME: z.string().min(4)
+    CLOUD_NAME: z.string().min(4),
+    ADMIN_EMAIL: z.string().min(3),
+    ADMIN_PASS: z.string().min(6)
 
 
 

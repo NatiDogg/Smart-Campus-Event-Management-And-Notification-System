@@ -12,7 +12,7 @@ eventRouter.put("/updateEvent/:id",authUser as unknown as RequestHandler,isOrgan
 eventRouter.delete("/deleteEvent/:id",authUser as unknown as RequestHandler,isOrganizer as unknown as RequestHandler, deleteEventHandler as unknown as RequestHandler);
 
 eventRouter.get("/allEvents",authUser as unknown as RequestHandler,getAllEventsHandler);
-eventRouter.get("/singleEvent/:id",authUser as unknown as RequestHandler,getSingleEventHandler);
+eventRouter.get("/singleEvent/:id",authUser as unknown as RequestHandler,getSingleEventHandler as unknown as RequestHandler);
 
 
 

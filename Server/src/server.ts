@@ -7,6 +7,7 @@ import cors from 'cors'
 import connectToDb from './config/connectDb.js';
 import authRouter from './routes/authRoutes.js';
 import eventRouter from './routes/eventRoutes.js';
+import adminRouter from './routes/adminRoutes.js';
 config();
 
 const app:Express = express();
@@ -24,12 +25,13 @@ app.use(cors(corsOptions))
 
 //routes
 app.use("/api/auth",authRouter);
-app.use("/api/events",eventRouter);
+app.use("/api/event",eventRouter);
+app.use("/api/admin",adminRouter);
 
 
 const startServer = async()=>{
        try {
-          //await connectToDb();
+          await connectToDb();
         app.listen(port,()=>{
             console.log("Server has started and listening to port "+port);
         })
