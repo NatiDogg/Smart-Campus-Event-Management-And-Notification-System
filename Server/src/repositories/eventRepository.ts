@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import eventModel from "../models/eventModel.js";
-import { eventCreationType } from "../utils/zodEventValidator.js";
+import { eventCreationType,eventupdateType } from "../utils/zodEventValidator.js";
+import { Types } from "mongoose";
+
 
 export type CreateEventDTO =  Omit<eventCreationType, "category"> & {
     category: mongoose.Types.ObjectId;
@@ -17,6 +19,37 @@ export const create = (eventData: CreateEventDTO)=>{
 export const findEvent = (title: string, startDate: Date)=>{
     return eventModel.findOne({title,startDate});
 }
+export const getOrganizerEvents = (id:string)=>{
+    return  eventModel.find({organizedBy: new Types.ObjectId(id)}).sort({createdAt: -1});
+}
+
+export const findEventById = (eventId:string)=>{
+     const id = new Types.ObjectId(eventId);
+     return eventModel.findById(id).populate("organizedBy", "organizationName");
+}
+
+export const updateOrganizerEvent = (eventData: eventupdateType, eventId: string)=>{
+    const id = new Types.ObjectId(eventId);
+    
+    return eventModel.findByIdAndUpdate(id, eventData,{returnDocument: "after"})
+}
+export const deleteOrganizerEvent = (eventId: string, organizerId: string)=>{
+     return eventModel.findOneAndDelete({
+           _id: new Types.ObjectId(eventId),
+           organizedBy: new Types.ObjectId(organizerId)
+     })
+
+}
+
+export const findAllEvents = ()=>{
+     return eventModel.find({status: "approved"}).populate("category", "name").populate("organizedBy", "organizationName")
+}
+
+
+
+
+
+
 
 
 

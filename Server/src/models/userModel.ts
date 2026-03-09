@@ -21,6 +21,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["student","organizer","admin"],
         required: true
+    },
+    profile:{
+        type: String,
+        default: function(): string{
+             const name = this.fullName ? encodeURIComponent(this.fullName) : "user"
+             return `https://ui-avatars.com/api/?name=${name}&background=random&color=fff`;
+        }
     }
 
 

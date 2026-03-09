@@ -1,59 +1,156 @@
-import { create, findEvent } from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
-import type { eventCreationType } from "../utils/zodEventValidator.js";
-import { uploadToCloudinary,deleteFromCloudinary } from "../helpers/cloudinaryHelper.js";
-import CategoryService from "./categoryService.js";
+import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
+import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
 import { Types } from "mongoose";
-class EventService{
-      async createEvent(eventData: eventCreationType, id:string, fileBuffer: Buffer){
-        
-        const existingEvent = await findEvent(eventData.title, eventData.startDate);
-  
-        if(existingEvent){
-            throw new AppError("You have already scheduled an event with this title for this date.", 400);
+import CategoryService from "./categoryService.js";
+import RegistrationService from "./registrationService.js";
+class EventService {
+  async createEvent(eventData: eventCreationType,id: string,fileBuffer: Buffer) {
+    const existingEvent = await findEvent(eventData.title, eventData.startDate);
+
+    if (existingEvent) {
+      throw new AppError(
+        "You have already scheduled an event with this title for this date.",
+        400
+      );
+    }
+    const category = await CategoryService.findMatchingCategory(
+      eventData.category
+    );
+    if (!category) {
+      throw new AppError(
+        "Invalid category name. Please provide a registered category.",
+        400
+      );
+    }
+
+    let public_id: string | undefined
+
+    try {
+      const result = await uploadToCloudinary(fileBuffer, "events");
+      const { secure_url } = result;
+      public_id = result.public_id
+      const newlyCreatedEvent = await create({
+        ...eventData,
+        imageUrl: secure_url,
+        imagePublicId: result.public_id,
+        organizedBy: new Types.ObjectId(id),
+        category: category._id,
+      });
+      return {
+        success: true,
+        message: "Event Created Successfully!",
+         newlyCreatedEvent
+      };
+    } catch (error) {
+      console.error("Cleanup Error:", error);
+       if(public_id){
+         await deleteFromCloudinary(public_id);
+       }
+     
+      throw new AppError("Failed to save event. Please try again.", 500);
+    }
+  }
+
+  async getEventsByOrganizer(id: string) {
+    const events = await getOrganizerEvents(id);
+
+    return {
+      success: true,
+      message: events.length > 0 ? "Events Retrieved Successfully!" : "No events have been created yet!",
+      events
+    };
+  }
+  async updateEventByOrganizer(eventData: eventupdateType, organizerId: string, eventId: string){
+
+       const event = await findEventById(eventId);
+       if(!event){
+         throw new AppError("Event Not Found!",404)
+       }
+
+       const isTheSameOrganizer = event.organizedBy.toString() === organizerId
+        if (!isTheSameOrganizer) {
+          throw new AppError("You do not have permission to update this event", 403);
+       }
+       if(eventData.category){
+         const category = await CategoryService.findMatchingCategory(eventData.category)
+         if (!category) {
+           throw new AppError(
+             "Invalid category name. Please provide a registered category.",
+             400
+           );
+         }
+          eventData.category = new Types.ObjectId(category._id) as any;
+       }
+       const updatedEvent = await updateOrganizerEvent(eventData, eventId)
+
+        if(!updatedEvent){
+          throw new AppError("Can't Update Event right now. Please try again",400)
         }
-        const category = await CategoryService.findMatchingCategory(eventData.category);
-         if(!category){
-           throw new AppError("Invalid category name. Please provide a registered category.", 400);
-         }
-        const result = await uploadToCloudinary(fileBuffer, "events");
-        const {secure_url, public_id} = result
-
-        //create event
-    
-
-         
-         try {
-          const newlyCreatedEvent = await create({
-            ...eventData,
-            imageUrl: secure_url,
-            imagePublicId: public_id,
-            organizedBy: new Types.ObjectId(id),
-            category: category._id
-
-
-         });
-         return {
+        return {
           success: true,
-          message: "Event Created Successfully!",
-          event: newlyCreatedEvent
-         }
-
-          
-         } catch (error) {
-          console.error("Cleanup Error:", error);
-            await deleteFromCloudinary(public_id);
-           throw new AppError("Failed to save event. Please try again.", 500);
-         }
-
-
+          message: "Event updated Successfully!",
+          updatedEvent
+        }
 
 
         
-           
+  }
+  async deleteEvent(organizerId: string, eventId: string){
+      const deletedEvent  = await deleteOrganizerEvent(eventId, organizerId)
+      if (!deletedEvent) {
+        throw new AppError("Event not found or unauthorized", 404);
       }
+
+       return {
+        success: true,
+        message: "Event Deleted Successfully!"
+       }
+
+  }
+  async getAllEvents(){
+      const events = await findAllEvents();
+      return {
+        success: true,
+        message: events.length > 0 ? "Events Retrieved Successfully!" : "No events have been created yet!",
+        events
+      }
+  }
+  async getSingleEvent(eventId: string,studentId: string){
+
+     const [event, registration,registeredStudents] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus()])
+     if(!event){
+       throw new AppError("Event not found", 404);
+     }
+
+      return {
+        success: true,
+        message: "Event Retreived Successfully!",
+        event,
+        isRegistered: !!registration,
+        registeredStudents: registeredStudents
+      }
+      
+  }
+  async getPendingEvents(){
+ 
+  }
 }
 
 export default new EventService();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import connectToDb from './config/connectDb.js';
 import authRouter from './routes/authRoutes.js';
+import eventRouter from './routes/eventRoutes.js';
 config();
 
 const app:Express = express();
@@ -23,7 +24,7 @@ app.use(cors(corsOptions))
 
 //routes
 app.use("/api/auth",authRouter);
-
+app.use("/api/events",eventRouter);
 
 
 const startServer = async()=>{
