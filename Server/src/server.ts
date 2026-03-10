@@ -8,6 +8,7 @@ import connectToDb from './config/connectDb.js';
 import authRouter from './routes/authRoutes.js';
 import eventRouter from './routes/eventRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
+import registrationRouter from './routes/registrationRoutes.js';
 config();
 
 const app:Express = express();
@@ -27,6 +28,7 @@ app.use(cors(corsOptions))
 app.use("/api/auth",authRouter);
 app.use("/api/event",eventRouter);
 app.use("/api/admin",adminRouter);
+app.use("/api/registration",registrationRouter);
 
 
 const startServer = async()=>{

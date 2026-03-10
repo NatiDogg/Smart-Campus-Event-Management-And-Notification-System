@@ -112,10 +112,28 @@ export const rejectEventHandler = async(req:Request<{id: string}>, res:Response)
             });
       }
 }
-
-export const getAllUserHandler = async(req:Request, res:Response)=>{
+export const getAllEventsHandler = async(req:Request, res:Response)=>{
         try {
-           const result = await AdminService.getAllUser()
+           const result = await AdminService.getAllEvents()
+           return res.status(200).json(result)
+        } catch (error) {
+           if (error instanceof AppError) {
+              return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+              });
+            }
+            return res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+            });
+        }
+
+}
+
+export const getAllUsersHandler = async(req:Request, res:Response)=>{
+        try {
+           const result = await AdminService.getAllUsers()
            return res.status(200).json(result)
         } catch (error) {
            if (error instanceof AppError) {

@@ -1,4 +1,4 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approveEvent, rejectEvent} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approveEvent, rejectEvent, getAdminEvents} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
@@ -64,6 +64,10 @@ class EventService {
       events
     };
   }
+  async getEventById(id:string){
+    const event = await findEventById(id)
+    return event
+  }
   async updateEventByOrganizer(eventData: eventupdateType, organizerId: string, eventId: string){
 
        const event = await findEventById(eventId);
@@ -127,13 +131,15 @@ class EventService {
        throw new AppError("Event not found", 404);
      }
 
-      return {
+      return {    
         success: true,
         message: "Event Retrieved Successfully!",
         event,
         isRegistered: !!registration,
         registeredStudents: registeredStudents
       }
+
+      
       
   }
   async getPendingEvents(){
@@ -152,6 +158,10 @@ class EventService {
       const rejectedEvent = await rejectEvent(eventId)
       return rejectedEvent;
   } 
+  async getAllAdminEvents(){
+    const events = await getAdminEvents()
+    return events;
+  }
 }
 
 export default new EventService();

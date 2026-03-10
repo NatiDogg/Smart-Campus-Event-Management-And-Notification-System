@@ -82,7 +82,7 @@ class AdminService{
            }
 
        }
-       async getAllUser(){
+       async getAllUsers(){
          const users = await UserService.getUsers()
           return {
             success: true,
@@ -102,6 +102,14 @@ class AdminService{
             deactivatedUser
 
           }
+       }
+       async getAllEvents(){
+         const events = EventService.getAllAdminEvents()
+         return {
+          success: true,
+          message: "Events Retreived Successfully",
+          events
+         }
        }
        
 }
