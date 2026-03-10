@@ -5,6 +5,7 @@ import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHel
 import { Types } from "mongoose";
 import CategoryService from "./categoryService.js";
 import RegistrationService from "./registrationService.js";
+import InterestService from "./interestService.js";
 class EventService {
   async createEvent(eventData: eventCreationType,id: string,fileBuffer: Buffer) {
     const existingEvent = await findEvent(eventData.title, eventData.startDate);
@@ -126,8 +127,8 @@ class EventService {
   }
   async getSingleEvent(eventId: string,studentId: string){
 
-     const [event, registration,registeredStudents] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus()])
-     if(!event){
+     const [event, registration,registeredStudents,interested] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus(eventId),InterestService.hasStudentBeenInterested(studentId, eventId)])
+     if(!event || event.status !== "approved"){
        throw new AppError("Event not found", 404);
      }
 
@@ -136,6 +137,7 @@ class EventService {
         message: "Event Retrieved Successfully!",
         event,
         isRegistered: !!registration,
+        isInterested: !!interested,
         registeredStudents: registeredStudents
       }
 

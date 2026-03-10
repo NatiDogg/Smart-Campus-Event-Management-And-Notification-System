@@ -5,8 +5,9 @@ export const isStudentRegistered = (studentId: string, eventId: string  )=>{
       return registrationModel.findOne({studentId: new Types.ObjectId(studentId),eventId: new Types.ObjectId(eventId), status: "registered" })
 }
 
-export const getStudentsRegistration = ()=>{
-    return registrationModel.find({status: "registered"}).populate("studentId", "fullName profile department")
+export const getStudentsRegistration = (eventId: string)=>{
+    return registrationModel.find({eventId: new Types.ObjectId(eventId)
+        ,status: "registered"}).populate("studentId", "fullName profile department")
 }
 
 export const getRegistrationCountForEvent = (eventId: string)=>{

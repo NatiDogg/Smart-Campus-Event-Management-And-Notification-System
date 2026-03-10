@@ -9,8 +9,8 @@ class RegistrationService{
          const studentStatus = await isStudentRegistered(studentId, eventId);
          return studentStatus;
     }
-    async getStudentsRegistrationStatus(){
-        const students = await getStudentsRegistration();
+    async getStudentsRegistrationStatus(eventId: string){
+        const students = await getStudentsRegistration(eventId);
         return students;
     }
     async RegisterStudentToEvent(studentId: string, eventId: string){

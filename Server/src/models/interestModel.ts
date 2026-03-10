@@ -12,6 +12,11 @@ const interestSchema = new mongoose.Schema({
                    ref: "event",
                    required: true
                },
+               interestType:{
+                type: String,
+                enum: ["interested", "not-interested"],
+                default: "interested"
+               }
  
      
 
