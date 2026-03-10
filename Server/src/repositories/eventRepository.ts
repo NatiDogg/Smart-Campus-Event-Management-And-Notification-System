@@ -45,7 +45,17 @@ export const deleteOrganizerEvent = (eventId: string, organizerId: string)=>{
 export const findAllEvents = ()=>{
      return eventModel.find({status: "approved"}).populate("category", "name").populate("organizedBy", "organizationName")
 }
-
+export const findPendingEvents = ()=>{
+      return eventModel.find({status: "pending"}).populate("category", "name").populate("organizedBy", "organizationName")
+}
+export const approveEvent = (id: string)=>{
+    const eventId = new Types.ObjectId(id); 
+    return eventModel.findByIdAndUpdate(eventId,{status: "approved"}, {returnDocument: "after"});
+}
+export const rejectEvent = (id: string)=>{
+    const eventId = new Types.ObjectId(id); 
+    return eventModel.findByIdAndUpdate(eventId,{status: "rejected"},{returnDocument: "after"});
+}
 
 
 

@@ -1,4 +1,4 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approveEvent, rejectEvent} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
@@ -129,7 +129,7 @@ class EventService {
 
       return {
         success: true,
-        message: "Event Retreived Successfully!",
+        message: "Event Retrieved Successfully!",
         event,
         isRegistered: !!registration,
         registeredStudents: registeredStudents
@@ -137,8 +137,21 @@ class EventService {
       
   }
   async getPendingEvents(){
- 
+        const events = await findPendingEvents()
+        return {
+          success: true,
+          message: events.length > 0 ? "Pending Events Retrieved Successfully!" : "No pending events yet",
+          events
+        }
   }
+  async processEventApproval(eventId: string){
+       const approvedEvent = await approveEvent(eventId);
+       return approvedEvent;
+  }
+  async processEventRejection(eventId: string){
+      const rejectedEvent = await rejectEvent(eventId)
+      return rejectedEvent;
+  } 
 }
 
 export default new EventService();

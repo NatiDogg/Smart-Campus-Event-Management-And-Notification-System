@@ -1,12 +1,13 @@
-import { createNewStudent } from "../repositories/studentRepository.js";
+
 import AppError from "../utils/appError.js";
 import { hashPassword,matchPassword } from "../utils/bcryptjs.js";
 import { createAccessToken, createRefreshToken, verifyRefreshToken } from "../utils/jwt.js";
 import type { authUserRegisterType,authUserLoginType } from "../utils/zodAuthValidator.js";
 import { env } from "../utils/zodEnvFilesValidator.js";
-import { createNewAdmin } from "../repositories/adminRepository.js";
 
 import UserService from "./userService.js";
+import StudentService from "./studentService.js";
+import AdminService from "./adminService.js";
 class AuthService{
        async signIn(userData: authUserRegisterType){
          const normalizedEmail = userData.email.toLowerCase();
@@ -23,7 +24,7 @@ class AuthService{
           if(!hashedPassword){
             throw new AppError("Something went wrong storing your password! please try again",400);
           }
-          const newlyCreatedStudent = await createNewStudent({
+          const newlyCreatedStudent = await StudentService.createNewStudent({
               ...userData,
               email: normalizedEmail,
               password: hashedPassword
@@ -43,7 +44,7 @@ class AuthService{
              const admin = await UserService.findUserByEmail(normalizedEmail);
              if(!admin){
                  const hashedPassword = await hashPassword(userData.password);
-                 const newlyCreatedAdmin = await createNewAdmin({
+                 const newlyCreatedAdmin = await AdminService.createNewAdmin({
                    ...userData,
                    password: hashedPassword,
                    fullName: "System Admin",

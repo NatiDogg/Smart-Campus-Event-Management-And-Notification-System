@@ -1,9 +1,11 @@
-import type { Request, Response } from "express";
+import { request, type Request, type Response } from "express";
 import { AuthRequest } from "../middlewares/authMiddleware.js";
 import AppError from "../utils/appError.js";
 import AdminService from "../services/adminService.js";
 import { createOrganizerSchema } from "../utils/zodOrganizerValidator.js";
 import { categoryCreationSchema } from "../utils/zodCategoryValidator.js";
+import { Types } from "mongoose";
+import { isValid } from "../utils/validMongodbId.js";
 
 
 export const createOrganizerHandler  =async(req: Request, res:Response)=>{
@@ -57,4 +59,100 @@ export const createNewCategoryHandler = async(req:Request, res:Response)=>{
               message: "Internal Server Error",
             });
      }
+}
+
+export const approveEventHandler = async(req:Request<{id: string}>, res:Response)=>{
+        const {id: eventId} = req.params
+        if(!isValid(eventId)){
+          return res.status(400).json({
+            success: false,
+            message: "Invalid ID Format!!"
+          })
+        }
+      try {
+          const result = await AdminService.approveEvent(eventId);
+          return res.status(200).json(result);
+         
+      } catch (error) {
+         if (error instanceof AppError) {
+              return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+              });
+            }
+            return res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+            });
+      }
+}
+export const rejectEventHandler = async(req:Request<{id: string}>, res:Response)=>{
+         const { id: eventId } = req.params;
+         if (!isValid(eventId)) {
+           return res.status(400).json({
+             success: false,
+             message: "Invalid ID Format!!",
+           });
+         }
+    
+      try {
+         const result = await AdminService.rejectEvent(eventId);
+          return res.status(200).json(result);
+         
+      } catch (error) {
+         if (error instanceof AppError) {
+              return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+              });
+            }
+            return res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+            });
+      }
+}
+
+export const getAllUserHandler = async(req:Request, res:Response)=>{
+        try {
+           const result = await AdminService.getAllUser()
+           return res.status(200).json(result)
+        } catch (error) {
+           if (error instanceof AppError) {
+              return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+              });
+            }
+            return res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+            });
+        }
+
+}
+export const deactivateUserHandler = async(req:Request<{id:string}>, res:Response)=>{
+         const { id: userId } = req.params;
+         if (!isValid(userId)) {
+           return res.status(400).json({
+             success: false,
+             message: "Invalid ID Format!!",
+           });
+         }
+         try {
+            const result = await AdminService.deactivateUser(userId);
+            return res.status(200).json(result)
+          
+         } catch (error) {
+            if (error instanceof AppError) {
+              return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+              });
+            }
+            return res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+            });
+         }
 }

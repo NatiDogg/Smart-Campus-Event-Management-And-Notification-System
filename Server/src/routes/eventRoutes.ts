@@ -4,6 +4,7 @@ import { createEventHandler,getEventsByOrganizerHandler,updateEventHandler,delet
 import { authUser } from '../middlewares/authMiddleware.js';
 import { isOrganizer } from '../middlewares/organizerMiddleware.js';
 import upload from '../middlewares/multerMiddleware.js';
+import { isAdmin } from '../middlewares/adminMiddleware.js';
 const eventRouter:Router = express.Router();
 
 eventRouter.post("/createEvent",authUser as unknown as RequestHandler,isOrganizer as unknown as RequestHandler, upload.single("image"),createEventHandler as unknown as RequestHandler);
@@ -13,6 +14,7 @@ eventRouter.delete("/deleteEvent/:id",authUser as unknown as RequestHandler,isOr
 
 eventRouter.get("/allEvents",authUser as unknown as RequestHandler,getAllEventsHandler);
 eventRouter.get("/singleEvent/:id",authUser as unknown as RequestHandler,getSingleEventHandler as unknown as RequestHandler);
+eventRouter.get("/pendingEvents",authUser as unknown as RequestHandler, isAdmin as unknown as RequestHandler, getPendingEventsHandler)
 
 
 

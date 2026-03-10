@@ -165,12 +165,24 @@ export const getSingleEventHandler = async (req:AuthRequest<{id: string}>, res:R
             const result = await EventService.getSingleEvent(eventId,studentId);
             res.status(200).json(result);
         } catch (error) {
+            if (error instanceof AppError) {
+              return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+              });
+            }
+            return res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+            });
             
         }
 }
 
-export const getPendingEventsHandler = async(req:AuthRequest, res:Response)=>{
+export const getPendingEventsHandler = async(req:Request, res:Response)=>{
      try {
+        const result = await EventService.getPendingEvents()
+        res.status(200).json(result)
         
      } catch (error) {
         if(error instanceof AppError){
