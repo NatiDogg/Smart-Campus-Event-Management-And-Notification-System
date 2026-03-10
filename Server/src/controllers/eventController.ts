@@ -4,7 +4,7 @@ import { createEventSchema,updateEventSchema } from "../utils/zodEventValidator.
 import { AuthRequest } from "../middlewares/authMiddleware.js";
 import EventService from "../services/eventService.js";
 import { isValid } from "../utils/validMongodbId.js";
-
+import { handleError } from "../helpers/handleError.js";
 
 export const createEventHandler = async(req:AuthRequest, res:Response)=>{
        const {id} = req.userAccessInfo
@@ -33,16 +33,7 @@ export const createEventHandler = async(req:AuthRequest, res:Response)=>{
          
         
       } catch (error) {
-        if(error instanceof AppError){
-             return res.status(error.statusCode).json({
-                  success:false,
-                  message: error.message
-             })
-        }
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        })
+        return handleError(res,error);
       }
 }
 
@@ -52,16 +43,7 @@ export const getEventsByOrganizerHandler = async(req:AuthRequest, res:Response)=
           const result = await EventService.getEventsByOrganizer(id);
           return res.status(200).json(result);
       } catch (error) {
-        if(error instanceof AppError){
-            return res.status(error.statusCode).json({
-                success:false,
-                message: error.message
-            })
-        }
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        })
+        return handleError(res,error);
       }
 
 }
@@ -89,16 +71,7 @@ export const updateEventHandler = async(req:AuthRequest<{id: string}>, res: Resp
             return res.status(200).json(result);
             
          } catch (error) {
-             if (error instanceof AppError) {
-               return res.status(error.statusCode).json({
-                 success: false,
-                 message: error.message,
-               });
-             }
-             return res.status(500).json({
-               success: false,
-               message: "Internal Server Error",
-             });
+             return handleError(res,error);
          }
 }
 
@@ -120,16 +93,7 @@ export const deleteEventHandler = async(req:AuthRequest<{id: string}>, res:Respo
          
         
     } catch (error) {
-        if (error instanceof AppError) {
-               return res.status(error.statusCode).json({
-                 success: false,
-                 message: error.message,
-               });
-             }
-             return res.status(500).json({
-               success: false,
-               message: "Internal Server Error",
-             });
+        return handleError(res,error);
     }
 }
 
@@ -139,16 +103,7 @@ export const getAllEventsHandler = async(req:Request, res:Response)=>{
          res.status(200).json(result);
         
        } catch (error) {
-        if(error instanceof AppError){
-            return res.status(error.statusCode).json({
-                success:false,
-                message: error.message
-            })
-        }
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        })
+        return handleError(res,error);
        }
 }
 
@@ -165,16 +120,7 @@ export const getSingleEventHandler = async (req:AuthRequest<{id: string}>, res:R
             const result = await EventService.getSingleEvent(eventId,studentId);
             res.status(200).json(result);
         } catch (error) {
-            if (error instanceof AppError) {
-              return res.status(error.statusCode).json({
-                success: false,
-                message: error.message,
-              });
-            }
-            return res.status(500).json({
-              success: false,
-              message: "Internal Server Error",
-            });
+            return handleError(res,error);
             
         }
 }
@@ -185,16 +131,7 @@ export const getPendingEventsHandler = async(req:Request, res:Response)=>{
         res.status(200).json(result)
         
      } catch (error) {
-        if(error instanceof AppError){
-            return res.status(error.statusCode).json({
-                success:false,
-                message: error.message
-            })
-        }
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        })
+        return handleError(res,error);
      }
 }
 

@@ -9,6 +9,7 @@ import authRouter from './routes/authRoutes.js';
 import eventRouter from './routes/eventRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import registrationRouter from './routes/registrationRoutes.js';
+import organizerRouter from './routes/organizerRoutes.js';
 config();
 
 const app:Express = express();
@@ -25,10 +26,22 @@ app.use(cookieParser())
 app.use(cors(corsOptions))
 
 //routes
+
+// Authentication (Login, Register, Logout)
 app.use("/api/auth",authRouter);
+
+// Public / Student Resources (Viewing Events)
 app.use("/api/event",eventRouter);
-app.use("/api/admin",adminRouter);
+
+// Student Actions (Interactions with Events)
 app.use("/api/registration",registrationRouter);
+
+// Role-Based Management (Creation & System Control)
+app.use("/api/admin",adminRouter);
+app.use("/api/organizer",organizerRouter);
+
+
+
 
 
 const startServer = async()=>{

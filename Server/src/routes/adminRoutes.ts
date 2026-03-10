@@ -3,16 +3,23 @@ import type { RequestHandler, Router } from "express";
 import { authUser } from '../middlewares/authMiddleware.js';
 import { createOrganizerHandler,createNewCategoryHandler,approveEventHandler,rejectEventHandler,deactivateUserHandler,getAllUsersHandler,getAllEventsHandler } from '../controllers/adminController.js';
 import { isAdmin } from '../middlewares/adminMiddleware.js';
+import { getPendingEventsHandler } from '../controllers/eventController.js';
 
 const adminRouter:Router = express.Router()
+//middlewares
+adminRouter.use(authUser as unknown as RequestHandler);
+adminRouter.use(isAdmin as unknown as RequestHandler);
 
-adminRouter.post("/createOrganizer",authUser as unknown as RequestHandler,isAdmin as unknown as RequestHandler,createOrganizerHandler);
-adminRouter.post("/createCategory",authUser as unknown as RequestHandler,isAdmin as unknown as RequestHandler,createNewCategoryHandler);
-adminRouter.patch("/approveEvent/:id",authUser as unknown as RequestHandler,isAdmin as unknown as RequestHandler,approveEventHandler)
-adminRouter.patch("/rejectEvent/:id",authUser as unknown as RequestHandler,isAdmin as unknown as RequestHandler,rejectEventHandler)
-adminRouter.get("/users",authUser as unknown as RequestHandler, isAdmin as unknown as RequestHandler, getAllUsersHandler)
-adminRouter.post("/deactivate",authUser as unknown as RequestHandler,isAdmin as unknown as RequestHandler,deactivateUserHandler);
-adminRouter.get("/events",authUser as unknown as RequestHandler, isAdmin as unknown as RequestHandler, getAllEventsHandler)
+
+adminRouter.get("/pendingEvents", getPendingEventsHandler)
+adminRouter.post("/createOrganizer",createOrganizerHandler);
+adminRouter.post("/createCategory",createNewCategoryHandler);
+adminRouter.patch("/approve/:id",approveEventHandler)
+adminRouter.patch("/reject/:id",rejectEventHandler)
+adminRouter.get("/users", getAllUsersHandler)
+adminRouter.post("/deactivate",deactivateUserHandler);
+adminRouter.get("/events", getAllEventsHandler)
+
 
 
 

@@ -3,7 +3,7 @@ import AppError from '../utils/appError.js'
 import type {Request, Response} from 'express'
 import { isValid } from '../utils/validMongodbId.js'
 import RegistrationService from '../services/registrationService.js'
-
+import { handleError } from '../helpers/handleError.js'
 
 
 export const registerStudentToEventHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
@@ -24,16 +24,7 @@ export const registerStudentToEventHandler = async(req:AuthRequest<{id: string}>
 
             
           } catch (error) {
-            if (error instanceof AppError) {
-              return res.status(error.statusCode).json({
-                success: false,
-                message: error.message,
-              });
-            }
-            return res.status(500).json({
-              success: false,
-              message: "Internal Server Error",
-            });
+           return handleError(res,error);
           }
 }
 export const unRegisterStudentToEventHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
@@ -52,15 +43,6 @@ export const unRegisterStudentToEventHandler = async(req:AuthRequest<{id: string
         res.status(200).json(result)
         
      } catch (error) {
-        if (error instanceof AppError) {
-              return res.status(error.statusCode).json({
-                success: false,
-                message: error.message,
-              });
-            }
-            return res.status(500).json({
-              success: false,
-              message: "Internal Server Error",
-            });
+        return handleError(res,error);
      }
 }

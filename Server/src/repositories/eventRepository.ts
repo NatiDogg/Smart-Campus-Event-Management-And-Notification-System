@@ -43,7 +43,7 @@ export const deleteOrganizerEvent = (eventId: string, organizerId: string)=>{ //
 }
 
 export const findAllEvents = ()=>{ //student
-     return eventModel.find({status: "approved"}).populate("category", "name").populate("organizedBy", "organizationName")
+     return eventModel.find({status: "approved"}).populate("category", "name").populate("organizedBy", "organizationName").sort({ startDate: 1 })
 }
 export const findPendingEvents = ()=>{ //admin
       return eventModel.find({status: "pending"}).populate("category", "name").populate("organizedBy", "organizationName")
@@ -58,7 +58,7 @@ export const rejectEvent = (id: string)=>{ // admin
 }
 
 export const getAdminEvents = ()=>{
-    return eventModel.find({$or: [{status: "pending"}, {status: "approved"}]})
+    return eventModel.find({})
 }
 
 
