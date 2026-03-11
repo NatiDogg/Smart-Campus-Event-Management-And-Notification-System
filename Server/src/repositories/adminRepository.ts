@@ -7,3 +7,6 @@ export type adminTypeDto = authAdminLoginType & {
 export const createAdmin = (adminData: adminTypeDto)=>{
       return adminModel.create(adminData);
 }
+export const findAllAdmins = ()=>{
+    return adminModel.find({role: "admin"}).select("fullName email")
+}

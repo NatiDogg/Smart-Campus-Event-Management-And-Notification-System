@@ -1,6 +1,4 @@
 
-
-
 import AppError from "../utils/appError.js";
 import { hashPassword } from "../utils/bcryptjs.js";
 import { categoryCreationType } from "../utils/zodCategoryValidator.js";
@@ -8,9 +6,10 @@ import { organizerCreationType } from "../utils/zodOrganizerValidator.js";
 import CategoryService from "./categoryService.js";
 import EventService from "./eventService.js";
 import UserService from "./userService.js";
-import { createAdmin } from "../repositories/adminRepository.js";
+import { createAdmin, findAllAdmins } from "../repositories/adminRepository.js";
 import { adminTypeDto } from "../repositories/adminRepository.js";
 import OrganizerService from "./organizerService.js";
+import NotificationService from "./notificationService.js";
 class AdminService{
        async createNewAdmin(adminData: adminTypeDto){
          const newlyCreatedAdmin = await createAdmin(adminData)
@@ -64,6 +63,13 @@ class AdminService{
            if(!updatedEvent){
              throw new AppError("Event Not Found!!",404)
            }
+            void NotificationService.notifyOrganizerStatus({
+              id: updatedEvent.organizedBy,
+              title: updatedEvent.title,
+              imageUrl: updatedEvent.imageUrl
+            }, "approved")
+
+
            return {
              success: true,
              message: "Event Approved Successfully",
@@ -75,6 +81,12 @@ class AdminService{
            if(!rejectedEvent){
              throw new AppError("Event Not Found!!",404)
            }
+            void NotificationService.notifyOrganizerStatus({
+              id: rejectedEvent.organizedBy,
+              title: rejectedEvent.title,
+              imageUrl: rejectedEvent.imageUrl
+            }, "rejected")
+
            return {
              success: true,
              message: "Event Rejected Successfully",
@@ -110,6 +122,10 @@ class AdminService{
           message: "Events Retreived Successfully",
           events
          }
+       }
+       async getAllAdmins(){
+         const admins = await findAllAdmins()
+         return admins;
        }
        
 }

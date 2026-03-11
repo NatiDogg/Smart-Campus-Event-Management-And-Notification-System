@@ -6,6 +6,7 @@ import { Types } from "mongoose";
 import CategoryService from "./categoryService.js";
 import RegistrationService from "./registrationService.js";
 import InterestService from "./interestService.js";
+import NotificationService from "./notificationService.js";
 class EventService {
   async createEvent(eventData: eventCreationType,id: string,fileBuffer: Buffer) {
     const existingEvent = await findEvent(eventData.title, eventData.startDate);
@@ -41,6 +42,12 @@ class EventService {
         organizedBy: new Types.ObjectId(id),
         category: category._id,
       });
+        void NotificationService.notifyAdminNewEvent({
+          title:newlyCreatedEvent.title,
+          location:newlyCreatedEvent.location,
+          imageUrl:newlyCreatedEvent.imageUrl})// to notify the admin
+
+          
       return {
         success: true,
         message: "Event Created Successfully!",

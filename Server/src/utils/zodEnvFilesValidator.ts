@@ -12,7 +12,10 @@ const envSchema = z.object({
     CLOUD_API_KEY: z.string().min(4),
     CLOUD_NAME: z.string().min(4),
     ADMIN_EMAIL: z.string().min(3),
-    ADMIN_PASS: z.string().min(6)
+    ADMIN_PASS: z.string().min(6),
+    SENDER_EMAIL: z.string().min(4),
+    SMTP_USER: z.string().min(4),
+    SMTP_PASS: z.string().min(4)
 
 
 
