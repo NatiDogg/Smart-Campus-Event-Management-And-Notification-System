@@ -1,4 +1,4 @@
-import { getAll,findById,findByEmail } from "../repositories/userRepository.js";
+import { getAll,findById,findByEmail, deleteUser } from "../repositories/userRepository.js";
 
 
 
@@ -15,6 +15,10 @@ class UserService{
     async findUserByEmail(email: string){
         const user = await findByEmail(email)
         return user;
+    }
+    async deactivateUser(userId: string){
+       const deactivatedUser = await deleteUser(userId)
+       return deactivatedUser
     }
    
 }  

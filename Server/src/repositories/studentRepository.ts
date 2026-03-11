@@ -3,6 +3,6 @@ import { authUserRegisterType } from "../utils/zodAuthValidator.js";
 
 
 
-export const createNewStudent = (studentData: authUserRegisterType )=>{
+export const createStudent = (studentData: authUserRegisterType )=>{
      return studentModel.create(studentData)
 }

@@ -5,6 +5,11 @@ import { env } from './utils/zodEnvFilesValidator.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import connectToDb from './config/connectDb.js';
+import authRouter from './routes/authRoutes.js';
+import eventRouter from './routes/eventRoutes.js';
+import adminRouter from './routes/adminRoutes.js';
+import registrationRouter from './routes/registrationRoutes.js';
+import organizerRouter from './routes/organizerRoutes.js';
 config();
 
 const app:Express = express();
@@ -22,12 +27,26 @@ app.use(cors(corsOptions))
 
 //routes
 
+// Authentication (Login, Register, Logout)
+app.use("/api/auth",authRouter);
+
+// Public / Student Resources (Viewing Events)
+app.use("/api/event",eventRouter);
+
+// Student Actions (Interactions with Events)
+app.use("/api/registration",registrationRouter);
+
+// Role-Based Management (Creation & System Control)
+app.use("/api/admin",adminRouter);
+app.use("/api/organizer",organizerRouter);
+
+
 
 
 
 const startServer = async()=>{
        try {
-          //await connectToDb();
+          await connectToDb();
         app.listen(port,()=>{
             console.log("Server has started and listening to port "+port);
         })

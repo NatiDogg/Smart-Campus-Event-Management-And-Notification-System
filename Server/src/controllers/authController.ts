@@ -3,8 +3,19 @@ import AppError from "../utils/appError.js";
 import { authRegisterSchema,authLoginSchema } from "../utils/zodAuthValidator.js";
 import AuthService from "../services/authService.js";
 import { env } from "../utils/zodEnvFilesValidator.js";
+import { handleError } from "../helpers/handleError.js";
     
 const isProd = env.NODE_ENV === 'production'
+
+const setResponseCookies = (res:Response, token: string)=>{
+     res.cookie("refreshToken",token,{
+        httpOnly: true,
+        sameSite: "lax",
+        secure: isProd,
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    })
+}
+
 export const signInHandler = async(req: Request, res:Response)=>{
          const parsed = authRegisterSchema.safeParse(req.body);
          if(!parsed.success){
@@ -15,17 +26,12 @@ export const signInHandler = async(req: Request, res:Response)=>{
          }
         try {
              
-
+             
             const result = await AuthService.signIn(parsed.data);
              const {refreshToken} = result
          
-             res.cookie('refreshToken',refreshToken,{
-                httpOnly: true,
-                sameSite: "lax",
-                secure: isProd,
-                maxAge: 7 * 24 * 60 * 60 * 1000
-             });
-             res.status(201).json({
+             setResponseCookies(res,refreshToken);
+             return res.status(201).json({
                 success: result.success,
                 message: result.message,
                 user: result.user,
@@ -35,17 +41,7 @@ export const signInHandler = async(req: Request, res:Response)=>{
             
             
         } catch (error) {
-            if(error instanceof AppError){
-                return res.status(error.statusCode).json({
-                    success:false,
-                    message: error.message
-                })
-            }
-
-            return res.status(500).json({
-                success:false,
-                message: "Internal Server Error"
-            })
+           return handleError(res,error);
         }
 
 
@@ -67,13 +63,9 @@ export const loginHandler = async(req:Request, res:Response)=>{
             const result = await AuthService.login(parsed.data)
              const {refreshToken} = result
          
-             res.cookie('refreshToken',refreshToken,{
-                httpOnly: true,
-                sameSite: "lax",
-                secure: isProd,
-                maxAge: 7 * 24 * 60 * 60 * 1000
-             });
-             res.status(200).json({
+              setResponseCookies(res,refreshToken);
+
+             return res.status(200).json({
                 success: result.success,
                 message: result.message,
                 user: result.user,
@@ -82,17 +74,7 @@ export const loginHandler = async(req:Request, res:Response)=>{
 
             
         } catch (error) {
-            if(error instanceof AppError){
-                return res.status(error.statusCode).json({
-                    success:false,
-                    message: error.message
-                })
-            }
-
-            return res.status(500).json({
-                success:false,
-                message: "Internal Server Error"
-            })
+            return handleError(res,error);
         }
 }
 
@@ -109,13 +91,9 @@ export const refreshTokenHandler = async(req:Request, res:Response)=>{
            const result = await AuthService.handleRefreshToken(token)
            const {refreshToken} = result
          
-             res.cookie('refreshToken',refreshToken,{
-                httpOnly: true,
-                sameSite: "lax",
-                secure: isProd,
-                maxAge: 7 * 24 * 60 * 60 * 1000
-             });
-             res.status(200).json({
+              setResponseCookies(res,refreshToken);
+
+             return res.status(200).json({
                 success: result.success,
                 message: result.message,
                 user: result.user,
@@ -124,17 +102,7 @@ export const refreshTokenHandler = async(req:Request, res:Response)=>{
 
         
        } catch (error) {
-          if(error instanceof AppError){
-                return res.status(error.statusCode).json({
-                    success:false,
-                    message: error.message
-                })
-            }
-
-            return res.status(500).json({
-                success:false,
-                message: "Internal Server Error"
-            })
+         return handleError(res,error);
        } 
 }
 
@@ -147,16 +115,6 @@ export const logOutHandler = async(req:Request, res:Response)=>{
              })
             
            } catch (error) {
-              if(error instanceof AppError){
-                return res.status(error.statusCode).json({
-                    success:false,
-                    message: error.message
-                })
-            }
-
-            return res.status(500).json({
-                success:false,
-                message: "Internal Server Error"
-            })
+              return handleError(res,error);
            }
 }

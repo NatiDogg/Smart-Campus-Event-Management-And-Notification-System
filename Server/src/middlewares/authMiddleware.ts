@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "../utils/jwt.js";
 
-export interface AuthRequest extends Request{
+export interface AuthRequest<P = any, ResBody = any, ReqBody = any,ReqQuery = any > extends Request<P, ResBody, ReqBody, ReqQuery>{
      userAccessInfo:{
          id: string,
      email: string,

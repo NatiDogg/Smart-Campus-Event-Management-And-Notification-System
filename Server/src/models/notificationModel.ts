@@ -4,7 +4,7 @@ const notificationSchema = new mongoose.Schema({
 
        studentId:{
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Student",
+          ref: "student",
           required: function(){
               return this.type === 'targeted'
           }
@@ -24,7 +24,7 @@ const notificationSchema = new mongoose.Schema({
        },
        eventId:{
          type: mongoose.Schema.Types.ObjectId,
-          ref: "Event",
+          ref: "event",
           required: true
        },
        type:{

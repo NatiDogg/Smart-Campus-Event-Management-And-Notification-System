@@ -4,13 +4,12 @@ import userModel from "./userModel.js";
 const adminModel = userModel.discriminators?.admin || userModel.discriminator("admin", new mongoose.Schema({
          
         phoneNumber:{
-            type:String,
-            required: true
+            type:String
         },
         adminLevel:{
             type: String,
             enum: ["super", "moderator", "basic"],
-            default: 'basic'
+            default: 'super'
         }
 
 
