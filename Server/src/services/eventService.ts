@@ -110,6 +110,9 @@ class EventService {
       if (!deletedEvent) {
         throw new AppError("Event not found or unauthorized", 404);
       }
+      if(deletedEvent.imagePublicId){
+          await deleteFromCloudinary(deletedEvent.imagePublicId)
+      }
 
        return {
         success: true,
