@@ -52,8 +52,32 @@ class NotificationService{
                     },
                     tokens: [...user.fcmTokens]
                 }
-                const response = await admin.messaging().sendMulticast(message)
-                console.log(` Sent push to ${response.successCount} devices for user ${userId}`);
+                const response = await admin.messaging().sendEachForMulticast(message);
+               
+                //clean up logic for invalid tokens
+                if (response.failureCount > 0) {
+                  const failedTokens: string[] = [];
+                  response.responses.forEach((resp, idx) => {
+                    if (!resp.success) {
+                      const error = resp.error?.code;
+                      if (
+                        error ===
+                          "messaging/registration-token-not-registered" ||
+                        error === "messaging/invalid-registration-token"
+                      ) {
+                        failedTokens.push(user.fcmTokens[idx]);
+                      }
+                    }
+                  });
+                  if (failedTokens.length > 0) {
+                    // Remove the dead tokens from the database
+                    await UserService.removeFcmToken(userId, failedTokens);
+                    console.log(
+                      `Cleaned up ${failedTokens.length} dead tokens for user ${userId}`
+                    );
+                  }
+                }
+                 console.log(` Sent push to ${response.successCount} devices for user ${userId}`);
 
             } catch (error) {
                 console.error(" FCM Error:", error);

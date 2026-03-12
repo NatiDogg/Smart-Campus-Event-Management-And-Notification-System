@@ -32,7 +32,7 @@ class UserService{
           message: "Push notification token updated successfully"
      }
     }
-    async removeFcmToken(userId: string, staleToken: string) { 
+    async removeFcmToken(userId: string, staleToken: string[]) { 
        const removedToken = await removeToken(userId, staleToken)
        if(!removedToken){
             throw new AppError("Failed to remove FCM token right now!",400)

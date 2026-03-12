@@ -11,6 +11,7 @@ import adminRouter from './routes/adminRoutes.js';
 import registrationRouter from './routes/registrationRoutes.js';
 import organizerRouter from './routes/organizerRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import { initCronJobs } from './utils/cronManager.js';
 config();
 
 const app:Express = express();
@@ -52,6 +53,7 @@ app.use("/api/user", userRouter);
 const startServer = async()=>{
        try {
           await connectToDb();
+          initCronJobs()
         app.listen(port,()=>{
             console.log("Server has started and listening to port "+port);
         })

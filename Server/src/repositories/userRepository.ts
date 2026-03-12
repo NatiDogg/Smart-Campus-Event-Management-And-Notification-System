@@ -22,12 +22,15 @@ export const updateFcmToken = (userId: string, newToken: string)=>{
      return  userModel.findByIdAndUpdate(id, {$addToSet: {fcmTokens: newToken}}, {returnDocument: "after"})
 }
 
-export const removeToken = (userId: string, staleToken: string)=>{
+export const removeToken = (userId: string, staleToken: string[])=>{
      const id = new Types.ObjectId(userId)
      return  userModel.findByIdAndUpdate(
         id,
         { 
-            $pull: { fcmTokens: staleToken } 
+            $pullAll: { fcmTokens: staleToken } 
+        },
+        {
+          returnDocument: "after"
         }
     );
 }

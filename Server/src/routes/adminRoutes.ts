@@ -17,7 +17,7 @@ adminRouter.post("/createCategory",createNewCategoryHandler);
 adminRouter.patch("/approve/:id",approveEventHandler)
 adminRouter.patch("/reject/:id",rejectEventHandler)
 adminRouter.get("/users", getAllUsersHandler)
-adminRouter.post("/deactivate",deactivateUserHandler);
+adminRouter.delete("/deactivate",deactivateUserHandler);
 adminRouter.get("/events", getAllEventsHandler)
 
 
