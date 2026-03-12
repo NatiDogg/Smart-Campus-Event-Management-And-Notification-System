@@ -1,5 +1,5 @@
 
-import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration } from "../repositories/registrationRepository.js";
+import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders } from "../repositories/registrationRepository.js";
 import AppError from "../utils/appError.js";
 import EventService from "./eventService.js";
 
@@ -61,6 +61,10 @@ class RegistrationService{
         };
 
 
+    }
+    async getRegistrationDetailForReminder(startDate: Date, endDate: Date){
+       const regisrationDetails = await getRegistrationForReminders(startDate,endDate);
+       return regisrationDetails;
     }
     
 

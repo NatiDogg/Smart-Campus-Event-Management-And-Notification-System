@@ -6,7 +6,8 @@ export const  getAll = ()=>{
      return userModel.find({})
 }
 
-export const findById = (id: string)=>{
+export const findById = (userId: string)=>{
+     const id = new Types.ObjectId(userId);
      return userModel.findById(id);
 }
 export const findByEmail = (email:string)=>{

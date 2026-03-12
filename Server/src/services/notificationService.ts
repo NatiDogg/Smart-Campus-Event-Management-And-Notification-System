@@ -3,6 +3,10 @@ import AppError from "../utils/appError.js";
 import { env } from "../utils/zodEnvFilesValidator.js";
 import AdminService from "./adminService.js";
 import OrganizerService from "./organizerService.js";
+import admin from "../config/fireBase.js";
+import UserService from "./userService.js";
+import EventService from "./eventService.js";
+import RegistrationService from "./registrationService.js";
 
 type adminEmailEventType={
       title: string,
@@ -30,11 +34,29 @@ class NotificationService{
            console.error(`Failed to send email to ${to}:`, error);
           }
      }
-     async sendPushNotification(){
+     async sendPushNotification(userId: string, title: string, body: string ){
             try {
-                
+                 
+                const user = await UserService.findUserById(userId)
+                if (!user || !user.fcmTokens || user.fcmTokens.length === 0) {
+                  console.warn(
+                    `Push skipped: No tokens found for user ${userId}`
+                  );
+                  return;
+                }
+                const message = {
+                    notification: {
+                        title,
+                        body,
+
+                    },
+                    tokens: [...user.fcmTokens]
+                }
+                const response = await admin.messaging().sendMulticast(message)
+                console.log(` Sent push to ${response.successCount} devices for user ${userId}`);
+
             } catch (error) {
-                
+                console.error(" FCM Error:", error);
             }
      }
 
@@ -156,9 +178,37 @@ class NotificationService{
     const subject = isApproved ? `🎉 Approved: ${eventDetails.title}` : `Rejected: ${eventDetails.title}`;
          return this.sendEmail(organizer.email,subject,html);
      }
-     async notifyStudentDeadline(){
-          
+     async notifyStudentDeadline(userId: string, eventTitle: string){
+            const title = "Event Tomorrow! ⏰";
+            const body = `Don't forget! "${eventTitle}" starts in 24 hours. See you there!`;
+            await this.sendPushNotification(userId, title, body);
      }
+     async processDailyReminders(){
+        const now = new Date();
+        const tomorrowStart = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        const tomorrowEnd = new Date(now.getTime() + 25 * 60 * 60 * 1000);
+
+        const registrations = await RegistrationService.getRegistrationDetailForReminder(tomorrowStart, tomorrowEnd);
+
+        for(const reg of registrations){
+           if (reg.eventId && reg.studentId) {
+             const studentId = reg.studentId._id.toString();
+             const eventTitle = reg.eventId.title;
+
+             
+             await this.notifyStudentDeadline(studentId, eventTitle);
+           }
+        }  
+        console.log(`[Cron] Processed ${registrations.length} reminders.`);
+
+
+
+
+       
+
+        
+     }
+     
 }
 
 export default new NotificationService();

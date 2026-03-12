@@ -31,6 +31,19 @@ export const deleteRegistration  =(studentId: string, eventId: string)=>{
     })
 }
 
+export const getRegistrationForReminders = async (tomorrowStart: Date, tomorrowEnd: Date)=>{
+    const registrations = await registrationModel.find({ status: "registered" })
+        .populate({
+            path: 'eventId',
+            match: { startDate: { $gte: tomorrowStart, $lt: tomorrowEnd } },
+            select: 'title location startDate'
+        })
+        .populate('studentId', "fcmTokens");
+        
+    return registrations.filter(reg => reg.eventId !== null);
+
+}
+
 
 
 

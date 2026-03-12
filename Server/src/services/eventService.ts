@@ -2,7 +2,7 @@ import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById,
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
-import { Types } from "mongoose";
+import { startSession, Types } from "mongoose";
 import CategoryService from "./categoryService.js";
 import RegistrationService from "./registrationService.js";
 import InterestService from "./interestService.js";
@@ -174,6 +174,7 @@ class EventService {
     const events = await getAdminEvents()
     return events;
   }
+  
 }
 
 export default new EventService();
