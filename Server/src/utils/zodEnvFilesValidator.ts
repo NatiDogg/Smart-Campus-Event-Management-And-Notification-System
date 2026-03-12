@@ -15,7 +15,8 @@ const envSchema = z.object({
     ADMIN_PASS: z.string().min(6),
     SENDER_EMAIL: z.string().min(4),
     SMTP_USER: z.string().min(4),
-    SMTP_PASS: z.string().min(4)
+    SMTP_PASS: z.string().min(4),
+    FCM_SERVICE_ACCOUNT_KEY: z.string().min(2)
 
 
 

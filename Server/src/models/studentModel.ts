@@ -19,11 +19,8 @@ const studentModel = userModel.discriminators?.student || userModel.discriminato
             ref: "Category",
             
          }
-       ],
-       fcmTokens:{
-          type: [String],
-          default: []
-       }
+       ]
+       
        
 }));
 

@@ -10,6 +10,7 @@ import eventRouter from './routes/eventRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import registrationRouter from './routes/registrationRoutes.js';
 import organizerRouter from './routes/organizerRoutes.js';
+import userRouter from './routes/userRoutes.js';
 config();
 
 const app:Express = express();
@@ -39,6 +40,10 @@ app.use("/api/registration",registrationRouter);
 // Role-Based Management (Creation & System Control)
 app.use("/api/admin",adminRouter);
 app.use("/api/organizer",organizerRouter);
+
+
+//all user action
+app.use("/api/user", userRouter);
 
 
 
