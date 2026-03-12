@@ -18,12 +18,14 @@ type organizerEventType = {
 class NotificationService{
      async sendEmail(to: string, subject: string, html: string){
           try {
-             await emailTransporter.sendMail({
-                from: env.SENDER_EMAIL,
+            
+             const info = await emailTransporter.sendMail({
+                from: `"Campus Events" <${env.SENDER_EMAIL}>`,
                 to,
                 subject,
                 html
              })
+           
           } catch (error) {
            console.error(`Failed to send email to ${to}:`, error);
           }
@@ -97,7 +99,9 @@ class NotificationService{
 
      }
      async notifyOrganizerStatus(eventDetails: organizerEventType,status: 'approved' | "rejected"){
+
          const organizer = await OrganizerService.getOrganizerById(eventDetails.id);
+         
          if(!organizer){
              console.warn(`Event ${status}, but organizer was not found.`);
             return;
