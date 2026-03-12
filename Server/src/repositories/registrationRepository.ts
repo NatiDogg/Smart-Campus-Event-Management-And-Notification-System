@@ -7,7 +7,7 @@ export const isStudentRegistered = (studentId: string, eventId: string  )=>{
 
 export const getStudentsRegistration = (eventId: string)=>{
     return registrationModel.find({eventId: new Types.ObjectId(eventId)
-        ,status: "registered"}).populate("studentId", "fullName profile department")
+        ,status: "registered"}).populate("studentId", "fullName email profile department fcmTokens").populate("eventId", "title")
 }
 
 export const getRegistrationCountForEvent = (eventId: string)=>{

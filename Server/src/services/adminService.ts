@@ -63,7 +63,7 @@ class AdminService{
            if(!updatedEvent){
              throw new AppError("Event Not Found!!",404)
            }
-            void NotificationService.notifyOrganizerStatus({
+            void NotificationService.notifyOrganizerEventStatus({
               id: updatedEvent.organizedBy,
               title: updatedEvent.title,
               imageUrl: updatedEvent.imageUrl
@@ -81,7 +81,7 @@ class AdminService{
            if(!rejectedEvent){
              throw new AppError("Event Not Found!!",404)
            }
-            void NotificationService.notifyOrganizerStatus({
+            void NotificationService.notifyOrganizerEventStatus({
               id: rejectedEvent.organizedBy,
               title: rejectedEvent.title,
               imageUrl: rejectedEvent.imageUrl

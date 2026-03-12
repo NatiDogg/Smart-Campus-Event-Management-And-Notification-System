@@ -7,6 +7,8 @@ import admin from "../config/fireBase.js";
 import UserService from "./userService.js";
 import EventService from "./eventService.js";
 import RegistrationService from "./registrationService.js";
+import StudentService from "./studentService.js";
+
 
 type adminEmailEventType={
       title: string,
@@ -19,79 +21,75 @@ type organizerEventType = {
      title: string,
      imageUrl: string
 }
-class NotificationService{
-     async sendEmail(to: string, subject: string, html: string){
-          try {
-            
-             const info = await emailTransporter.sendMail({
-                from: `"Campus Events" <${env.SENDER_EMAIL}>`,
-                to,
-                subject,
-                html
-             })
-           
-          } catch (error) {
-           console.error(`Failed to send email to ${to}:`, error);
-          }
-     }
-     async sendPushNotification(userId: string, title: string, body: string ){
-            try {
-                 
-                const user = await UserService.findUserById(userId)
-                if (!user || !user.fcmTokens || user.fcmTokens.length === 0) {
-                  console.warn(
-                    `Push skipped: No tokens found for user ${userId}`
-                  );
-                  return;
-                }
-                const message = {
-                    notification: {
-                        title,
-                        body,
 
-                    },
-                    tokens: [...user.fcmTokens]
-                }
-                const response = await admin.messaging().sendEachForMulticast(message);
-               
-                //clean up logic for invalid tokens
-                if (response.failureCount > 0) {
-                  const failedTokens: string[] = [];
-                  response.responses.forEach((resp, idx) => {
-                    if (!resp.success) {
-                      const error = resp.error?.code;
-                      if (
-                        error ===
-                          "messaging/registration-token-not-registered" ||
-                        error === "messaging/invalid-registration-token"
-                      ) {
-                        failedTokens.push(user.fcmTokens[idx]);
-                      }
-                    }
-                  });
-                  if (failedTokens.length > 0) {
-                    // Remove the dead tokens from the database
-                    await UserService.removeFcmToken(userId, failedTokens);
-                    console.log(
-                      `Cleaned up ${failedTokens.length} dead tokens for user ${userId}`
-                    );
-                  }
-                }
-                 console.log(` Sent push to ${response.successCount} devices for user ${userId}`);
+class NotificationService {
+  async sendEmail(to: string, subject: string, html: string) {
+    try {
+      const info = await emailTransporter.sendMail({
+        from: `"Campus Events" <${env.SENDER_EMAIL}>`,
+        to,
+        subject,
+        html,
+      });
+    } catch (error) {
+      console.error(`Failed to send email to ${to}:`, error);
+    }
+  }
+  async sendPushNotification(userId: string, title: string, body: string) {
+    try {
+      const user = await UserService.findUserById(userId);
+      if (!user || !user.fcmTokens || user.fcmTokens.length === 0) {
+        console.warn(`Push skipped: No tokens found for user ${userId}`);
+        return;
+      }
+      const message = {
+        notification: {
+          title,
+          body,
+        },
+        tokens: [...user.fcmTokens],
+      };
+      const response = await admin.messaging().sendEachForMulticast(message);
 
-            } catch (error) {
-                console.error(" FCM Error:", error);
+      //clean up logic for invalid tokens
+      if (response.failureCount > 0) {
+        const failedTokens: string[] = [];
+        response.responses.forEach((resp, idx) => {
+          if (!resp.success) {
+            const error = resp.error?.code;
+            if (
+              error === "messaging/registration-token-not-registered" ||
+              error === "messaging/invalid-registration-token"
+            ) {
+              failedTokens.push(user.fcmTokens[idx]);
             }
-     }
-
-     async notifyAdminNewEvent(eventDetails: adminEmailEventType ){
-        const admins = await AdminService.getAllAdmins();
-        if (!admins || admins.length === 0) {
-            console.warn("Event created, but no admins exist to notify.");
-            return;
+          }
+        });
+        if (failedTokens.length > 0) {
+          // Remove the dead tokens from the database
+          await UserService.removeFcmToken(userId, failedTokens);
+          console.log(
+            `Cleaned up ${failedTokens.length} dead tokens for user ${userId}`
+          );
         }
-        await Promise.all(admins.map(admin=>{
-            const html = `
+      }
+      console.log(
+        ` Sent push to ${response.successCount} devices for user ${userId}`
+      );
+    } catch (error) {
+      console.error(" FCM Error:", error);
+    }
+  }
+  // notify admin when new event is created
+  async notifyAdminNewEvent(eventDetails: adminEmailEventType) {
+    const admins = await AdminService.getAllAdmins();
+    if (!admins || admins.length === 0) {
+      console.warn("Event created, but no admins exist to notify.");
+      return;
+    }
+    await Promise.all(
+      admins.map((admin) => {
+        const html = `
 <div style="background-color: #f9fafb; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1f2937;">
     <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
         <tr>
@@ -138,23 +136,24 @@ class NotificationService{
     </table>
 </div>
 `;
-            return this.sendEmail(admin.email, "New Event Submission", html);
-        }))
-        
-        
+        return this.sendEmail(admin.email, "New Event Submission", html);
+      })
+    );
+  }
+  // notify organizer about his event status approved or rejected
+  async notifyOrganizerEventStatus(
+    eventDetails: organizerEventType,
+    status: "approved" | "rejected"
+  ) {
+    const organizer = await OrganizerService.getOrganizerById(eventDetails.id);
 
-     }
-     async notifyOrganizerStatus(eventDetails: organizerEventType,status: 'approved' | "rejected"){
-
-         const organizer = await OrganizerService.getOrganizerById(eventDetails.id);
-         
-         if(!organizer){
-             console.warn(`Event ${status}, but organizer was not found.`);
-            return;
-         }
-         const isApproved = status === 'approved';
-         const primaryColor = isApproved ? '#22c55e' : '#64748b'; 
-    const statusText = isApproved ? 'Approved' : 'Review Required';
+    if (!organizer) {
+      console.warn(`Event ${status}, but organizer was not found.`);
+      return;
+    }
+    const isApproved = status === "approved";
+    const primaryColor = isApproved ? "#22c55e" : "#64748b";
+    const statusText = isApproved ? "Approved" : "Review Required";
     const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background-color: #ffffff;">
         <div style="background-color: ${primaryColor}; padding: 24px; text-align: center;">
@@ -199,40 +198,179 @@ class NotificationService{
         </div>
     </div>
 `;
-    const subject = isApproved ? `🎉 Approved: ${eventDetails.title}` : `Rejected: ${eventDetails.title}`;
-         return this.sendEmail(organizer.email,subject,html);
-     }
-     async notifyStudentDeadline(userId: string, eventTitle: string){
-            const title = "Event Tomorrow! ⏰";
-            const body = `Don't forget! "${eventTitle}" starts in 24 hours. See you there!`;
-            await this.sendPushNotification(userId, title, body);
-     }
-     async processDailyReminders(){
-        const now = new Date();
-        const tomorrowStart = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-        const tomorrowEnd = new Date(now.getTime() + 25 * 60 * 60 * 1000);
+    const subject = isApproved
+      ? `🎉 Approved: ${eventDetails.title}`
+      : `Rejected: ${eventDetails.title}`;
+    return this.sendEmail(organizer.email, subject, html);
+  }
+  // notify student when his registered event deadline is approching
+  async notifyStudentDeadline(userId: string, eventTitle: string) {
+    const title = "Event Tomorrow! ⏰";
+    const body = `Don't forget! "${eventTitle}" starts in 24 hours. See you there!`;
+    await this.sendPushNotification(userId, title, body);
+  }
+  // the logic for notifystudentdeadline
+  async processDailyReminders() {
+    const now = new Date();
+    const tomorrowStart = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const tomorrowEnd = new Date(now.getTime() + 25 * 60 * 60 * 1000);
 
-        const registrations = await RegistrationService.getRegistrationDetailForReminder(tomorrowStart, tomorrowEnd);
+    const registrations =
+      await RegistrationService.getRegistrationDetailForReminder(
+        tomorrowStart,
+        tomorrowEnd
+      );
 
-        for(const reg of registrations){
-           if (reg.eventId && reg.studentId) {
-             const studentId = reg.studentId._id.toString();
-             const eventTitle = reg.eventId.title;
+    for (const reg of registrations) {
+      if (reg.eventId && reg.studentId) {
+        const studentId = reg.studentId._id.toString();
+        const eventTitle = reg.eventId.title;
 
-             
-             await this.notifyStudentDeadline(studentId, eventTitle);
-           }
-        }  
-        console.log(`[Cron] Processed ${registrations.length} reminders.`);
+        await this.notifyStudentDeadline(studentId, eventTitle);
+      }
+    }
+    console.log(`[Cron] Processed ${registrations.length} reminders.`);
+  }
+  // notify students when they register for a new event
+  async notifyStudentEventRegistrationStatus(
+    eventId: string,
+    studentId: string,
+    status: "registered" | "unregistered"
+  ) {
+    const [event, student] = await Promise.all([
+      EventService.getEventById(eventId),
+      StudentService.getStudentById(studentId),
+    ]);
 
+    const isRegistered = status === "registered";
+    const subject = isRegistered
+      ? `Confirmed: ${event.name}`
+      : `Cancelled: ${event.name}`;
 
+    // UI Variables
+    const themeColor = isRegistered ? "#007bff" : "#6c757d";
+    const actionText = isRegistered ? "is confirmed!" : "has been cancelled.";
 
+    const html = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">
+        <div style="background-color: ${themeColor}; padding: 20px; text-align: center;">
+            <h2 style="color: white; margin: 0; font-size: 20px;">Event Update</h2>
+        </div>
 
-       
+        <div style="padding: 30px; color: #333;">
+            <h1 style="font-size: 1.5rem; margin-bottom: 10px;">Hi ${
+              student.fullName
+            },</h1>
+            <p style="font-size: 16px; line-height: 1.5;">
+                Your registration for <strong>${
+                  event.title
+                }</strong> ${actionText}
+            </p>
 
-        
-     }
-     
+            <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid ${themeColor};">
+                <div style="margin-bottom: 5px;"><strong>When:</strong> ${new Date(
+                  event.startDate
+                ).toLocaleDateString()}</div>
+                <div><strong>Where:</strong> ${event.location || "TBD"}</div>
+            </div>
+
+            ${
+              isRegistered
+                ? `
+                <p style="font-size: 14px; color: #666;">Please save this email for your records. See you there!</p>
+                <a href="" 
+                   style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: ${themeColor}; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                   View Event Page
+                </a>
+            `
+                : `
+                <p style="font-size: 14px; color: #666;">If this was a mistake, you can re-register on our portal anytime.</p>
+            `
+            }
+        </div>
+
+        <div style="padding: 15px; background: #f4f4f4; text-align: center; font-size: 12px; color: #999;">
+            © ${new Date().getFullYear()} Smart Campus
+        </div>
+    </div>
+    `;
+
+    return this.sendEmail(student.email, subject, html);
+  }
+  // notify students when the event they registered got updated
+  async notifyStudentEventStatus( eventId: string, status: "updated" | "canceled") {
+    const registrations =  await RegistrationService.getStudentsRegistrationStatus(eventId);
+
+    if (!registrations || registrations.length === 0) {
+      console.warn(`Event ${status}, but no students exist to notify.`);
+      return;
+    }
+
+    const eventTitle = registrations[0].eventId?.title || "Event";
+
+    // Define dynamic content based on status
+    const isCanceled = status === "canceled";
+    const statusColor = isCanceled ? "#ef4444" : "#4f46e5"; 
+    const subjectLine = isCanceled
+      ? `CANCELED: ${eventTitle}`
+      : `Update: ${eventTitle}`;
+    const mainMessage = isCanceled
+      ? `We regret to inform you that ${eventTitle} has been canceled.`
+      : `We are reaching out to inform you of a recent update regarding ${eventTitle}.`;
+    const subMessage = isCanceled
+      ? "If there are any rescheduled dates, they will be posted on your dashboard."
+      : "Please check your student dashboard for the most up-to-date information regarding changes to the schedule or venue.";
+
+    const notifications = registrations.map(async (reg) => {
+      const student = reg.studentId;
+      if (!student) return;
+
+      // 1. Send Push Notification
+      if (student.fcmTokens?.length > 0) {
+        await this.sendPushNotification(
+          student._id.toString(),
+          subjectLine,
+          `${mainMessage} Check your dashboard for details.`
+        );
+      }
+
+      // 2. Send Email
+      if (student.email) {
+        const html = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+            <div style="background-color: ${statusColor}; padding: 20px; text-align: center;">
+                <h2 style="color: #ffffff; margin: 0;">${
+                  isCanceled ? "Event Cancellation" : "Event Update"
+                }</h2>
+            </div>
+            <div style="padding: 30px; color: #374151;">
+                <h3>${eventTitle}</h3>
+                <p>Hello,</p>
+                <p>${mainMessage}</p>
+                <div style="background-color: #f9fafb; border-left: 4px solid ${statusColor}; padding: 15px; margin: 25px 0;">
+                    "${subMessage}"
+                </div>
+                <div style="text-align: center;">
+                    <a href="https://youruniversity.edu/dashboard" 
+                       style="background-color: ${statusColor}; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                       View My Dashboard
+                    </a>
+                </div>
+            </div>
+            <div style="background-color: #f3f4f6; padding: 15px; text-align: center; font-size: 12px; color: #6b7280;">
+                <p>&copy; ${new Date().getFullYear()} Campus Events Team</p>
+            </div>
+        </div>`;
+
+        await this.sendEmail(student.email, subjectLine, html);
+      }
+    });
+
+    await Promise.all(notifications);
+    console.log(
+      `Successfully notified ${registrations.length} students about the ${status} event.`
+    );
+  }
 }
 
 export default new NotificationService();

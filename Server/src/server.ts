@@ -12,6 +12,7 @@ import registrationRouter from './routes/registrationRoutes.js';
 import organizerRouter from './routes/organizerRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import { initCronJobs } from './utils/cronManager.js';
+import interestRouter from './routes/interestRoutes.js';
 config();
 
 const app:Express = express();
@@ -34,6 +35,9 @@ app.use("/api/auth",authRouter);
 
 // Public / Student Resources (Viewing Events)
 app.use("/api/event",eventRouter);
+
+//student action marking or unmarking interest
+app.use("/api/interest",interestRouter);
 
 // Student Actions (Interactions with Events)
 app.use("/api/registration",registrationRouter);

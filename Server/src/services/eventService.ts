@@ -103,6 +103,7 @@ class EventService {
         if(!updatedEvent){
           throw new AppError("Can't Update Event right now. Please try again",400)
         }
+        void NotificationService.notifyStudentEventStatus(updatedEvent._id, 'updated');
         return {
           success: true,
           message: "Event updated Successfully!",
@@ -120,6 +121,7 @@ class EventService {
       if(deletedEvent.imagePublicId){
           await deleteFromCloudinary(deletedEvent.imagePublicId)
       }
+      void NotificationService.notifyStudentEventStatus(deletedEvent._id, 'canceled');
 
        return {
         success: true,
