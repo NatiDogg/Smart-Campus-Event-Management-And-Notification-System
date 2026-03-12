@@ -43,6 +43,7 @@ class EventService {
         category: category._id,
       });
         void NotificationService.notifyAdminNewEvent({
+          id: newlyCreatedEvent._id.toString(),
           title:newlyCreatedEvent.title,
           location:newlyCreatedEvent.location,
           imageUrl:newlyCreatedEvent.imageUrl})// to notify the admin
@@ -103,7 +104,7 @@ class EventService {
         if(!updatedEvent){
           throw new AppError("Can't Update Event right now. Please try again",400)
         }
-        void NotificationService.notifyStudentEventStatus(updatedEvent._id, 'updated');
+        void NotificationService.notifyStudentEventStatus(updatedEvent._id.toString(), 'updated');
         return {
           success: true,
           message: "Event updated Successfully!",
@@ -121,7 +122,7 @@ class EventService {
       if(deletedEvent.imagePublicId){
           await deleteFromCloudinary(deletedEvent.imagePublicId)
       }
-      void NotificationService.notifyStudentEventStatus(deletedEvent._id, 'canceled');
+      void NotificationService.notifyStudentEventStatus(deletedEvent._id.toString(), 'canceled');
 
        return {
         success: true,

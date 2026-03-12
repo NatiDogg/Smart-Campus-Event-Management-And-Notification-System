@@ -8,9 +8,13 @@ import UserService from "./userService.js";
 import EventService from "./eventService.js";
 import RegistrationService from "./registrationService.js";
 import StudentService from "./studentService.js";
+import { saveNotification } from "../repositories/notificationRepository.js";
+
+
 
 
 type adminEmailEventType={
+    id: string
       title: string,
       location: string,
       imageUrl: string
@@ -23,7 +27,19 @@ type organizerEventType = {
 }
 
 class NotificationService {
-  async sendEmail(to: string, subject: string, html: string) {
+  async saveNotificationRecord(userId: string,eventId: string, subject: string){
+       const user = await UserService.findUserById(userId);
+        if(!user){
+            return 
+        }
+        try {
+            await saveNotification(user._id.toString(),eventId,subject)
+        } catch (error) {
+            console.log("Failed to save Notification: "+error)
+        }
+       
+  }
+  async sendEmail(to: string, subject: string, html: string, userId?: string,eventId?: string) {
     try {
       const info = await emailTransporter.sendMail({
         from: `"Campus Events" <${env.SENDER_EMAIL}>`,
@@ -33,6 +49,11 @@ class NotificationService {
       });
     } catch (error) {
       console.error(`Failed to send email to ${to}:`, error);
+    }
+    finally{
+        if(userId && eventId){
+            await this.saveNotificationRecord(userId,eventId,subject);
+        }
     }
   }
   async sendPushNotification(userId: string, title: string, body: string) {
@@ -136,7 +157,7 @@ class NotificationService {
     </table>
 </div>
 `;
-        return this.sendEmail(admin.email, "New Event Submission", html);
+        return this.sendEmail(admin.email, "New Event Submission", html,admin._id,eventDetails.id);
       })
     );
   }
@@ -201,7 +222,7 @@ class NotificationService {
     const subject = isApproved
       ? `🎉 Approved: ${eventDetails.title}`
       : `Rejected: ${eventDetails.title}`;
-    return this.sendEmail(organizer.email, subject, html);
+    return this.sendEmail(organizer.email, subject, html,organizer._id.toString(),eventDetails.id.toString());
   }
   // notify student when his registered event deadline is approching
   async notifyStudentDeadline(userId: string, eventTitle: string) {
@@ -295,9 +316,9 @@ class NotificationService {
     </div>
     `;
 
-    return this.sendEmail(student.email, subject, html);
+    return this.sendEmail(student.email, subject, html,student._id.toString(),event._id.toString());
   }
-  // notify students when the event they registered got updated
+  // notify students when the event they registered got updated or canceled
   async notifyStudentEventStatus( eventId: string, status: "updated" | "canceled") {
     const registrations =  await RegistrationService.getStudentsRegistrationStatus(eventId);
 
@@ -362,11 +383,12 @@ class NotificationService {
             </div>
         </div>`;
 
-        await this.sendEmail(student.email, subjectLine, html);
+        await this.sendEmail(student.email, subjectLine, html,student._id.toString(),eventId);
       }
     });
 
-    await Promise.all(notifications);
+    await Promise.allSettled(notifications);
+
     console.log(
       `Successfully notified ${registrations.length} students about the ${status} event.`
     );
