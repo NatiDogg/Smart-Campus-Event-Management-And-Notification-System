@@ -7,6 +7,7 @@ import { categoryCreationSchema } from "../utils/zodCategoryValidator.js";
 import { Types } from "mongoose";
 import { isValid } from "../utils/validMongodbId.js";
 import { handleError } from "../helpers/handleError.js";
+import { announcementSchema } from "../utils/zodAnnouncementValidator.js";
 
 export const createOrganizerHandler  =async(req: Request, res:Response)=>{
         const parsed = createOrganizerSchema.safeParse(req.body);
@@ -111,3 +112,18 @@ export const deactivateUserHandler = async(req:Request<{id:string}>, res:Respons
             return handleError(res,error);
          }
 }
+export const createAnnouncementHandler = async(req:Request, res:Response)=>{
+          const parsed = announcementSchema.safeParse(req.body);
+          if(!parsed.success){
+            return res.status(400).json({
+               success:false,
+               message: parsed.error.flatten()
+            })
+          }
+          try {
+            const result = await AdminService.createAnnouncement(parsed.data)
+            return res.status(201).json(result);
+          } catch (error) {
+           return  handleError(res,error)
+          }
+} 

@@ -9,6 +9,7 @@ import EventService from "./eventService.js";
 import RegistrationService from "./registrationService.js";
 import StudentService from "./studentService.js";
 import { saveNotification } from "../repositories/notificationRepository.js";
+import { announcementType } from "../utils/zodAnnouncementValidator.js";
 
 
 
@@ -392,6 +393,37 @@ class NotificationService {
     console.log(
       `Successfully notified ${registrations.length} students about the ${status} event.`
     );
+  }
+  async notifyStudentsAnnouncement(announcementData: announcementType){
+       try {
+         const students = await UserService.getAllStudents()
+         if (!students || students.length === 0) {
+           console.warn("No students found to notify.");
+           return;
+         }
+         const allTokens: string[] = [];
+         students.forEach(student=>{
+            if (student.fcmTokens && student.fcmTokens.length > 0) {
+              allTokens.push(...student.fcmTokens);
+            }
+         })
+         if (allTokens.length === 0) {
+           console.warn("No student tokens available for announcement.");
+           return;
+         }
+         const message = {
+           notification: {
+             title: announcementData.title,
+             body: announcementData.content,
+           },
+           tokens: allTokens,
+         };
+         const response = await admin.messaging().sendEachForMulticast(message);
+         console.log(`Announcement broadcast: ${response.successCount} successful, ${response.failureCount} failed.`);
+
+       } catch (error) {
+         console.error("Broadcast Error:", error);
+       }
   }
 }
 

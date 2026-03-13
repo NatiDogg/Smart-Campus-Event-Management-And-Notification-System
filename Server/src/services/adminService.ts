@@ -10,6 +10,8 @@ import { createAdmin, findAllAdmins } from "../repositories/adminRepository.js";
 import { adminTypeDto } from "../repositories/adminRepository.js";
 import OrganizerService from "./organizerService.js";
 import NotificationService from "./notificationService.js";
+import { announcementType } from "../utils/zodAnnouncementValidator.js";
+import { createNewAnnouncement } from "../repositories/announcementRepository.js";
 class AdminService{
        async createNewAdmin(adminData: adminTypeDto){
          const newlyCreatedAdmin = await createAdmin(adminData)
@@ -57,6 +59,18 @@ class AdminService{
                message: "New Category Created Successfully",
                newlyCreatedCategory
             }
+       }
+       async createAnnouncement(announcementData: announcementType){
+          const newlyCreatedAnnouncement = await createNewAnnouncement(announcementData);
+          if(!newlyCreatedAnnouncement){
+            throw new AppError("Failed to create Announcement. Please try again!",400);
+          }
+          //send announcemnt to all students
+          void NotificationService.notifyStudentsAnnouncement({title:newlyCreatedAnnouncement.title, content: newlyCreatedAnnouncement.content});
+          return {
+            success: true,
+            message: "New Announcement Created Successfully!"
+          }
        }
        async approveEvent(eventId: string){
            const updatedEvent = await EventService.processEventApproval(eventId)

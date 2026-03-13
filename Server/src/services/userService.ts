@@ -1,4 +1,4 @@
-import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken } from "../repositories/userRepository.js";
+import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken, findAllStudents } from "../repositories/userRepository.js";
 import AppError from "../utils/appError.js";
 
 
@@ -8,6 +8,10 @@ class UserService{
     async getUsers(){
       const users = await getAll();
       return users;
+    }
+    async getAllStudents(){
+        const students = await findAllStudents();
+        return students;
     }
     async findUserById(id: string){
         const user = await findById(id);
