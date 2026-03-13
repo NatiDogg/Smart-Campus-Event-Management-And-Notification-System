@@ -7,7 +7,7 @@ export const isStudentRegistered = (studentId: string, eventId: string  )=>{
 
 export const getStudentsRegistration = (eventId: string)=>{
     return registrationModel.find({eventId: new Types.ObjectId(eventId)
-        ,status: "registered"}).populate("studentId", "fullName profile department")
+        ,status: "registered"}).populate("studentId", "fullName email profile department fcmTokens").populate("eventId", "title")
 }
 
 export const getRegistrationCountForEvent = (eventId: string)=>{
@@ -29,6 +29,19 @@ export const deleteRegistration  =(studentId: string, eventId: string)=>{
          eventId:new Types.ObjectId(eventId),
          status: "registered"
     })
+}
+
+export const getRegistrationForReminders = async (tomorrowStart: Date, tomorrowEnd: Date)=>{
+    const registrations = await registrationModel.find({ status: "registered" })
+        .populate({
+            path: 'eventId',
+            match: { startDate: { $gte: tomorrowStart, $lt: tomorrowEnd } },
+            select: 'title location startDate'
+        })
+        .populate('studentId', "fcmTokens");
+        
+    return registrations.filter(reg => reg.eventId !== null);
+
 }
 
 

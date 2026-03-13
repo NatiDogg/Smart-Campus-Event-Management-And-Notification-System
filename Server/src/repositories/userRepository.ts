@@ -6,7 +6,8 @@ export const  getAll = ()=>{
      return userModel.find({})
 }
 
-export const findById = (id: string)=>{
+export const findById = (userId: string)=>{
+     const id = new Types.ObjectId(userId);
      return userModel.findById(id);
 }
 export const findByEmail = (email:string)=>{
@@ -15,4 +16,24 @@ export const findByEmail = (email:string)=>{
 export const deleteUser = (userId:string)=>{
      const id = new Types.ObjectId(userId)
      return userModel.findByIdAndDelete(id)
+}
+export const updateFcmToken = (userId: string, newToken: string)=>{
+      const id = new Types.ObjectId(userId)
+     return  userModel.findByIdAndUpdate(id, {$addToSet: {fcmTokens: newToken}}, {returnDocument: "after"})
+}
+
+export const removeToken = (userId: string, staleToken: string[])=>{
+     const id = new Types.ObjectId(userId)
+     return  userModel.findByIdAndUpdate(
+        id,
+        { 
+            $pullAll: { fcmTokens: staleToken } 
+        },
+        {
+          returnDocument: "after"
+        }
+    );
+}
+export const findAllStudents = ()=>{
+     return userModel.find({role: "student"});
 }

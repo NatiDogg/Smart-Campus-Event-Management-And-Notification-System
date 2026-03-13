@@ -10,7 +10,7 @@ organizerRouter.use(isOrganizer as unknown as RequestHandler);
 
 organizerRouter.post("/create", upload.single("image"),createEventHandler as unknown as RequestHandler);
 organizerRouter.get("/events",getEventsByOrganizerHandler as unknown as RequestHandler);
-organizerRouter.put("/update/:id",authUser as unknown as RequestHandler,isOrganizer as unknown as RequestHandler,updateEventHandler as unknown as RequestHandler)
-organizerRouter.delete("/deleteEvent/:id",authUser as unknown as RequestHandler,isOrganizer as unknown as RequestHandler, deleteEventHandler as unknown as RequestHandler);
+organizerRouter.put("/update/:id",updateEventHandler as unknown as RequestHandler)
+organizerRouter.delete("/deleteEvent/:id", deleteEventHandler as unknown as RequestHandler);
 
 export default organizerRouter;

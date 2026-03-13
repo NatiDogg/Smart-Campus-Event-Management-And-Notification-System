@@ -44,10 +44,6 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         required: true
       },
-      time:{
-        type:String,
-        required: true
-      },
       startDate:{
         type: Date,
         required: true,

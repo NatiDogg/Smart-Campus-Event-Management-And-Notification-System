@@ -1,7 +1,8 @@
 
-import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration } from "../repositories/registrationRepository.js";
+import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders } from "../repositories/registrationRepository.js";
 import AppError from "../utils/appError.js";
 import EventService from "./eventService.js";
+import NotificationService from "./notificationService.js";
 
 
 class RegistrationService{
@@ -34,6 +35,7 @@ class RegistrationService{
         if(!registration){
             throw new AppError("Registration failed. Please try again!",400)
         }
+         void NotificationService.notifyStudentEventRegistrationStatus(eventId, studentId, "registered")
         return {
             success: true,
             message: 'You are Registered to This Event Successfully!',
@@ -55,12 +57,18 @@ class RegistrationService{
           throw new AppError("No registration found for this event.", 404);
         }
 
+         void NotificationService.notifyStudentEventRegistrationStatus(eventId, studentId, "unregistered")
+
         return {
           success: true,
           message: "Successfully unregistered from the event.",
         };
 
 
+    }
+    async getRegistrationDetailForReminder(startDate: Date, endDate: Date){
+       const regisrationDetails = await getRegistrationForReminders(startDate,endDate);
+       return regisrationDetails;
     }
     
 

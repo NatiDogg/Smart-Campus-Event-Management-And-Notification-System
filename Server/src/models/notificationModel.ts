@@ -2,12 +2,10 @@ import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
 
-       studentId:{
+       userId:{
           type: mongoose.Schema.Types.ObjectId,
-          ref: "student",
-          required: function(){
-              return this.type === 'targeted'
-          }
+          ref: "user",
+          required: true
        },
        title:{
          type: String,
@@ -26,11 +24,6 @@ const notificationSchema = new mongoose.Schema({
          type: mongoose.Schema.Types.ObjectId,
           ref: "event",
           required: true
-       },
-       type:{
-         type:String,
-         enum:["targeted","boardcasted"],
-         default:"targeted"
        }
  
      

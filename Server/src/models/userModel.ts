@@ -28,7 +28,11 @@ const userSchema = new mongoose.Schema({
              const name = this.fullName ? encodeURIComponent(this.fullName) : "user"
              return `https://ui-avatars.com/api/?name=${name}&background=random&color=fff`;
         }
-    }
+    },
+    fcmTokens:{
+          type: [String],
+          default: []
+       }
 
 
 },{timestamps: true, discriminatorKey: "role"});

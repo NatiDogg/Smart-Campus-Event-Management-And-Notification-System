@@ -2,10 +2,11 @@ import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById,
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
-import { Types } from "mongoose";
+import { startSession, Types } from "mongoose";
 import CategoryService from "./categoryService.js";
 import RegistrationService from "./registrationService.js";
 import InterestService from "./interestService.js";
+import NotificationService from "./notificationService.js";
 class EventService {
   async createEvent(eventData: eventCreationType,id: string,fileBuffer: Buffer) {
     const existingEvent = await findEvent(eventData.title, eventData.startDate);
@@ -41,6 +42,13 @@ class EventService {
         organizedBy: new Types.ObjectId(id),
         category: category._id,
       });
+        void NotificationService.notifyAdminNewEvent({
+          id: newlyCreatedEvent._id.toString(),
+          title:newlyCreatedEvent.title,
+          location:newlyCreatedEvent.location,
+          imageUrl:newlyCreatedEvent.imageUrl})// to notify the admin
+
+          
       return {
         success: true,
         message: "Event Created Successfully!",
@@ -96,6 +104,7 @@ class EventService {
         if(!updatedEvent){
           throw new AppError("Can't Update Event right now. Please try again",400)
         }
+        void NotificationService.notifyStudentEventStatus(updatedEvent._id.toString(), 'updated');
         return {
           success: true,
           message: "Event updated Successfully!",
@@ -113,6 +122,7 @@ class EventService {
       if(deletedEvent.imagePublicId){
           await deleteFromCloudinary(deletedEvent.imagePublicId)
       }
+      void NotificationService.notifyStudentEventStatus(deletedEvent._id.toString(), 'canceled');
 
        return {
         success: true,
@@ -167,6 +177,7 @@ class EventService {
     const events = await getAdminEvents()
     return events;
   }
+  
 }
 
 export default new EventService();
