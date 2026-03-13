@@ -3,6 +3,8 @@ import { AuthRequest } from "../middlewares/authMiddleware.js";
 import AppError from "../utils/appError.js";
 import UserService from "../services/userService.js";
 import { handleError } from "../helpers/handleError.js";
+import { updateProfileValidator } from "../utils/zodUpdateValidator.js";
+import { isValid } from "../utils/validMongodbId.js";
 
 
 export const handleRegisterToken = async(req: AuthRequest, res: Response)=>{
@@ -29,6 +31,31 @@ export const handleRemoveToken = async(req: AuthRequest, res: Response)=>{
          res.status(200).json(result);
       } catch (error) {
         return handleError(res,error)
+      }
+}
+
+export const handleProfileUpdate = async (req:AuthRequest, res:Response)=>{
+          const {id:userId, role} = req.userAccessInfo
+          const parsed = updateProfileValidator.safeParse({...req.body, role})
+ 
+          if(!isValid(userId)){
+             return  res.status(400).json({
+               success:false,
+               message: "Invalid ID Format!!"
+            })
+          }
+          if(!parsed.success){
+            return res.status(400).json({
+               success:false,
+               message: parsed.error.flatten()
+            })
+          }
+      try {
+         const result = await UserService.updateProfile(userId,parsed.data,role);
+         return res.status(200).json(result)
+         
+      } catch (error) {
+         handleError(res,error);
       }
 }
 

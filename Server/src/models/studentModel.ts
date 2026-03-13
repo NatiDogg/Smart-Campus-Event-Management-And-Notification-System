@@ -6,9 +6,6 @@ const studentModel = userModel.discriminators?.student || userModel.discriminato
        department: {
         type: String
        },
-       acadamicYear:{
-        type: Number
-       },
        studentId: {
         type: String,
         unique: true

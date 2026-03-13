@@ -9,6 +9,7 @@ class StudentService{
          const student = await findStudentById(studentId);
          return student;
      }
+     
 }
 
 export default new StudentService()

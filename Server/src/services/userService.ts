@@ -1,5 +1,12 @@
+import { Types } from "mongoose";
+import adminModel from "../models/adminModel.js";
+import organizerModel from "../models/organizerModel.js";
+import studentModel from "../models/studentModel.js";
+import userModel from "../models/userModel.js";
 import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken, findAllStudents } from "../repositories/userRepository.js";
 import AppError from "../utils/appError.js";
+import { hashPassword } from "../utils/bcryptjs.js";
+import { UpdateProfileInput } from "../utils/zodUpdateValidator.js";
 
 
 
@@ -44,9 +51,42 @@ class UserService{
         
         return {
           success: true,
-          message: "Push notification token updated successfully"
+          message: "Push notification token removed successfully"
         }
     }
+    async updateProfile(userId:string,updateData: UpdateProfileInput, role: "student" | 'admin' | 'organizer'){
+         
+          if(updateData.password){
+             updateData.password = await hashPassword(updateData.password);
+          }
+          let model;
+          switch(role){
+             case 'student':
+                model = studentModel
+                break;
+             case 'organizer':
+                model = organizerModel
+                break;
+             case 'admin':
+                model= adminModel
+                break;
+             default:
+                model = userModel;
+          }
+           const { role: _, ...dataToUpdate } = updateData;
+          const updatedUser = await model.findByIdAndUpdate(new Types.ObjectId(userId),
+          {$set: dataToUpdate}, {returnDocument: "after", runValidators: true}).select("-password")
+          if (!updatedUser) {
+           throw new AppError("User not found", 404);
+          }
+
+          return {
+            success: true,
+            message: "Profile Updated Successfully!",
+            updatedUser
+          }
+    }
+    
    
 }  
 
