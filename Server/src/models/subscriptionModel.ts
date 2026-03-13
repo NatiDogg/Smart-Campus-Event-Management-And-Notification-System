@@ -4,13 +4,14 @@ const subscriptionSchema = new mongoose.Schema({
   
        studentId:{
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Student",
-          required: true
+          ref: "student",
+          required: true,
+          unique: true
        },
        preferredCategories:[
            {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Category",
+            ref: "category",
             required: true
            }
        ]
@@ -18,6 +19,7 @@ const subscriptionSchema = new mongoose.Schema({
      
 
 },{timestamps: true});
+subscriptionSchema.index({studentId: 1});
 
 
 

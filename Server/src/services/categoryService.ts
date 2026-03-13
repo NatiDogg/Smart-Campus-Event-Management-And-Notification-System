@@ -11,6 +11,7 @@ class CategoryService{
          const newlyCreatedCategory = await createCategory(categoryData);
          return newlyCreatedCategory;
        }
+       
 }
 
 export default new CategoryService();
