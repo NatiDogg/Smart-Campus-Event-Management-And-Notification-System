@@ -1,4 +1,4 @@
-import { createInterestRecord, isStudentInterested, removeInterestRecord } from "../repositories/interestRepository.js";
+import { createInterestRecord, findStudentInterestedEvents, isStudentInterested, removeInterestRecord } from "../repositories/interestRepository.js";
 import EventService from "./eventService.js";
 import AppError from "../utils/appError.js";
 
@@ -43,6 +43,10 @@ class InterestService{
      async hasStudentBeenInterested(studentId: string, eventId: string){
         const isInterested = await isStudentInterested(studentId,eventId);
         return isInterested
+     }
+     async getAllStudentInterestedEvents(studentId: string){
+         const interestRecords = await findStudentInterestedEvents(studentId);
+         return interestRecords.map(record=>record.eventId).filter(event=> event !== null);
      }
 }
 

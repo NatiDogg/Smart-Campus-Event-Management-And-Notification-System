@@ -56,11 +56,20 @@ export const rejectEvent = (id: string)=>{ // admin
     const eventId = new Types.ObjectId(id); 
     return eventModel.findByIdAndUpdate(eventId,{status: "rejected"},{returnDocument: "after"});
 }
-
 export const getAdminEvents = ()=>{
     return eventModel.find({})
 }
 
+export const updateEventRegistrationCount = (eventId: string, amount: number) => {
+  return eventModel.findByIdAndUpdate(new Types.ObjectId(eventId), { $inc: { registrationCount: amount } }, {    new: true, runValidators: true } );
+}
+export const findPopularEvents = (limit: number) => {
+  return eventModel.find({ status: "approved" })
+    .populate("category", "name")
+    .sort({ registrationCount: -1 }) 
+    .limit(limit)
+    .lean();
+}
 
 
 

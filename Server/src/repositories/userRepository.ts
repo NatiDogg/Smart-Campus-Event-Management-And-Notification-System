@@ -37,3 +37,4 @@ export const removeToken = (userId: string, staleToken: string[])=>{
 export const findAllStudents = ()=>{
      return userModel.find({role: "student"});
 }
+

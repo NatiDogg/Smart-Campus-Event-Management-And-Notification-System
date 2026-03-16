@@ -1,4 +1,4 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approveEvent, rejectEvent, getAdminEvents} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approveEvent, rejectEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
@@ -176,6 +176,15 @@ class EventService {
   async getAllAdminEvents(){
     const events = await getAdminEvents()
     return events;
+  }
+  async incrementRegistrationCount(eventId: string){
+     return await updateEventRegistrationCount(eventId, 1);
+  }
+  async decrementRegistrationCount(eventId: string) {
+    return await updateEventRegistrationCount(eventId, -1);
+  }
+  async getPopularEvents(limit: number= 5){
+    return await findPopularEvents(limit);
   }
   
 }
