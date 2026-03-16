@@ -1,6 +1,6 @@
 import express from 'express'
 import type { RequestHandler, Router } from 'express'
-import { getAllEventsHandler,getPendingEventsHandler,getSingleEventHandler } from '../controllers/eventController.js';
+import { getAllEventsHandler,getSingleEventHandler } from '../controllers/eventController.js';
 import { authUser } from '../middlewares/authMiddleware.js';
 
 const eventRouter:Router = express.Router();
