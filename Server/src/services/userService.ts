@@ -14,6 +14,9 @@ class UserService{
 
     async getUsers(){
       const users = await getAll();
+       if(!users){
+        throw new AppError("Failed to get Users",500);
+       }
       return users;
     }
     async getAllStudents(){
@@ -30,6 +33,9 @@ class UserService{
     }
     async deactivateUser(userId: string){
        const deactivatedUser = await deleteUser(userId)
+        if(!deactivatedUser){
+            throw new AppError("Failed to deactivate user",500);
+        }
        return deactivatedUser
     }
     async addFcmToken(userId: string, newToken: string){

@@ -125,13 +125,5 @@ export const getSingleEventHandler = async (req:AuthRequest<{id: string}>, res:R
         }
 }
 
-export const getPendingEventsHandler = async(req:Request, res:Response)=>{
-     try {
-        const result = await EventService.getPendingEvents()
-        res.status(200).json(result)
-        
-     } catch (error) {
-        return handleError(res,error);
-     }
-}
+
 

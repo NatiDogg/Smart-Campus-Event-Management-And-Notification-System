@@ -48,11 +48,11 @@ export const findAllEvents = ()=>{ //student
 export const findPendingEvents = ()=>{ //admin
       return eventModel.find({status: "pending"}).populate("category", "name").populate("organizedBy", "organizationName")
 }
-export const approveEvent = (id: string)=>{ // admin
+export const approvePendingEvent = (id: string)=>{ // admin
     const eventId = new Types.ObjectId(id); 
     return eventModel.findByIdAndUpdate(eventId,{status: "approved"}, {returnDocument: "after"});
 }
-export const rejectEvent = (id: string)=>{ // admin
+export const rejectPendingEvent = (id: string)=>{ // admin
     const eventId = new Types.ObjectId(id); 
     return eventModel.findByIdAndUpdate(eventId,{status: "rejected"},{returnDocument: "after"});
 }

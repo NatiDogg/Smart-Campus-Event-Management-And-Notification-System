@@ -1,8 +1,8 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approveEvent, rejectEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
-import { startSession, Types } from "mongoose";
+import { Types } from "mongoose";
 import CategoryService from "./categoryService.js";
 import RegistrationService from "./registrationService.js";
 import InterestService from "./interestService.js";
@@ -161,22 +161,17 @@ class EventService {
   }
   async getPendingEvents(){
         const events = await findPendingEvents()
-        return {
-          success: true,
-          message: events.length > 0 ? "Pending Events Retrieved Successfully!" : "No pending events yet",
-          events
-        }
+         if(!events){
+          throw new AppError("Failed to get Pending Events!",500);
+         }
+         return events;
   }
-  async processEventApproval(eventId: string){
-       const approvedEvent = await approveEvent(eventId);
-       return approvedEvent;
-  }
-  async processEventRejection(eventId: string){
-      const rejectedEvent = await rejectEvent(eventId)
-      return rejectedEvent;
-  } 
+   
   async getAllAdminEvents(){
     const events = await getAdminEvents()
+    if(!events){
+      throw new AppError("Failed to get Events!",500)
+    }
     return events;
   }
   async incrementRegistrationCount(eventId: string){
@@ -188,7 +183,31 @@ class EventService {
   async getPopularEvents(limit: number= 5){
     return await findPopularEvents(limit);
   }
-  
+  async approveEvent(eventId: string){
+    const updatedEvent = await approvePendingEvent(eventId);
+    if (!updatedEvent) {
+      throw new AppError("Event Not Found!!", 404);
+    }
+    void NotificationService.notifyOrganizerEventStatus({
+       id: updatedEvent.organizedBy,
+        title: updatedEvent.title,
+        imageUrl: updatedEvent.imageUrl,
+      }, "approved");
+      return updatedEvent;
+  }
+  async rejectEvent(eventId: string){
+     const rejectedEvent = await rejectPendingEvent(eventId);
+      if (!rejectedEvent) {
+        throw new AppError("Event Not Found!!", 404);
+      }
+       void NotificationService.notifyOrganizerEventStatus({
+             id: rejectedEvent.organizedBy,
+             title: rejectedEvent.title,
+            imageUrl: rejectedEvent.imageUrl
+          }, "rejected");
+       return rejectedEvent;
+
+  }
 }
 
 export default new EventService();
