@@ -16,6 +16,7 @@ import interestRouter from './routes/interestRoutes.js';
 import subscriptionRouter from './routes/subscriptionRoutes.js';
 import studentRouter from './routes/studentRoutes.js';
 import notificationRouter from './routes/notificationRoutes.js';
+import feedBackRouter from './routes/feedBackRoutes.js';
 config();
 
 const app:Express = express();
@@ -48,6 +49,9 @@ app.use("/api/notification",notificationRouter);
 // Student Actions (Interactions with Events)
 app.use("/api/registration",registrationRouter);
 app.use("/api/subscription",subscriptionRouter);
+
+//feedback
+app.use("/api/feedback",feedBackRouter);
 
 // Role-Based Management (Creation & System Control)
 app.use("/api/admin",adminRouter);

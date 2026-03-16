@@ -7,6 +7,7 @@ import CategoryService from "./categoryService.js";
 import RegistrationService from "./registrationService.js";
 import InterestService from "./interestService.js";
 import NotificationService from "./notificationService.js";
+import FeedbackService from "./feedbackService.js";
 class EventService {
   async createEvent(eventData: eventCreationType,id: string,fileBuffer: Buffer) {
     const existingEvent = await findEvent(eventData.title, eventData.startDate);
@@ -140,7 +141,7 @@ class EventService {
   }
   async getSingleEvent(eventId: string,studentId: string){
 
-     const [event, registration,registeredStudents,interested] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus(eventId),InterestService.hasStudentBeenInterested(studentId, eventId)])
+     const [event, registration,registeredStudents,interested,isfeedBackSubmitted] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus(eventId),InterestService.hasStudentBeenInterested(studentId, eventId),FeedbackService.checkStudentFeedback(studentId, eventId)])
      if(!event || event.status !== "approved"){
        throw new AppError("Event not found", 404);
      }
@@ -151,6 +152,7 @@ class EventService {
         event,
         isRegistered: !!registration,
         isInterested: !!interested,
+        isfeedBackSubmitted: !!isfeedBackSubmitted,
         registeredStudents: registeredStudents
       }
 
