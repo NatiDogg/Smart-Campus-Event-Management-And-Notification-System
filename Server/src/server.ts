@@ -15,6 +15,7 @@ import { initCronJobs } from './utils/cronManager.js';
 import interestRouter from './routes/interestRoutes.js';
 import subscriptionRouter from './routes/subscriptionRoutes.js';
 import studentRouter from './routes/studentRoutes.js';
+import notificationRouter from './routes/notificationRoutes.js';
 config();
 
 const app:Express = express();
@@ -42,6 +43,8 @@ app.use("api/student",studentRouter);
 //student action marking or unmarking interest
 app.use("/api/interest",interestRouter);
 
+// user notification page handler
+app.use("/api/notification",notificationRouter);
 // Student Actions (Interactions with Events)
 app.use("/api/registration",registrationRouter);
 app.use("/api/subscription",subscriptionRouter);

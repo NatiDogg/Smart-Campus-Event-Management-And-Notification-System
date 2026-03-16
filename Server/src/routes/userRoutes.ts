@@ -10,4 +10,5 @@ userRouter.post("/register-fcm",handleRegisterToken as unknown as RequestHandler
 userRouter.post("/remove-fcm",handleRemoveToken as unknown as RequestHandler);
 userRouter.patch("/profile",handleProfileUpdate as unknown as RequestHandler);
 
+
 export default userRouter;

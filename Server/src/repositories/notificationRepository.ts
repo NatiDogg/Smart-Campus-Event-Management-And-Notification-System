@@ -14,3 +14,7 @@ export const saveNotification = (userId: string,eventId: string, subject: string
 export const getAllUserNotifications = (userId: string)=>{
      return notificationModel.find({userId: new Types.ObjectId(userId), status: "sent"}).populate("eventId", "title description").sort({createdAt: -1}).lean()
 }
+
+export const deleteNotification = (notificationId: string) => {
+   return notificationModel.findByIdAndDelete(new Types.ObjectId(notificationId));
+}

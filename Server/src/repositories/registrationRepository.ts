@@ -47,6 +47,17 @@ export const getRegistrationForReminders = async (tomorrowStart: Date, tomorrowE
 export const findAllStudentRegisteredEvents = (studentId: string)=>{
      return registrationModel.find({studentId: new Types.ObjectId(studentId), status: "registered"}).populate("eventId").sort({createdAt: -1}).lean()
 }
+export const findStudentEventsByDateRange = (studentId: string, start: Date, end: Date)=>{
+      return registrationModel.find({
+        studentId: new Types.ObjectId(studentId),
+        status: "registered"
+      }).populate({
+        path: 'eventId',
+        match:{
+            startDate: {$gte: start, $lte: end}
+        }
+      }).lean()
+}
 
 
 

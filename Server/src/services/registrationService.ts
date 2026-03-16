@@ -1,5 +1,5 @@
 
-import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders, findAllStudentRegisteredEvents } from "../repositories/registrationRepository.js";
+import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders, findAllStudentRegisteredEvents, findStudentEventsByDateRange } from "../repositories/registrationRepository.js";
 import AppError from "../utils/appError.js";
 import EventService from "./eventService.js";
 import NotificationService from "./notificationService.js";
@@ -74,6 +74,10 @@ class RegistrationService{
     async getAllStudentRegisteredEvents(studentId: string){
         const registrationRecords = await findAllStudentRegisteredEvents(studentId);
         return registrationRecords.map(record=>record.eventId).filter(event=> event !==null);
+    }
+    async getStudentEventsInDateRange(studentId: string, startDate: Date, endDate: Date){
+       const RegisteredEvents = await findStudentEventsByDateRange(studentId, startDate, endDate)
+       return RegisteredEvents.map(registered=> registered.eventId).filter(event=>event !== null);
     }
     
 
