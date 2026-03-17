@@ -1,4 +1,4 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
@@ -208,7 +208,15 @@ class EventService {
        return rejectedEvent;
 
   }
+  async getActiveOrganizerEvents(organizerId: string){
+    const activeEvents = await findLiveApprovedEvents(organizerId);
+    if(!activeEvents){
+      throw new AppError("Failed to fetch Active Events!",500)
+    }
+    return activeEvents;
+  }
 }
+
 
 export default new EventService();
 

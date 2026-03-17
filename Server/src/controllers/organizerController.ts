@@ -6,6 +6,8 @@ import EventService from "../services/eventService.js";
 import { isValid } from "../utils/validMongodbId.js";
 import { handleError } from "../helpers/handleError.js";
 import FeedbackService from "../services/feedbackService.js";
+import RegistrationService from "../services/registrationService.js";
+import AttendanceService from "../services/attendanceService.js";
 
 export const createEventHandler = async(req:AuthRequest, res:Response)=>{
        const {id} = req.userAccessInfo
@@ -115,4 +117,60 @@ export const getOrganizerFeedbacksHandler = async(req:AuthRequest, res:Response)
       } catch (error) {
         handleError(res,error)
       }
+}
+export const getOrganizerDashboardHandler = async(req:AuthRequest, res:Response)=>{
+        const { id: organizerId } = req.userAccessInfo;
+        if (!isValid(organizerId)) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid ID Format!",
+          });
+        }
+         try {
+           const [activeEvents] = await Promise.all([EventService.getActiveOrganizerEvents(organizerId)])
+            
+         } catch (error) {
+           return handleError(res,error)
+         }
+}
+
+export const getRegisteredStudentsForEventHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
+         const {id: organizerId} = req.userAccessInfo
+         const {id: eventId} = req.params
+          if (!isValid(organizerId) || !isValid(eventId)) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid ID Format!",
+          });
+        }
+     try {
+        const event = await EventService.getEventById(eventId);
+        if(!event || event.organizedBy.toString() !== organizerId){
+          throw new AppError("You do not have permission to view this event's attendance.", 403);
+        }
+        const [registrations,attendanceRecords] = await Promise.all([RegistrationService.getStudentsRegistrationStatus(eventId), AttendanceService.getAttendanceSheetForEvent(eventId)])
+        if(!registrations){
+          throw new AppError("Failed to get Registered Students!",500)
+        }
+
+        const registeredStudent = registrations.map(reg=>{
+          const attendance = attendanceRecords.find(
+            att => att.studentId.toString() === reg.studentId._id.toString()
+        );
+         return {
+            student: reg.studentId,
+            isPresent: attendance ? attendance.isPresent : false,
+            attendanceId: attendance ? attendance._id : null
+         };
+        })
+        return res.status(200).json({
+          success: true,
+          message: "Registered Student Fetched Successfully!",
+          registeredStudent
+        }) 
+         
+        
+     } catch (error) {
+       handleError(res,error)
+     }
 }

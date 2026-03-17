@@ -25,5 +25,5 @@ export const findOrganizerFeedbacks = (organizerId: string)=>{
             organizedBy: new Types.ObjectId(organizerId)
          },
          select: "title"
-    }).lean()
+    }).sort({createdAt: -1}).lean()
 }
