@@ -1,4 +1,4 @@
-import { findStudentAttendedEvent,findAttendeesForEvent, takeStudentAttendance } from "../repositories/attendanceRepository.js"
+import { findStudentAttendedEvent,findAttendeesForEvent, takeStudentAttendance, findAllAttendendStudentNumber } from "../repositories/attendanceRepository.js"
 import AppError from "../utils/appError.js";
 
 class AttendanceService{
@@ -21,6 +21,13 @@ class AttendanceService{
            }
            return attendance
       }
+      async getAllAttendedStudents(organizerId: string){
+         const count = await findAllAttendendStudentNumber(organizerId)
+         if(!count){
+            throw new AppError("Failed to Count Attended Students!",500)
+         }
+         return count;
+      } 
 
 }
 

@@ -127,7 +127,17 @@ export const getOrganizerDashboardHandler = async(req:AuthRequest, res:Response)
           });
         }
          try {
-           const [activeEvents] = await Promise.all([EventService.getActiveOrganizerEvents(organizerId)])
+           const [activeEvents,attendedStudentCount,pendingEventsCount] = await Promise.all([EventService.getActiveOrganizerEvents(organizerId),AttendanceService.getAllAttendedStudents(organizerId),EventService.getOrganizerPendingEventsCount(organizerId)])
+
+
+           return res.status(200).json({
+            success: true,
+            message: "Organizer Dashboard Datas Fetched Successfully!",
+            activeEvents: activeEvents,
+            ActiveEventsLength: activeEvents.length,
+            attendanceCount: attendedStudentCount,
+            pendingEventsCount: pendingEventsCount
+           })
             
          } catch (error) {
            return handleError(res,error)

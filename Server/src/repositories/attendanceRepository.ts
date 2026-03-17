@@ -22,3 +22,10 @@ export const takeStudentAttendance = (studentId: string, eventId: string, organi
           runValidators: true
      })
 }
+
+export const findAllAttendendStudentNumber = (organizerId: string)=>{
+        return attendanceModel.countDocuments({
+           confirmedBy: new Types.ObjectId(organizerId),
+           isPresent: true
+        })
+} 

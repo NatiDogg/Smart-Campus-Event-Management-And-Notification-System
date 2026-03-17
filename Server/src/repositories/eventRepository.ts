@@ -79,6 +79,13 @@ export const findLiveApprovedEvents = (organizerId: string) => {
     }).sort({ startDate: 1 });
 }
 
+export const countOrganizerPendingEvents = (organizerId: string)=>{
+      return eventModel.countDocuments({
+          organizedBy: new Types.ObjectId(organizerId),
+          status: "pending"
+      })
+}
+
 
 
 

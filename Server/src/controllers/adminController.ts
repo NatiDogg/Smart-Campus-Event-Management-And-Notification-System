@@ -171,7 +171,6 @@ export const getPendingEventsHandler = async(req:Request, res:Response)=>{
           success: true,
           message: events.length > 0 ? "Pending Events Retrieved Successfully!" : "No pending events yet",
           events
-       
         })
         
      } catch (error) {

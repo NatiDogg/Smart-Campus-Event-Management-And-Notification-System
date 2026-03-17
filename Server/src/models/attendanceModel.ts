@@ -4,12 +4,12 @@ const attendanceSchema = new mongoose.Schema({
   
         studentId:{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Student",
+            ref: "student",
              required: true
         },
         eventId:{
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Event",
+          ref: "event",
           required: true
         },
         isPresent:{
@@ -18,7 +18,7 @@ const attendanceSchema = new mongoose.Schema({
         },
         confirmedBy:{
             type: mongoose.Schema.Types.ObjectId,
-          ref: "Organizer",
+          ref: "organizer",
           required: true
         }
  
