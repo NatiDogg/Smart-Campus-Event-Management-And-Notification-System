@@ -1,4 +1,4 @@
-import { findStudentAttendedEvent,findAttendeesForEvent } from "../repositories/attendanceRepository.js"
+import { findStudentAttendedEvent,findAttendeesForEvent, takeStudentAttendance } from "../repositories/attendanceRepository.js"
 import AppError from "../utils/appError.js";
 
 class AttendanceService{
@@ -13,6 +13,15 @@ class AttendanceService{
          }
          return attendees;
       } 
+
+      async takeAttendance(studentId: string, eventId: string, organizerId: string, isPresent: boolean){
+           const attendance = await takeStudentAttendance(studentId, eventId, organizerId,isPresent);
+           if(!attendance){
+            throw new AppError("Failed to take attendance",500)
+           }
+           return attendance
+      }
+
 }
 
 export default new AttendanceService()

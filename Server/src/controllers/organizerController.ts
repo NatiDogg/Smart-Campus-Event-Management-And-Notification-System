@@ -171,6 +171,29 @@ export const getRegisteredStudentsForEventHandler = async(req:AuthRequest<{id: s
          
         
      } catch (error) {
-       handleError(res,error)
+       return handleError(res,error)
      }
+}
+
+export const markStudentAttendanceHandler = async(req: AuthRequest<{id: string}>, res: Response)=>{
+       const { id: eventId } = req.params;
+       const { id: organizerId } = req.userAccessInfo;
+       const { studentId, isPresent } = req.body;
+       if (!isValid(eventId) || !isValid(studentId)) {
+         return res.status(400).json({ success: false, message: "Invalid ID Format" });
+       }
+        try {
+            const event = await EventService.getEventById(eventId);
+        if(!event || event.organizedBy.toString() !== organizerId){
+          throw new AppError("Unauthorized: You do not own this event", 403);
+        }
+         const record = await AttendanceService.takeAttendance(studentId,eventId,organizerId,isPresent)
+         return res.status(200).json({
+             success: true,
+            message: `Attendance marked as ${isPresent ? 'Present' : 'Absent'}`,
+            record 
+         })
+        } catch (error) {
+           return handleError(res,error)
+        }
 }

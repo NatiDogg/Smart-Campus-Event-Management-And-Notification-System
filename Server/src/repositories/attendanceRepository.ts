@@ -8,3 +8,17 @@ export const findStudentAttendedEvent = (studentId: string)=>{
 export const findAttendeesForEvent = (eventId: string)=>{
      return attendanceModel.find({eventId: new Types.ObjectId(eventId)});
 }
+
+export const takeStudentAttendance = (studentId: string, eventId: string, organizerId: string, isPresent: boolean)=>{
+     return attendanceModel.findOneAndUpdate({
+           studentId: new Types.ObjectId(studentId),
+           eventId: new Types.ObjectId(eventId)
+     },{
+          isPresent,
+          confirmedBy: new Types.ObjectId(organizerId)
+     },{
+          upsert: true,
+          returnDocument: "after",
+          runValidators: true
+     })
+}
