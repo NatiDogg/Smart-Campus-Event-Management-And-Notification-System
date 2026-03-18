@@ -144,6 +144,32 @@ export const getOrganizerDashboardHandler = async(req:AuthRequest, res:Response)
            return handleError(res,error)
          }
 }
+export const getOrganizerAnalytics = async(req:AuthRequest, res: Response)=>{
+         const {id: organizerId} = req.userAccessInfo
+
+         if(!isValid(organizerId)){
+          return res.status(400).json({
+            success: false,
+            message: "Invalid ID Format!"
+          })
+         }
+        try {
+            const [totalEngagement] = await Promise.all([
+               RegistrationService.getAllEventRegistrationForOrganizer(organizerId)
+            ])
+
+            return res.status(200).json({
+              success: true,
+              message: "Organizer Analytics Fetched Successfully!",
+              totalEngagement: totalEngagement
+            })
+        } catch (error) {
+          
+        }
+}
+
+
+
 
 export const getRegisteredStudentsForEventHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
          const {id: organizerId} = req.userAccessInfo

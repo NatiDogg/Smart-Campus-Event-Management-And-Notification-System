@@ -1,5 +1,5 @@
 
-import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders, findAllStudentRegisteredEvents, findStudentEventsByDateRange } from "../repositories/registrationRepository.js";
+import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders, findAllStudentRegisteredEvents, findStudentEventsByDateRange, findAllEventRegistrationForOrganizer } from "../repositories/registrationRepository.js";
 import AppError from "../utils/appError.js";
 import EventService from "./eventService.js";
 import NotificationService from "./notificationService.js";
@@ -78,6 +78,13 @@ class RegistrationService{
     async getStudentEventsInDateRange(studentId: string, startDate: Date, endDate: Date){
        const RegisteredEvents = await findStudentEventsByDateRange(studentId, startDate, endDate)
        return RegisteredEvents.map(registered=> registered.eventId).filter(event=>event !== null);
+    }
+    async getAllEventRegistrationForOrganizer(organizerId: string){
+        const totalRegistration = await findAllEventRegistrationForOrganizer(organizerId);
+        if(!totalRegistration){
+          throw new AppError("Failed to Get total Engagement!",500);
+        }
+        return totalRegistration
     }
     
 

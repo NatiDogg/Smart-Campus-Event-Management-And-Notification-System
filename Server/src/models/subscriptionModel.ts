@@ -19,9 +19,6 @@ const subscriptionSchema = new mongoose.Schema({
      
 
 },{timestamps: true});
-subscriptionSchema.index({studentId: 1});
-
-
 
 const subscriptionModel = mongoose.models.subscription || mongoose.model("subscription",subscriptionSchema);
 

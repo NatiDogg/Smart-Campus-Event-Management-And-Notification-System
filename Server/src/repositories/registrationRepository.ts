@@ -59,6 +59,34 @@ export const findStudentEventsByDateRange = (studentId: string, start: Date, end
       }).lean()
 }
 
+export const findAllEventRegistrationForOrganizer = async(organizerId: string)=>{
+       const result = await  registrationModel.aggregate([
+             {
+                  $match: { status: "registered"}
+             },
+            {
+                $lookup:{
+                    from: 'event',
+                    localField: "eventId",
+                    foreignField: "_id",
+                    as: "eventDetails"
+                }
+            },
+            {
+                $unwind: "$eventDetails"
+            },
+            {
+                $match: {'eventDetails.organizedBy': new Types.ObjectId(organizerId)}
+            },
+            {
+                $group:{
+                    _id: null,
+                    totalRegistration: {$sum: 1}
+                }
+            }
+       ])
+       return result[0]?.totalRegistration || 0;
+}
 
 
 

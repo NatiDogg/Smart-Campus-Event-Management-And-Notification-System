@@ -1,6 +1,6 @@
 import express from 'express'
 import type {Router, RequestHandler} from 'express'
-import { createEventHandler,updateEventHandler,deleteEventHandler,getEventsByOrganizerHandler,getOrganizerFeedbacksHandler, getRegisteredStudentsForEventHandler, getOrganizerDashboardHandler, markStudentAttendanceHandler } from '../controllers/organizerController.js';
+import { createEventHandler,updateEventHandler,deleteEventHandler,getEventsByOrganizerHandler,getOrganizerFeedbacksHandler, getRegisteredStudentsForEventHandler, getOrganizerDashboardHandler, markStudentAttendanceHandler, getOrganizerAnalytics } from '../controllers/organizerController.js';
 import { authUser } from '../middlewares/authMiddleware.js';
 import { isOrganizer } from '../middlewares/organizerMiddleware.js';
 import upload from '../middlewares/multerMiddleware.js';
@@ -16,5 +16,6 @@ organizerRouter.get("/feedbacks",getOrganizerFeedbacksHandler as unknown as Requ
 organizerRouter.get("/dashboard",getOrganizerDashboardHandler as unknown as RequestHandler);
 organizerRouter.get("/event/:id",getRegisteredStudentsForEventHandler as unknown as RequestHandler);
 organizerRouter.patch("/attendance/mark/:id",markStudentAttendanceHandler as unknown as RequestHandler);
+organizerRouter.get("/analytics",getOrganizerAnalytics as unknown as RequestHandler);
 
 export default organizerRouter;
