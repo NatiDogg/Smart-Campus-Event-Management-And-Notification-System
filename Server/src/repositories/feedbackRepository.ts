@@ -27,3 +27,33 @@ export const findOrganizerFeedbacks = (organizerId: string)=>{
          select: "title"
     }).sort({createdAt: -1}).lean()
 }
+
+export const findOrganizerAverageRating = async(organizerId: string)=>{
+     const result = await feedbackModel.aggregate([
+        {
+            $lookup:{
+                from: 'event',
+                localField: "eventId",
+                foreignField: "_id",
+                as: "events"
+            }
+
+        },
+        {
+            $unwind:"$events"
+        },
+        {
+            $match:{'events.organizedBy': new Types.ObjectId(organizerId)}
+
+        },
+        {
+            $group:{
+                _id: null,
+                averageRating: {$avg: '$rating'}
+            }
+        }
+     ]);  
+     return result[0]?.averageRating || 0
+
+
+}

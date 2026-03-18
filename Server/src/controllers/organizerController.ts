@@ -127,16 +127,17 @@ export const getOrganizerDashboardHandler = async(req:AuthRequest, res:Response)
           });
         }
          try {
-           const [activeEvents,attendedStudentCount,pendingEventsCount] = await Promise.all([EventService.getActiveOrganizerEvents(organizerId),AttendanceService.getAllAttendedStudents(organizerId),EventService.getOrganizerPendingEventsCount(organizerId)])
+           const [activeEvents,attendedStudentCount,pendingEventsCount,averageRating] = await Promise.all([EventService.getActiveOrganizerEvents(organizerId),AttendanceService.getAllAttendedStudents(organizerId),EventService.getOrganizerPendingEventsCount(organizerId),FeedbackService.getAverageRating(organizerId)])
 
 
            return res.status(200).json({
             success: true,
-            message: "Organizer Dashboard Datas Fetched Successfully!",
+            message: "Organizer Dashboard Data Fetched Successfully!",
             activeEvents: activeEvents,
             ActiveEventsLength: activeEvents.length,
             attendanceCount: attendedStudentCount,
-            pendingEventsCount: pendingEventsCount
+            pendingEventsCount: pendingEventsCount,
+            averageRating: averageRating
            })
             
          } catch (error) {

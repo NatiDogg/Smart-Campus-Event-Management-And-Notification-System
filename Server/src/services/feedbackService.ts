@@ -1,4 +1,4 @@
-import { checkAlreadySubmittedFeedback, createNewFeedback, findOrganizerFeedbacks } from "../repositories/feedbackRepository.js";
+import { checkAlreadySubmittedFeedback, createNewFeedback, findOrganizerAverageRating, findOrganizerFeedbacks } from "../repositories/feedbackRepository.js";
 import { feedbackType } from "../utils/zodFeedbackValidator.js";
 import AppError from "../utils/appError.js";
 
@@ -29,6 +29,10 @@ class FeedbackService{
         throw new AppError("Could not retrieve feedbacks", 500);
       }
       return feedbacks.filter(feedback=>feedback.eventId !== null);
+    }
+    async getAverageRating(organizerId: string){
+       const averageRating = await findOrganizerAverageRating(organizerId);
+       return averageRating;
     }
 
 }
