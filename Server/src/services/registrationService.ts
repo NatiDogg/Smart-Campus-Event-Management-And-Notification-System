@@ -1,5 +1,5 @@
 
-import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders, findAllStudentRegisteredEvents, findStudentEventsByDateRange, findAllEventRegistrationForOrganizer, getRegistrationStatsByCategory } from "../repositories/registrationRepository.js";
+import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders, findAllStudentRegisteredEvents, findStudentEventsByDateRange, findAllEventRegistrationForOrganizer, getRegistrationStatsByCategory,getAllRegistrationStatsByCategory } from "../repositories/registrationRepository.js";
 import AppError from "../utils/appError.js";
 import EventService from "./eventService.js";
 import NotificationService from "./notificationService.js";
@@ -92,6 +92,15 @@ class RegistrationService{
         category: item._id,
         registrations: item.registrationCount
       }));
+    }
+    async getAllRegistrationStatsByCategoryForAdmin(){
+       const rawData = await getAllRegistrationStatsByCategory()
+       return rawData.map(data=>(
+          {
+            category: data._id,
+            registrations: data.registrationCount
+          }
+       ))
     }
     
 

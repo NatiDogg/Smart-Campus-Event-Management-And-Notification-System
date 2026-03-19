@@ -1,4 +1,4 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents, countOrganizerPendingEvents, getOrganizerEventStatusDistribution} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents, countOrganizerPendingEvents, getOrganizerEventStatusDistribution, getAllActiveEvents} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
@@ -236,6 +236,13 @@ class EventService {
        // we caalculate approval rate (Percentage of approved out of non-pending events)
        const approvalRate = stats.total > 0 ? ((stats.approved / stats.total) * 100).toFixed(1) : "0";
        return { ...stats, approvalRate: `${approvalRate}%` };
+  }
+  async getAdminActiveEvents(){
+    const activeEvents = await getAllActiveEvents()
+    if(!activeEvents){
+      return 0
+    }
+    return activeEvents;
   }
 }
 

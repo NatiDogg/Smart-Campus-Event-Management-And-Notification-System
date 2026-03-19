@@ -130,6 +130,44 @@ export const getRegistrationStatsByCategory = async(organizerId: string)=>{
      ])
 }
 
+export const getAllRegistrationStatsByCategory = async ()=>{
+     return await registrationModel.aggregate([
+          {
+            $match: {status: "registered"}
+          },
+          {
+            $lookup:{
+                from: "events",
+                localField: "eventId",
+                foreignField: "_id",
+                as: "eventDetails"
+            }
+          },
+          {
+            $unwind: '$eventDetails'
+          },
+          {
+            $lookup: {
+                from: "categories",
+                localField: "eventDetails.category",
+                foreignField: "_id",
+                as: "categoryDetails"
+            }
+          },
+          {
+            $unwind: "$categoryDetails"
+          },
+          {
+            $group: {
+                _id: '$categoryDetails.name',
+                registrationCount: {$sum: 1}
+            }
+          },
+          {
+            $sort: {registrationCount: -1}
+          }
+     ])
+}
 
 
 

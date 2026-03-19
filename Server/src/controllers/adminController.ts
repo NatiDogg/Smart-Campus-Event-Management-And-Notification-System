@@ -1,10 +1,7 @@
 import { request, type Request, type Response } from "express";
 import { AuthRequest } from "../middlewares/authMiddleware.js";
-import AppError from "../utils/appError.js";
-import AdminService from "../services/adminService.js";
 import { createOrganizerSchema } from "../utils/zodOrganizerValidator.js";
 import { categoryCreationSchema } from "../utils/zodCategoryValidator.js";
-import { Types } from "mongoose";
 import { isValid } from "../utils/validMongodbId.js";
 import { handleError } from "../helpers/handleError.js";
 import { announcementSchema } from "../utils/zodAnnouncementValidator.js";
@@ -13,6 +10,7 @@ import OrganizerService from "../services/organizerService.js";
 import AnnouncementService from "../services/announcementService.js";
 import EventService from "../services/eventService.js";
 import UserService from "../services/userService.js";
+import RegistrationService from "../services/registrationService.js";
 
 export const createOrganizerHandler  =async(req: Request, res:Response)=>{
         const parsed = createOrganizerSchema.safeParse(req.body);
@@ -175,5 +173,38 @@ export const getPendingEventsHandler = async(req:Request, res:Response)=>{
         
      } catch (error) {
         return handleError(res,error);
+     }
+}
+export const getAdminDashboardDataHandler = async(req:Request, res:Response)=>{
+       try {
+          const [activeUsers,activeEvents,pendingEvents,categoryDistribution] = await Promise.all([
+              UserService.getUsers(),
+              EventService.getAdminActiveEvents(),
+              EventService.getPendingEvents(),
+              RegistrationService.getAllRegistrationStatsByCategoryForAdmin()
+          ])
+          return res.status(200).json({
+            success: true,
+            message: "Admin Dashboard Retrieved Successfully!",
+            activeUsers: activeUsers.length,
+            activeEvents: activeEvents,
+            pendingEvents: pendingEvents.length,
+            categoryDistribution: categoryDistribution
+          })
+       } catch (error) {
+         return handleError(res,error)
+       }
+}  
+
+export const getAllCategoriesHandler = async(req:Request, res:Response)=>{
+     try {
+       const categories = await CategoryService.findAllAdminCategories()
+       return res.status(200).json({
+        success: true,
+        message: "Categories Fetched Successfully!",
+        categories
+       })
+     } catch (error) {
+      handleError(res,error)
      }
 }

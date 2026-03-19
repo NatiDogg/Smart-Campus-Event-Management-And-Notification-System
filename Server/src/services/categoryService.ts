@@ -1,4 +1,4 @@
-import { createCategory, findCategory } from "../repositories/categoryRepository.js";
+import { createCategory, findCategory, getAllCategories } from "../repositories/categoryRepository.js";
 import AppError from "../utils/appError.js";
 import { categoryCreationType } from "../utils/zodCategoryValidator.js";
 
@@ -24,6 +24,13 @@ class CategoryService{
          return newlyCreatedCategory;
 
 
+       }
+       async findAllAdminCategories(){
+        const categories = await getAllCategories()
+        if(!categories){
+          throw new AppError("Failed to Get Categories",500)
+        }
+        return categories;
        }
        
 }
