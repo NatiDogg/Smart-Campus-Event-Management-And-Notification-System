@@ -1,5 +1,5 @@
 
-import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders } from "../repositories/registrationRepository.js";
+import { isStudentRegistered,getStudentsRegistration,  createRegistration, getRegistrationCountForEvent, deleteRegistration, getRegistrationForReminders, findAllStudentRegisteredEvents, findStudentEventsByDateRange, findAllEventRegistrationForOrganizer, getRegistrationStatsByCategory } from "../repositories/registrationRepository.js";
 import AppError from "../utils/appError.js";
 import EventService from "./eventService.js";
 import NotificationService from "./notificationService.js";
@@ -35,6 +35,7 @@ class RegistrationService{
         if(!registration){
             throw new AppError("Registration failed. Please try again!",400)
         }
+         void EventService.incrementRegistrationCount(eventId);
          void NotificationService.notifyStudentEventRegistrationStatus(eventId, studentId, "registered")
         return {
             success: true,
@@ -56,7 +57,7 @@ class RegistrationService{
         if (!deletedRegistration) {
           throw new AppError("No registration found for this event.", 404);
         }
-
+         void EventService.decrementRegistrationCount(eventId);
          void NotificationService.notifyStudentEventRegistrationStatus(eventId, studentId, "unregistered")
 
         return {
@@ -69,6 +70,28 @@ class RegistrationService{
     async getRegistrationDetailForReminder(startDate: Date, endDate: Date){
        const regisrationDetails = await getRegistrationForReminders(startDate,endDate);
        return regisrationDetails;
+    }
+    async getAllStudentRegisteredEvents(studentId: string){
+        const registrationRecords = await findAllStudentRegisteredEvents(studentId);
+        return registrationRecords.map(record=>record.eventId).filter(event=> event !==null);
+    }
+    async getStudentEventsInDateRange(studentId: string, startDate: Date, endDate: Date){
+       const RegisteredEvents = await findStudentEventsByDateRange(studentId, startDate, endDate)
+       return RegisteredEvents.map(registered=> registered.eventId).filter(event=>event !== null);
+    }
+    async getAllEventRegistrationForOrganizer(organizerId: string){
+        const totalRegistration = await findAllEventRegistrationForOrganizer(organizerId);
+        if(!totalRegistration){
+          throw new AppError("Failed to Get total Engagement!",500);
+        }
+        return totalRegistration
+    }
+    async getAllCategoryDemographicsForOrganizer(organizerId: string){
+      const rawData = await getRegistrationStatsByCategory(organizerId)
+      return rawData.map(item => ({
+        category: item._id,
+        registrations: item.registrationCount
+      }));
     }
     
 

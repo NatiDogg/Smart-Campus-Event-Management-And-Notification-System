@@ -8,6 +8,11 @@ import { Types } from "mongoose";
 import { isValid } from "../utils/validMongodbId.js";
 import { handleError } from "../helpers/handleError.js";
 import { announcementSchema } from "../utils/zodAnnouncementValidator.js";
+import CategoryService from "../services/categoryService.js";
+import OrganizerService from "../services/organizerService.js";
+import AnnouncementService from "../services/announcementService.js";
+import EventService from "../services/eventService.js";
+import UserService from "../services/userService.js";
 
 export const createOrganizerHandler  =async(req: Request, res:Response)=>{
         const parsed = createOrganizerSchema.safeParse(req.body);
@@ -19,8 +24,12 @@ export const createOrganizerHandler  =async(req: Request, res:Response)=>{
             })
         }
         try {
-            const result = await AdminService.createOrganizer(parsed.data)
-            return res.status(201).json(result)
+            const organizer = await OrganizerService.registerNewOrganizer(parsed.data)
+            return res.status(201).json({
+              success: true,
+              message: "Organizer Created Successfully!",
+              organizer
+            })
             
         } catch (error) {
             return handleError(res,error);
@@ -36,8 +45,12 @@ export const createNewCategoryHandler = async(req:Request, res:Response)=>{
          })
        }
      try {
-      const result = await AdminService.createNewCategory(parsed.data)
-      return res.status(201).json(result)
+      const newCategory = await CategoryService.registerNewCategory(parsed.data);
+      return res.status(201).json({
+        success: true,
+        message: "New Category Created Successfully",
+        newCategory
+      })
        
      } catch (error) {
          return handleError(res,error);
@@ -53,8 +66,12 @@ export const approveEventHandler = async(req:Request<{id: string}>, res:Response
           })
         }
       try {
-          const result = await AdminService.approveEvent(eventId);
-          return res.status(200).json(result);
+          const approvedEvent = await EventService.approveEvent(eventId);
+          return res.status(200).json({
+             success: true,
+             message: "Event Approved Successfully",
+             approvedEvent
+          });
          
       } catch (error) {
          return handleError(res,error);
@@ -70,8 +87,12 @@ export const rejectEventHandler = async(req:Request<{id: string}>, res:Response)
          }
     
       try {
-         const result = await AdminService.rejectEvent(eventId);
-          return res.status(200).json(result);
+         const rejectedEvent = await EventService.rejectEvent(eventId);
+          return res.status(200).json({
+            success: true,
+            message: "Event Rejected Successfully",
+             rejectedEvent
+          });
          
       } catch (error) {
          return handleError(res,error);
@@ -79,8 +100,12 @@ export const rejectEventHandler = async(req:Request<{id: string}>, res:Response)
 }
 export const getAllEventsHandler = async(req:Request, res:Response)=>{
         try {
-           const result = await AdminService.getAllEvents()
-           return res.status(200).json(result)
+           const events = await EventService.getAllAdminEvents()
+           return res.status(200).json({
+            success: true,
+            message: "Events Retreived Successfully",
+            events
+           })
         } catch (error) {
            return handleError(res,error);
         }
@@ -89,8 +114,12 @@ export const getAllEventsHandler = async(req:Request, res:Response)=>{
 
 export const getAllUsersHandler = async(req:Request, res:Response)=>{
         try {
-           const result = await AdminService.getAllUsers()
-           return res.status(200).json(result)
+           const users = await UserService.getUsers();
+           return res.status(200).json({
+            success: true,
+            message: "All Users Retreived Successfully!",
+            users
+           })
         } catch (error) {
            return handleError(res,error);
         }
@@ -105,8 +134,12 @@ export const deactivateUserHandler = async(req:Request<{id:string}>, res:Respons
            });
          }
          try {
-            const result = await AdminService.deactivateUser(userId);
-            return res.status(200).json(result)
+            const deactivatedUser = await UserService.deactivateUser(userId)
+            return res.status(200).json({
+              success: true,
+              message: "User Deactivated Successfully",
+              deactivatedUser
+            })
           
          } catch (error) {
             return handleError(res,error);
@@ -121,9 +154,26 @@ export const createAnnouncementHandler = async(req:Request, res:Response)=>{
             })
           }
           try {
-            const result = await AdminService.createAnnouncement(parsed.data)
-            return res.status(201).json(result);
+            const newAnnouncement = await AnnouncementService.createAnnouncement(parsed.data);
+            return res.status(201).json({
+              success: true,
+              message: "New Announcement Created Successfully!",
+              newAnnouncement
+            });
           } catch (error) {
            return  handleError(res,error)
           }
 } 
+export const getPendingEventsHandler = async(req:Request, res:Response)=>{
+     try {
+        const events = await EventService.getPendingEvents()
+        res.status(200).json({
+          success: true,
+          message: events.length > 0 ? "Pending Events Retrieved Successfully!" : "No pending events yet",
+          events
+        })
+        
+     } catch (error) {
+        return handleError(res,error);
+     }
+}

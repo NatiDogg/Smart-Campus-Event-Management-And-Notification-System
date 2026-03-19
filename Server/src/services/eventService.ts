@@ -1,12 +1,13 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approveEvent, rejectEvent, getAdminEvents} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents, countOrganizerPendingEvents, getOrganizerEventStatusDistribution} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
-import { startSession, Types } from "mongoose";
+import { Types } from "mongoose";
 import CategoryService from "./categoryService.js";
 import RegistrationService from "./registrationService.js";
 import InterestService from "./interestService.js";
 import NotificationService from "./notificationService.js";
+import FeedbackService from "./feedbackService.js";
 class EventService {
   async createEvent(eventData: eventCreationType,id: string,fileBuffer: Buffer) {
     const existingEvent = await findEvent(eventData.title, eventData.startDate);
@@ -140,7 +141,7 @@ class EventService {
   }
   async getSingleEvent(eventId: string,studentId: string){
 
-     const [event, registration,registeredStudents,interested] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus(eventId),InterestService.hasStudentBeenInterested(studentId, eventId)])
+     const [event, registration,registeredStudents,interested,isfeedBackSubmitted] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus(eventId),InterestService.hasStudentBeenInterested(studentId, eventId),FeedbackService.checkStudentFeedback(studentId, eventId)])
      if(!event || event.status !== "approved"){
        throw new AppError("Event not found", 404);
      }
@@ -151,6 +152,7 @@ class EventService {
         event,
         isRegistered: !!registration,
         isInterested: !!interested,
+        isfeedBackSubmitted: !!isfeedBackSubmitted,
         registeredStudents: registeredStudents
       }
 
@@ -159,26 +161,85 @@ class EventService {
   }
   async getPendingEvents(){
         const events = await findPendingEvents()
-        return {
-          success: true,
-          message: events.length > 0 ? "Pending Events Retrieved Successfully!" : "No pending events yet",
-          events
-        }
+         if(!events){
+          throw new AppError("Failed to get Pending Events!",500);
+         }
+         return events;
   }
-  async processEventApproval(eventId: string){
-       const approvedEvent = await approveEvent(eventId);
-       return approvedEvent;
-  }
-  async processEventRejection(eventId: string){
-      const rejectedEvent = await rejectEvent(eventId)
-      return rejectedEvent;
-  } 
+   
   async getAllAdminEvents(){
     const events = await getAdminEvents()
+    if(!events){
+      throw new AppError("Failed to get Events!",500)
+    }
     return events;
   }
-  
+  async incrementRegistrationCount(eventId: string){
+     return await updateEventRegistrationCount(eventId, 1);
+  }
+  async decrementRegistrationCount(eventId: string) {
+    return await updateEventRegistrationCount(eventId, -1);
+  }
+  async getPopularEvents(limit: number= 5){
+    return await findPopularEvents(limit);
+  }
+  async approveEvent(eventId: string){
+    const updatedEvent = await approvePendingEvent(eventId);
+    if (!updatedEvent) {
+      throw new AppError("Event Not Found!!", 404);
+    }
+    void NotificationService.notifyOrganizerEventStatus({
+       id: updatedEvent.organizedBy,
+        title: updatedEvent.title,
+        imageUrl: updatedEvent.imageUrl,
+      }, "approved");
+      return updatedEvent;
+  }
+  async rejectEvent(eventId: string){
+     const rejectedEvent = await rejectPendingEvent(eventId);
+      if (!rejectedEvent) {
+        throw new AppError("Event Not Found!!", 404);
+      }
+       void NotificationService.notifyOrganizerEventStatus({
+             id: rejectedEvent.organizedBy,
+             title: rejectedEvent.title,
+            imageUrl: rejectedEvent.imageUrl
+          }, "rejected");
+       return rejectedEvent;
+
+  }
+  async getActiveOrganizerEvents(organizerId: string){
+    const activeEvents = await findLiveApprovedEvents(organizerId);
+    if(!activeEvents){
+      throw new AppError("Failed to fetch Active Events!",500)
+    }
+    return activeEvents;
+  }
+  async getOrganizerPendingEventsCount(organizerId: string){
+     const count = await countOrganizerPendingEvents(organizerId)
+     if(!count){
+      return 0
+     }
+     return count;
+
+  }
+  async getOrgnanizerApprovalAnalytics(organizerId: string){
+       const rawStats = await getOrganizerEventStatusDistribution(organizerId);
+       const stats= {approved: 0, pending: 0, rejected: 0, total: 0}
+
+       rawStats.forEach(stat=>{
+         if(stat._id === 'approved') stats.approved = stat.count
+         if (stat._id === "pending") stats.pending = stat.count;
+         if (stat._id === "rejected") stats.rejected = stat.count;
+         stats.total += stat.count;
+       })
+       // we caalculate approval rate (Percentage of approved out of non-pending events)
+       const approvalRate = stats.total > 0 ? ((stats.approved / stats.total) * 100).toFixed(1) : "0";
+       return { ...stats, approvalRate: `${approvalRate}%` };
+  }
 }
+
+
 
 export default new EventService();
 

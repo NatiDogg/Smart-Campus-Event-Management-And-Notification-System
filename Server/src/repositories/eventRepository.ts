@@ -48,20 +48,59 @@ export const findAllEvents = ()=>{ //student
 export const findPendingEvents = ()=>{ //admin
       return eventModel.find({status: "pending"}).populate("category", "name").populate("organizedBy", "organizationName")
 }
-export const approveEvent = (id: string)=>{ // admin
+export const approvePendingEvent = (id: string)=>{ // admin
     const eventId = new Types.ObjectId(id); 
     return eventModel.findByIdAndUpdate(eventId,{status: "approved"}, {returnDocument: "after"});
 }
-export const rejectEvent = (id: string)=>{ // admin
+export const rejectPendingEvent = (id: string)=>{ // admin
     const eventId = new Types.ObjectId(id); 
     return eventModel.findByIdAndUpdate(eventId,{status: "rejected"},{returnDocument: "after"});
 }
-
 export const getAdminEvents = ()=>{
-    return eventModel.find({})
+    return eventModel.find({}).sort({createdAt: -1})
 }
 
+export const updateEventRegistrationCount = (eventId: string, amount: number) => {
+  return eventModel.findByIdAndUpdate(new Types.ObjectId(eventId), { $inc: { registrationCount: amount } }, {    new: true, runValidators: true } );
+}
+export const findPopularEvents = (limit: number) => {
+  return eventModel.find({ status: "approved" })
+    .populate("category", "name")
+    .sort({ registrationCount: -1 }) 
+    .limit(limit)
+    .lean();
+}
 
+export const findLiveApprovedEvents = (organizerId: string) => {
+    return eventModel.find({
+        organizedBy: new Types.ObjectId(organizerId),
+        status: "approved",
+        endDate: { $gte: new Date() } 
+    }).sort({ startDate: 1 });
+}
+
+export const countOrganizerPendingEvents = (organizerId: string)=>{
+      return eventModel.countDocuments({
+          organizedBy: new Types.ObjectId(organizerId),
+          status: "pending"
+      })
+}
+
+export const getOrganizerEventStatusDistribution = async(organizerId: string)=>{
+       return await eventModel.aggregate([
+           {
+            $match: {
+                organizedBy: new Types.ObjectId(organizerId)
+            }
+           },
+           {
+            $group: {
+                _id: "$status",
+                count: {$sum: 1}
+            }
+           }
+       ])
+} 
 
 
 

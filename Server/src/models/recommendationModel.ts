@@ -4,13 +4,13 @@ const recommendationSchema = new mongoose.Schema({
      
          studentId:{
               type: mongoose.Schema.Types.ObjectId,
-              ref: "Student",
+              ref: "student",
               required: true
          },
          eventId: [
              {
                 type: mongoose.Schema.Types.ObjectId,
-              ref: "Event",
+              ref: "event",
               required: true
              }
          ]

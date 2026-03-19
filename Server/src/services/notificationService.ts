@@ -8,7 +8,7 @@ import UserService from "./userService.js";
 import EventService from "./eventService.js";
 import RegistrationService from "./registrationService.js";
 import StudentService from "./studentService.js";
-import { saveNotification } from "../repositories/notificationRepository.js";
+import {  deleteNotification, getAllUserNotifications, saveNotification } from "../repositories/notificationRepository.js";
 import { announcementType } from "../utils/zodAnnouncementValidator.js";
 
 
@@ -424,6 +424,28 @@ class NotificationService {
        } catch (error) {
          console.error("Broadcast Error:", error);
        }
+  }
+  async getUserNotifications(userId: string){
+     const notifications = await getAllUserNotifications(userId);
+     if(!notifications){
+      throw new AppError("Failed to get Notifications. Please try again later.",500);
+     }
+     return {
+      success: true,
+      message: "Notifications Retrieved Successfully!",
+      notifications
+     }
+  }
+  async deleteUserNotification(notificationId: string){
+     const deletedNotification = await deleteNotification(notificationId);
+     if(!deletedNotification){
+      throw new AppError("Failed to delete notification right now!",500)
+     }
+     return {
+      success: true,
+      message: "Notification Deleted Successfully",
+      deletedNotification
+     }
   }
 }
 

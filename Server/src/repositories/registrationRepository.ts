@@ -44,8 +44,91 @@ export const getRegistrationForReminders = async (tomorrowStart: Date, tomorrowE
 
 }
 
+export const findAllStudentRegisteredEvents = (studentId: string)=>{
+     return registrationModel.find({studentId: new Types.ObjectId(studentId), status: "registered"}).populate("eventId").sort({createdAt: -1}).lean()
+}
+export const findStudentEventsByDateRange = (studentId: string, start: Date, end: Date)=>{
+      return registrationModel.find({
+        studentId: new Types.ObjectId(studentId),
+        status: "registered"
+      }).populate({
+        path: 'eventId',
+        match:{
+            startDate: {$gte: start, $lte: end}
+        }
+      }).lean()
+}
 
+export const findAllEventRegistrationForOrganizer = async(organizerId: string)=>{
+       const result = await  registrationModel.aggregate([
+             {
+                  $match: { status: "registered"}
+             },
+            {
+                $lookup:{
+                    from: 'events',
+                    localField: "eventId",
+                    foreignField: "_id",
+                    as: "eventDetails"
+                }
+            },
+            {
+                $unwind: "$eventDetails"
+            },
+            {
+                $match: {'eventDetails.organizedBy': new Types.ObjectId(organizerId)}
+            },
+            {
+                $group:{
+                    _id: null,
+                    totalRegistration: {$sum: 1}
+                }
+            }
+       ])
+       return result[0]?.totalRegistration || 0;
+}
 
+export const getRegistrationStatsByCategory = async(organizerId: string)=>{
+     return await registrationModel.aggregate([
+         {
+            $match: {status: "registered"}
+         },
+         {
+            $lookup:{
+                from: "events",
+                localField: "eventId",
+                foreignField: "_id",
+                as: "eventDetails"
+            }
+         },
+         {
+            $unwind: '$eventDetails'
+         },
+         {
+            $match: {"eventDetails.organizedBy": new Types.ObjectId(organizerId)}
+         },
+         {
+             $lookup:{
+                from: 'categories',
+                localField: "eventDetails.category",
+                foreignField: "_id",
+                as: "categoryDetails"
+             }
+         },
+         {
+            $unwind: "$categoryDetails"
+         },
+         {
+            $group: {
+                _id: '$categoryDetails.name',
+                registrationCount: {$sum: 1}
+            }
+         },
+         {
+            $sort: {registrationCount: -1}
+         }
+     ])
+}
 
 
 

@@ -24,6 +24,10 @@ export const isStudentInterested = (studentId: string, eventId: string)=>{
     })
 }
 
+export const findStudentInterestedEvents = (studentId: string)=>{
+      return interestModel.find({studentId: new Types.ObjectId(studentId), interestType: "interested"}).populate("eventId").sort({createdAt: -1}).lean()
+}
+
 
 
 
