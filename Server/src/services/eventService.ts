@@ -1,4 +1,4 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents, countOrganizerPendingEvents} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents, countOrganizerPendingEvents, getOrganizerEventStatusDistribution} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
@@ -222,6 +222,20 @@ class EventService {
      }
      return count;
 
+  }
+  async getOrgnanizerApprovalAnalytics(organizerId: string){
+       const rawStats = await getOrganizerEventStatusDistribution(organizerId);
+       const stats= {approved: 0, pending: 0, rejected: 0, total: 0}
+
+       rawStats.forEach(stat=>{
+         if(stat._id === 'approved') stats.approved = stat.count
+         if (stat._id === "pending") stats.pending = stat.count;
+         if (stat._id === "rejected") stats.rejected = stat.count;
+         stats.total += stat.count;
+       })
+       // we caalculate approval rate (Percentage of approved out of non-pending events)
+       const approvalRate = stats.total > 0 ? ((stats.approved / stats.total) * 100).toFixed(1) : "0";
+       return { ...stats, approvalRate: `${approvalRate}%` };
   }
 }
 

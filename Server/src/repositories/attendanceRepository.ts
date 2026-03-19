@@ -29,3 +29,23 @@ export const findAllAttendendStudentNumber = (organizerId: string)=>{
            isPresent: true
         })
 } 
+
+export const getOrganizerAttendanceTrends = async(organizerId: string)=>{
+      return await attendanceModel.aggregate([
+            {
+               $match:{confirmedBy: new Types.ObjectId(organizerId), isPresent: true}
+            },
+            {
+               $group: {
+                    _id: {
+                         year: {$year: "$createdAt"},
+                         month: { $month: "$createdAt" }
+                    },
+                    totalAttendance: { $sum: 1 }
+               }
+            },
+            {
+               $sort: { "_id.year": 1, "_id.month": 1 }
+            }
+      ])
+}

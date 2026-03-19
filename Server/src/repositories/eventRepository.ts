@@ -86,6 +86,21 @@ export const countOrganizerPendingEvents = (organizerId: string)=>{
       })
 }
 
+export const getOrganizerEventStatusDistribution = async(organizerId: string)=>{
+       return await eventModel.aggregate([
+           {
+            $match: {
+                organizedBy: new Types.ObjectId(organizerId)
+            }
+           },
+           {
+            $group: {
+                _id: "$status",
+                count: {$sum: 1}
+            }
+           }
+       ])
+} 
 
 
 
