@@ -154,10 +154,11 @@ export const getOrganizerAnalytics = async(req:AuthRequest, res: Response)=>{
           })
          }
         try {
-            const [totalEngagement,approvalRate,attendanceTrends] = await Promise.all([
+            const [totalEngagement,approvalRate,attendanceTrends,categoryDemographics] = await Promise.all([
                RegistrationService.getAllEventRegistrationForOrganizer(organizerId),
                EventService.getOrgnanizerApprovalAnalytics(organizerId),
-               AttendanceService.getOverallOrganizerAttendanceTrends(organizerId)
+               AttendanceService.getOverallOrganizerAttendanceTrends(organizerId),
+               RegistrationService.getAllCategoryDemographicsForOrganizer(organizerId)
             ])
 
             return res.status(200).json({
@@ -165,7 +166,8 @@ export const getOrganizerAnalytics = async(req:AuthRequest, res: Response)=>{
               message: "Organizer Analytics Fetched Successfully!",
               totalEngagement: totalEngagement,
               approvalStat: approvalRate,
-              attendanceTrends: attendanceTrends
+              attendanceTrends: attendanceTrends,
+              categoryDemographics: categoryDemographics
             })
         } catch (error) {
           return handleError(res,error);

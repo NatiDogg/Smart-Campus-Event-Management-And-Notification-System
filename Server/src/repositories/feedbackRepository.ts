@@ -32,7 +32,7 @@ export const findOrganizerAverageRating = async(organizerId: string)=>{
      const result = await feedbackModel.aggregate([
         {
             $lookup:{
-                from: 'event',
+                from: 'events',
                 localField: "eventId",
                 foreignField: "_id",
                 as: "events"

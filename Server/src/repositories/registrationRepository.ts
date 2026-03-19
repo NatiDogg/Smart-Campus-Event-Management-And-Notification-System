@@ -66,7 +66,7 @@ export const findAllEventRegistrationForOrganizer = async(organizerId: string)=>
              },
             {
                 $lookup:{
-                    from: 'event',
+                    from: 'events',
                     localField: "eventId",
                     foreignField: "_id",
                     as: "eventDetails"
@@ -88,6 +88,47 @@ export const findAllEventRegistrationForOrganizer = async(organizerId: string)=>
        return result[0]?.totalRegistration || 0;
 }
 
+export const getRegistrationStatsByCategory = async(organizerId: string)=>{
+     return await registrationModel.aggregate([
+         {
+            $match: {status: "registered"}
+         },
+         {
+            $lookup:{
+                from: "events",
+                localField: "eventId",
+                foreignField: "_id",
+                as: "eventDetails"
+            }
+         },
+         {
+            $unwind: '$eventDetails'
+         },
+         {
+            $match: {"eventDetails.organizedBy": new Types.ObjectId(organizerId)}
+         },
+         {
+             $lookup:{
+                from: 'categories',
+                localField: "eventDetails.category",
+                foreignField: "_id",
+                as: "categoryDetails"
+             }
+         },
+         {
+            $unwind: "$categoryDetails"
+         },
+         {
+            $group: {
+                _id: '$categoryDetails.name',
+                registrationCount: {$sum: 1}
+            }
+         },
+         {
+            $sort: {registrationCount: -1}
+         }
+     ])
+}
 
 
 
