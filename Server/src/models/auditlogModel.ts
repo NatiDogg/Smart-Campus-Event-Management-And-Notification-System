@@ -4,7 +4,7 @@ const auditlogSchema = new mongoose.Schema({
       
      userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "user",
         required: true
     }, //who performed an action
     action: {
@@ -13,12 +13,13 @@ const auditlogSchema = new mongoose.Schema({
     }, //what they did
      targetType: {
         type: String,
-        enum: ["Event", "User", "Category"],
+        enum: ["event", "user", "category",'announcement'],
         required: true
     }, // what object they acted on
     targetId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        refPath: 'targetType'
     }, // the object detail
         
 

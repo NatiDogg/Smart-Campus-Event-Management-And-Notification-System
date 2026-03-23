@@ -5,7 +5,7 @@ import UserService from "../services/userService.js";
 import { handleError } from "../helpers/handleError.js";
 import { updateProfileValidator } from "../utils/zodUpdateValidator.js";
 import { isValid } from "../utils/validMongodbId.js";
-
+import AuditService from "../services/auditService.js";
 
 export const handleRegisterToken = async(req: AuthRequest, res: Response)=>{
        const {id: userId} = req.userAccessInfo
@@ -52,6 +52,7 @@ export const handleProfileUpdate = async (req:AuthRequest, res:Response)=>{
           }
       try {
          const result = await UserService.updateProfile(userId,parsed.data,role);
+         void AuditService.logAction(userId, "UPDATED_PROFILE","user",result.updatedUser._id.toString())
          return res.status(200).json(result)
          
       } catch (error) {
