@@ -12,6 +12,7 @@ import EventService from "../services/eventService.js";
 import UserService from "../services/userService.js";
 import RegistrationService from "../services/registrationService.js";
 import AuditService from "../services/auditService.js";
+import AttendanceService from "../services/attendanceService.js";
 
 export const createOrganizerHandler  =async(req: AuthRequest, res:Response)=>{
         const parsed = createOrganizerSchema.safeParse(req.body);
@@ -190,11 +191,12 @@ export const getPendingEventsHandler = async(req:Request, res:Response)=>{
 }
 export const getAdminDashboardDataHandler = async(req:Request, res:Response)=>{
        try {
-          const [activeUsers,activeEvents,pendingEvents,categoryDistribution] = await Promise.all([
+          const [activeUsers,activeEvents,pendingEvents,categoryDistribution,attendanceTrend] = await Promise.all([
               UserService.getUsers(),
               EventService.getAdminActiveEvents(),
               EventService.getPendingEvents(),
-              RegistrationService.getAllRegistrationStatsByCategoryForAdmin()
+              RegistrationService.getAllRegistrationStatsByCategoryForAdmin(),
+              AttendanceService.getOverallAttendanceTrends()
           ])
           return res.status(200).json({
             success: true,
@@ -202,7 +204,8 @@ export const getAdminDashboardDataHandler = async(req:Request, res:Response)=>{
             activeUsers: activeUsers.length,
             activeEvents: activeEvents,
             pendingEvents: pendingEvents.length,
-            categoryDistribution: categoryDistribution
+            categoryDistribution: categoryDistribution,
+            attendanceTrend: attendanceTrend
           })
        } catch (error) {
          return handleError(res,error)
