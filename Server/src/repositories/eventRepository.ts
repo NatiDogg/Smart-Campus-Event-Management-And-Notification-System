@@ -102,6 +102,10 @@ export const getOrganizerEventStatusDistribution = async(organizerId: string)=>{
        ])
 } 
 
+export const getAllActiveEvents = ()=>{
+   return  eventModel.countDocuments({status: "approved"})
+}
+
 
 
 

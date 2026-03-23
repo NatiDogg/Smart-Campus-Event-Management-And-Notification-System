@@ -9,3 +9,6 @@ export const findCategory = (name: string)=>{
 export const createCategory = (categoryData: categoryCreationType)=>{
      return categoryModel.create(categoryData);
 }
+export const getAllCategories = ()=>{
+     return categoryModel.find({}).select("name").sort({createdAt: -1});
+}

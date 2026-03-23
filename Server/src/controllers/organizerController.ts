@@ -8,6 +8,8 @@ import { handleError } from "../helpers/handleError.js";
 import FeedbackService from "../services/feedbackService.js";
 import RegistrationService from "../services/registrationService.js";
 import AttendanceService from "../services/attendanceService.js";
+import AuditService from "../services/auditService.js";
+
 
 export const createEventHandler = async(req:AuthRequest, res:Response)=>{
        const {id} = req.userAccessInfo
@@ -32,6 +34,7 @@ export const createEventHandler = async(req:AuthRequest, res:Response)=>{
       try {
          
          const result = await EventService.createEvent(parsed.data,id,file.buffer);
+         void AuditService.logAction(id,"CREATED_EVENT","event",result.newlyCreatedEvent._id.toString())
          return res.status(201).json(result);
          
         
@@ -71,6 +74,7 @@ export const updateEventHandler = async(req:AuthRequest<{id: string}>, res: Resp
      
          try {
             const result = await EventService.updateEventByOrganizer(parsed.data,organizerId, eventId)
+            void AuditService.logAction(organizerId, "UPDATED_EVENT","event",result.updatedEvent._id.toString())
             return res.status(200).json(result);
             
          } catch (error) {

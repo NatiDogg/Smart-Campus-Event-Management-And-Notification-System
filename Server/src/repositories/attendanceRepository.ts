@@ -49,3 +49,22 @@ export const getOrganizerAttendanceTrends = async(organizerId: string)=>{
             }
       ])
 }
+export const getAllAttendanceTrends = async () => {
+  return await attendanceModel.aggregate([
+    {
+      $match: { isPresent: true }
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$createdAt" },
+          month: { $month: "$createdAt" }
+        },
+        totalAttendance: { $sum: 1 }
+      }
+    },
+    {
+      $sort: { "_id.year": 1, "_id.month": 1 }
+    }
+  ]);
+};
