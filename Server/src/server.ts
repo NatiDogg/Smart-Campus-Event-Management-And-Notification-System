@@ -17,6 +17,7 @@ import subscriptionRouter from './routes/subscriptionRoutes.js';
 import studentRouter from './routes/studentRoutes.js';
 import notificationRouter from './routes/notificationRoutes.js';
 import feedBackRouter from './routes/feedBackRoutes.js';
+import { run } from './services/recommendationService.js';
 config();
 
 const app:Express = express();
@@ -72,6 +73,7 @@ const startServer = async()=>{
         app.listen(port,()=>{
             console.log("Server has started and listening to port "+port);
         })
+         await run()
        } catch (error) {
         console.log(error);
         process.exit(1)
