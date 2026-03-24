@@ -22,7 +22,7 @@ config();
 
 const app:Express = express();
 const port = env.PORT || 5000
-const allowedOrigins = ["http://localhost:3000"]
+const allowedOrigins = ["http://localhost:5173"]
 const corsOptions = {
     origin: allowedOrigins,
     credentials: true
@@ -73,7 +73,7 @@ const startServer = async()=>{
         app.listen(port,()=>{
             console.log("Server has started and listening to port "+port);
         })
-         await run()
+         
        } catch (error) {
         console.log(error);
         process.exit(1)

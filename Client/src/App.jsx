@@ -4,12 +4,13 @@ import Landing from './pages/Landing'
 import Header from './components/Header'
 import Signin from './pages/SignIn'
 import Login from './pages/Login'
+import {Toaster} from 'react-hot-toast'
 function App() {
     
  
   return (
      <main className='flex flex-col min-h-screen'>
-        
+          <Toaster position='bottom-right' />
           <Routes>
                    {/*Public Routes*/}
                  <Route path='/' element={<Landing />} />

@@ -19,9 +19,12 @@ const setResponseCookies = (res:Response, token: string)=>{
 export const signInHandler = async(req: Request, res:Response)=>{
          const parsed = authRegisterSchema.safeParse(req.body);
          if(!parsed.success){
+             const fieldErrors = parsed.error.flatten().fieldErrors;
+             const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+             const errorMessage = fieldErrors[firstErrorKey]?.[0] || "Invalid input data";
             return res.status(400).json({
                 success:false,
-                message: parsed.error.flatten()
+                message: errorMessage
             })
          }
         try {
@@ -52,9 +55,12 @@ export const loginHandler = async(req:Request, res:Response)=>{
          const parsed = authLoginSchema.safeParse(req.body);
 
          if(!parsed.success){
+             const fieldErrors = parsed.error.flatten().fieldErrors;
+             const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+             const errorMessage = fieldErrors[firstErrorKey]?.[0] || "Invalid input data";
             return res.status(400).json({
                 success:false,
-                message: parsed.error.flatten()
+                message: errorMessage
 
             })
          }
