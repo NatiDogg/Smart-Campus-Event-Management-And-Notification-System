@@ -7,21 +7,21 @@ import { AppContext } from "../context/ContextProvider.jsx";
 
 const Header = () => {
 
-   const {openMenu, setOpenMenu} = useContext(AppContext)
+   const {openMenu, setOpenMenu,user} = useContext(AppContext)
   return (
-    <header className="w-full fixed z-50 px-6 py-3 bg-white shadow">
+    <header className="sticky p-3 top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
       <div className="max-w-365 relative flex justify-between items-center p-2">
         <nav>
           <Link
-            to="/dashboard"
+            to={`/${user.role.toLowerCase()}/dashboard`} 
             className="flex items-center space-x-2 text-blue-600 group"
           >
-            <div className="bg-blue-600 p-1.5 rounded-lg group-hover:rotate-6 transition-transform">
-              <img src="" alt="" />
+            <div className=" p-1.5 rounded-lg group-hover:rotate-6 transition-transform">
+                <img src={aauLogo} width={40} height={40} alt="aau logo" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">
-              DevConnect
-            </span>
+           <span className="text-xl font-bold tracking-tight text-slate-900">
+            SmartCampus
+          </span>
           </Link>
         </nav>
         <div className=" hidden md:flex items-center gap-6">
@@ -34,7 +34,7 @@ const Header = () => {
           />
         </div>
             {
-                openMenu && <div className="fixed md:hidden shadow-gray-300 shadow-2xl right-10 top-12 p-5 min-w-55 flex flex-col items-center gap-4 z-50 border border-white rounded-xl bg-white"> 
+                openMenu && <div className="fixed md:hidden shadow-gray-300 shadow-2xl right-10 top-15 p-5 min-w-55 flex flex-col items-center gap-4 z-50 border border-white rounded-xl bg-white"> 
 
                     <NavBar menu={setOpenMenu} />
             </div>

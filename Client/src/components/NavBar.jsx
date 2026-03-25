@@ -1,33 +1,48 @@
-import React from 'react'
+import React,{useContext} from 'react'
 import { Link } from 'react-router-dom'
-import {
-  Home,
-  PlusSquare,
-  User,
-  LogOut,
-  Terminal,
-  Shield,
-  Menu,
-} from "lucide-react";
+import { AppContext } from '../context/ContextProvider';
 const NavBar = () => {
+      const {user} = useContext(AppContext)
      const navLinksByRole = {
         student: [
-          { label: "Home", path: "/dashboard", logo: <Home size={18} /> },
-          { label: "Create", path: "create", logo: <PlusSquare size={18} /> },
-          { label: "Profile", path: "profile", logo: <User size={18} /> },
+          { label: "Home", path: "/student/dashboard" },
+          { label: "Events", path: "events" },
+          { label: "My Events", path: "my-events" },
+          { label: "Announcements", path: "announcements" },
+           { label: "Calendar", path: "calendar" },
+          
+          
         ],
         organizer: [
-          { label: "Dashboard", path: "/admin", logo: <Home size={18} /> },
-          { label: "Profile", path: "profile", logo: <User size={18} /> },
+          { label: "Dashboard", path: "/organizer/dashboard" },
+          { label: "Events", path: "events"},
+          { label: "Create", path: "create"},
+           { label: "Check-In", path: "check-in"},
+           { label: "Analytics", path: "analytics"},
+            { label: "Feedback", path: "feedback"},
         ],
         admin: [
+             { label: "Dashboard", path: "/admin/dashboard" },
+             { label: "Analytics", path: "analytics"},
+             { label: "Approvals", path: "approvals"},
+             { label: "Users", path: "users"},
+             { label: "Categories", path: "categories"},
+             { label: "Audit Log", path: "audit-log"},
+
 
         ],
 
 
       };
+      const navLinks = navLinksByRole[user.role]
   return (
-    <div>NavBar</div>
+        <>
+          {
+            navLinks.map((link,index)=>{
+              return <Link key={index} to={link.path}>{link.label}</Link>
+            })
+          }
+        </>
   )
 }
 
