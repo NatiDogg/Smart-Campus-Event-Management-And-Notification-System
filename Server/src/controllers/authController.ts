@@ -12,7 +12,9 @@ const setResponseCookies = (res:Response, token: string)=>{
         httpOnly: true,
         sameSite: "lax",
         secure: isProd,
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: '/'
+        
     })
 }
 
@@ -114,7 +116,7 @@ export const refreshTokenHandler = async(req:Request, res:Response)=>{
 
 export const logOutHandler = async(req:Request, res:Response)=>{
            try {
-             res.clearCookie("refreshToken");
+             res.clearCookie("refreshToken", {path: '/'});
              return res.status(200).json({
                 success:true,
                 message: "Logged Out Successfully!"

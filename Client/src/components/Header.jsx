@@ -5,10 +5,24 @@ import { Link } from "react-router-dom";
 import {Menu, LogOut} from 'lucide-react'
 import { AppContext } from "../context/ContextProvider.jsx";
 import { Icons } from "./Icons.jsx";
+import { useLogoutUser } from "../hooks/useAuth.js";
+import Loading from '../components/Loading.jsx'
 const Header = () => {
 
-   const {openMenu, setOpenMenu,user} = useContext(AppContext)
+   const {openMenu, setOpenMenu,user,navigate} = useContext(AppContext)
    const [profileOpen, setProfileOpen] = useState(false)
+   const {data,isPending, error,mutate} = useLogoutUser()
+       const handleLogout = ()=>{
+             mutate(undefined, {
+              onSuccess: ()=>{
+                navigate('/')
+              },
+              onError:(error)=>{
+                console.error("Logout failed:", error);
+                navigate("/")
+              }
+             })
+       }
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,7 +30,7 @@ const Header = () => {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 cursor-pointer group">
                <Link
-            to={`/${user.role}/dashboard`}
+            to={`/${user.role}`}
             className="flex items-center space-x-2 text-blue-600 group"
           >
             <div className=" p-1.5 rounded-lg group-hover:rotate-6 transition-transform">
@@ -29,7 +43,7 @@ const Header = () => {
             </div>
           </div>
           <div className="hidden lg:flex items-center gap-6">
-            <NavBar />
+            <NavBar setMenuOpen = {setOpenMenu} />
           </div>
           
 
@@ -46,7 +60,7 @@ const Header = () => {
               <NavBar menu={setOpenMenu} />
             </div>
           )}
-            <button className={`p-2 rounded-xl transition-all relative `}>
+            <button onClick={()=> navigate(`${user.role}/notification`)} className={`p-2 rounded-xl cursor-pointer transition-all relative `}>
               <Icons.Notifications />
               <span className="absolute top-2 right-2 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
             </button>
@@ -56,21 +70,19 @@ const Header = () => {
             <div className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className={`flex items-center gap-3 p-1 rounded-xl hover:bg-gray-100 transition-all border border-transparent ${
-                  profileOpen === "profile" ? "bg-gray-100 border-gray-200" : ""
-                }`}
+                className={`flex cursor-pointer items-center gap-3 p-1 rounded-xl hover:bg-gray-100 transition-all border border-transparent `}
               >
                 <img
                   src={
-                    user.avatar ||
-                    `https://ui-avatars.com/api/?name=abebe&background=2563EB&color=fff`
+                    user.profile ||
+                    `https://ui-avatars.com/api/?name=${user.fullName}&background=2563EB&color=fff`
                   }
                   alt="Profile"
                   className="h-10 w-10 rounded-xl shadow-sm object-cover"
                 />
                 <div className="text-left hidden lg:block pr-2">
                   <p className="text-xs font-bold text-gray-900 leading-none">
-                    abebe
+                    {user.fullName}
                   </p>
                   <p className="text-[10px] text-gray-500 font-medium uppercase mt-1 tracking-wider">
                     {user.role}
@@ -93,13 +105,14 @@ const Header = () => {
                     <button
                       onClick={() => {
                         setProfileOpen(false);
+                        navigate(`${user.role}/setting`)
                       }}
-                      className="w-full text-left px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 flex items-center gap-3"
+                      className="w-full cursor-pointer text-left px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 flex items-center gap-3"
                     >
-                      <Icons.Settings /> Profile & Preferences
+                      <Icons.Settings /> Setting
                     </button>
-                    <button className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 font-semibold">
-                      <Icons.Logout /> Logout
+                    <button onClick={handleLogout} disabled={isPending} className="w-full cursor-pointer text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 font-semibold">
+                     {isPending ? (<Loading size="sm" color="blue" />) : ( <><Icons.Logout /> Log Out</>)}
                     </button>
                   </div>
                 </>

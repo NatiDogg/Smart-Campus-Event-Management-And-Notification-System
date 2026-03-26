@@ -1,8 +1,13 @@
-import React from 'react'
-
+import React,{useContext} from 'react'
+import { AppContext } from '../../context/ContextProvider'
 const Calendar = () => {
+    const {user,token} = useContext(AppContext)
   return (
-    <div>Calendar</div>
+      <div>
+          calander
+          
+
+      </div>
   )
 }
 

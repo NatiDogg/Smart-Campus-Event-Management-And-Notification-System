@@ -1,10 +1,12 @@
-import React,{useState} from 'react'
-import { Link } from 'react-router-dom'
+import React,{useContext, useState} from 'react'
+import { Link} from 'react-router-dom'
 import { FcGoogle } from "react-icons/fc";
 import {useRegisterUser} from '../hooks/useAuth'
 import Loading from '../components/Loading';
+import { AppContext } from '../context/ContextProvider';
 const Signin = () => {
        const {data,mutate,isPending,error} = useRegisterUser();
+       const {navigate} = useContext(AppContext)
        const [formData, setFormData] = useState({
          fullName: '',
          studentId: '',
@@ -20,7 +22,19 @@ const Signin = () => {
        }
        const onSubmitHandler = (e)=>{
          e.preventDefault()
-         mutate(formData);
+         mutate(formData,{
+           onSuccess: (data)=>{
+              
+              const role = data?.user?.role?.toLowerCase() || undefined 
+              if(role.toLowerCase() === 'student'){
+                  
+                navigate(`/student`)
+              }
+              else{
+                 navigate('/')
+              }
+           }
+         });
        }
        
   return (
@@ -29,11 +43,7 @@ const Signin = () => {
         onSubmit={onSubmitHandler}
         className="bg-white  shadow-2xl shadow-gray-500 text-gray-500 max-w-100 w-full mx-4 md:p-6 p-4 py-8 text-left text-sm rounded-lg"
       >
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center">
-            {error.response?.data?.message|| "Something went wrong. Please try again."}
-          </div>
-        )}
+        
         <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
           SmartCampus Events
         </h2>

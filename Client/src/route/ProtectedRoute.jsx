@@ -8,8 +8,9 @@ const ProtectedRoute = ({children, role}) => {
      if(!user || !user.role){
        return  <Navigate to={'/login'} replace />
      }
+     
      if(role && user.role.toLowerCase() !== role.toLowerCase()){
-        return  <Navigate to={'/'} replace />
+        return <Navigate to={`/${user.role.toLowerCase()}`} replace />;
      } 
 
   return children
