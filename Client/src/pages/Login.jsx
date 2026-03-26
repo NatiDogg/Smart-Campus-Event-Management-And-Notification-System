@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useLoginUser } from '../hooks/useAuth';
 import Loading from '../components/Loading';
 import { AppContext } from '../context/ContextProvider';
+import { googleSignInUrl } from '../api/auth';
 
 const Login = () => {
        const [formData, setFormData] = useState({
@@ -55,6 +56,7 @@ const Login = () => {
             </p>
         
             <button
+              onClick={googleSignInUrl}
               type="button"
               className="w-full mt-8 bg-gray-500/10 flex items-center text-gray-600 cursor-pointer hover:bg-gray-200 gap-2 justify-center h-12 rounded-full"
             >

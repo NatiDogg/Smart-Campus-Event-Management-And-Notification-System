@@ -32,7 +32,12 @@ const userSchema = new mongoose.Schema({
     fcmTokens:{
           type: [String],
           default: []
-       }
+    },
+    provider:{
+        type: String,
+        enum: ["local", 'google'],
+        default: 'local'
+    }
 
 
 },{timestamps: true, discriminatorKey: "role"});

@@ -1,5 +1,5 @@
 import react, {useContext,useEffect} from "react";
-import { loginUser, logoutUser, registerUser,verifySession } from "../api/auth";
+import {  loginUser, logoutUser, registerUser,verifySession, verifyUser } from "../api/auth";
 import {useMutation,useQuery, useQueryClient} from '@tanstack/react-query'
 import { AppContext } from "../context/ContextProvider";
 import {toast} from 'react-hot-toast'
@@ -38,24 +38,40 @@ export const useLoginUser = ()=>{
   })
 }
 
+
+
 export const useLogoutUser = ()=>{
     const queryClient = useQueryClient()
     const { setUser, setToken } = useContext(AppContext);
     return useMutation({
       mutationFn: logoutUser,
-      onSuccess:(data)=>{
-         setUser(null);
-         setToken(null);
-        delete api.defaults.headers.common['Authorization'];
-         queryClient.removeQueries({queryKey: ["session"]})
-         toast.success(data.message || "Logged out successfully");
-
-      },
-      onError: (error)=>{
-        toast.success("Logged out successfully")
+      onSettled:(data,error)=>{
+        setUser(null);
+      setToken(null);
+      delete api.defaults.headers.common['Authorization'];
+      queryClient.removeQueries();
+      toast.success(data?.message || "Logged out Successfully")
+      if (error) {
+        toast.success("Logged out Successfully")
+        console.error("Logout API failed, but local session cleared", error);
+      }
       }
     })
 }
+
+export const useVerifyUser = (token, options = {})=>{
+
+     return useQuery({
+      queryKey: ['me'],
+      queryFn: ()=> verifyUser(token),
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      ...options
+
+     })
+}
+
+
 export const useVerifySession = () => {
   const { setUser, setToken } = useContext(AppContext);
 

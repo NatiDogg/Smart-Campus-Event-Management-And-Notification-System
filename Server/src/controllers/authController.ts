@@ -4,6 +4,7 @@ import { authRegisterSchema,authLoginSchema } from "../utils/zodAuthValidator.js
 import AuthService from "../services/authService.js";
 import { env } from "../utils/zodEnvFilesValidator.js";
 import { handleError } from "../helpers/handleError.js";
+import UserService from "../services/userService.js";
     
 const isProd = env.NODE_ENV === 'production'
 
@@ -119,10 +120,57 @@ export const logOutHandler = async(req:Request, res:Response)=>{
              res.clearCookie("refreshToken", {path: '/'});
              return res.status(200).json({
                 success:true,
-                message: "Logged Out Successfully!"
+                message: "Logged out Successfully!"
              })
             
            } catch (error) {
               return handleError(res,error);
            }
+}
+
+export const googleAuthHandler = async(req:Request, res:Response)=>{
+       
+      try {
+         const url = await AuthService.SignUserWithGoogleUrl()
+         return res.redirect(url);
+      } catch (error) {
+         return handleError(res,error)
+      }
+}
+export const googleAuthCallbackHandler = async(req:Request<{},{},{},{code: string}>, res:Response)=>{
+      const {code} = req.query
+       if(!code){
+         res.redirect(`${env.VITE_FRONTEND_URL || "http://localhost:5173"}/login?error=auth_failed`);
+       }
+     try { 
+         const result = await AuthService.signUserWithGoogle(code)
+         const {refreshToken,accessToken} = result
+         setResponseCookies(res,refreshToken)
+          const frontendUrl = env.VITE_FRONTEND_URL || "http://localhost:5173";
+          return res.redirect(`${frontendUrl}/auth/success?token=${accessToken}`)
+     } catch (error) {
+      console.error("Google Auth Error:", error);
+       return res.redirect(`${env.VITE_FRONTEND_URL || "http://localhost:5173"}/login?error=auth_failed`);
+     }
+}
+
+export const getMeHandler = async(req:Request<{token: string}>, res:Response)=>{
+    const {token}= req.params
+  
+     if(!token){
+      return res.status(400).json({
+         success: false,
+         message: "Login Failed!"
+      })
+     }
+    try {
+        const result = await UserService.verifyUser(token);
+        return res.status(200).json({
+         success:true,
+         message: 'User authenticated Successfully',
+         user: result
+        })
+    } catch (error) {
+      handleError(res,error);
+    }
 }

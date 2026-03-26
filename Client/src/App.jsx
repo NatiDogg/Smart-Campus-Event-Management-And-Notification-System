@@ -1,11 +1,12 @@
 import React, { Suspense, lazy, useEffect,useContext } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes,Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './route/ProtectedRoute';
 import DashboardLayout from './pages/DashboardLayout';
 import { useVerifySession } from './hooks/useAuth';
 import { AppContext } from './context/ContextProvider';
 import api from './api/axios';
+import GoogleSuccess from './route/GoogleSuccess';
 
 
 // Public Pages
@@ -79,9 +80,13 @@ function App() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           {/* Public Routes */}
-          <Route path='/' element={<Landing />} />
+          
+          <Route path='/' element={ user && user.role ? <Navigate to={`/${user.role.toLowerCase()}`} replace /> : <Landing />} />
           <Route path='/signin' element={<Signin />} />
           <Route path='/login' element={<Login />} />
+
+           {/* Google callback Success Route */}
+           <Route path='/auth/success' element={<GoogleSuccess />} />
 
           {/* Student Routes */}
           <Route path='/student' element={<ProtectedRoute role="student"><DashboardLayout /></ProtectedRoute>}>

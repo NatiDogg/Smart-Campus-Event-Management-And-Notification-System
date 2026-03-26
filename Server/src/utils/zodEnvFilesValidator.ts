@@ -17,7 +17,11 @@ const envSchema = z.object({
     SMTP_USER: z.string().min(4),
     SMTP_PASS: z.string().min(4),
     FCM_SERVICE_ACCOUNT_KEY: z.string().min(2),
-    GEMINI_API_KEY: z.string().min(4)
+    GEMINI_API_KEY: z.string().min(4),
+    GOOGLE_CLIENT_ID: z.string().min(4),
+    GOOGLE_CLIENT_SECRET: z.string().min(4),
+    GOOGLE_REDIRECT_URI: z.string().min(4),
+    VITE_FRONTEND_URL: z.string().min(4)
 
 
 

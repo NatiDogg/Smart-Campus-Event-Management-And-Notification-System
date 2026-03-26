@@ -14,12 +14,8 @@ const Header = () => {
    const {data,isPending, error,mutate} = useLogoutUser()
        const handleLogout = ()=>{
              mutate(undefined, {
-              onSuccess: ()=>{
+              onSettled:()=>{
                 navigate('/')
-              },
-              onError:(error)=>{
-                console.error("Logout failed:", error);
-                navigate("/")
               }
              })
        }

@@ -4,6 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import {useRegisterUser} from '../hooks/useAuth'
 import Loading from '../components/Loading';
 import { AppContext } from '../context/ContextProvider';
+import { googleSignInUrl } from '../api/auth';
 const Signin = () => {
        const {data,mutate,isPending,error} = useRegisterUser();
        const {navigate} = useContext(AppContext)
@@ -177,7 +178,8 @@ const Signin = () => {
             "Create Account"
           )}
         </button>
-        <button
+        <button 
+          onClick={googleSignInUrl}
           type="button"
           className="flex w-full cursor-pointer items-center justify-center gap-3 px-4 py-2 bg-white   border border-gray-100 rounded-md shadow-sm hover:bg-gray-100 transition-colors text-gray-700 font-medium font-sans"
         >
