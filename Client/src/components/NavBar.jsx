@@ -1,5 +1,5 @@
 import React,{useContext} from 'react'
-import { Link } from 'react-router-dom'
+import { Link,NavLink } from 'react-router-dom'
 import { AppContext } from '../context/ContextProvider';
 const NavBar = () => {
       const {user} = useContext(AppContext)
@@ -39,7 +39,11 @@ const NavBar = () => {
         <>
           {
             navLinks.map((link,index)=>{
-              return <Link key={index} to={link.path}>{link.label}</Link>
+              return <NavLink key={index} to={link.path} end className={({isActive})=> `px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+          isActive
+            ? 'bg-blue-600 text-white shadow-md shadow-blue-100'
+            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+        }`}>{link.label}</NavLink>
             })
           }
         </>
@@ -47,3 +51,4 @@ const NavBar = () => {
 }
 
 export default NavBar
+

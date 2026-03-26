@@ -20,6 +20,12 @@ import CreateEvents from './pages/organizer/CreateEvents'
 import CheckIn from './pages/organizer/CheckIn'
 import OrganizerAnalytics from './pages/organizer/OrganizerAnalytics'
 import Feedback from './pages/organizer/Feedback'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminAnalytics from './pages/admin/AdminAnalytics'
+import Approval from './pages/admin/Approval'
+import AuditLog from './pages/admin/AuditLog'
+import Categories from './pages/admin/Categories'
+import Users from './pages/admin/Users'
 
 function App() {
     const {user} = useContext(AppContext)
@@ -56,6 +62,15 @@ function App() {
                      </Route>
 
                      {/*Admin Routes*/}
+
+                     <Route path='/admin/dashboard' element={<ProtectedRoute role="admin"><DashboardLayout /></ProtectedRoute>}>
+                            <Route index element={<AdminDashboard />} />
+                            <Route path='analytics' element={<AdminAnalytics />} />
+                            <Route path='approvals' element={<Approval />} />
+                            <Route path='users' element={<Users />} />
+                            <Route path='categories' element={<Categories />} />
+                            <Route path='audit-log' element={<AuditLog />} />
+                     </Route>
           </Routes>
      </main>
   )

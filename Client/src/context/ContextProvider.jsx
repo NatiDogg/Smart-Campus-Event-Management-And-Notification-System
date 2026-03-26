@@ -5,7 +5,7 @@ const ContextProvider = ({children}) => {
      const [openMenu, setOpenMenu] = useState(false);
      const [user, setUser] = useState({
         id: 1,
-        role: 'student'
+        role: 'admin'
      });
      const [token, setToken] = useState(null);
      const values = {
