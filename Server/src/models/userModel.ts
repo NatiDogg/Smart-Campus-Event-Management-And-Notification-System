@@ -32,7 +32,20 @@ const userSchema = new mongoose.Schema({
     fcmTokens:{
           type: [String],
           default: []
-       }
+    },
+    provider:{
+        type: String,
+        enum: ["local", 'google'],
+        default: 'local'
+    },
+    resetPasswordToken:{
+        type: String,
+        default: null
+    },
+    resetPasswordExpire:{
+        type: Date,
+        default: null
+    }
 
 
 },{timestamps: true, discriminatorKey: "role"});

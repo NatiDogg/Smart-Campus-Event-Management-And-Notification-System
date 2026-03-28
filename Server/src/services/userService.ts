@@ -3,15 +3,28 @@ import adminModel from "../models/adminModel.js";
 import organizerModel from "../models/organizerModel.js";
 import studentModel from "../models/studentModel.js";
 import userModel from "../models/userModel.js";
-import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken, findAllStudents } from "../repositories/userRepository.js";
+import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken, findAllStudents, findUserByResetToken } from "../repositories/userRepository.js";
 import AppError from "../utils/appError.js";
 import { hashPassword } from "../utils/bcryptjs.js";
 import { UpdateProfileInput } from "../utils/zodUpdateValidator.js";
+import { verifyAccessToken } from "../utils/jwt.js";
 
 
 
 class UserService{
+    async verifyUser(token: string){
+        const decodedToken = verifyAccessToken(token)
+        if(!decodedToken){
+            throw new AppError("Failed verifying user",400)
+        }
+        const {id} = decodedToken
+        const user = await findById(id).select('-password').lean();
+        if (!user) {
+        throw new AppError("User no longer exists", 404);
+        }
+        return user;
 
+    }
     async getUsers(){
       const users = await getAll();
        if(!users){
@@ -91,6 +104,11 @@ class UserService{
             message: "Profile Updated Successfully!",
             updatedUser
           }
+    }
+
+    async getUserByResetToken(token: string){
+       const user =  await findUserByResetToken(token);
+       return user;
     }
     
    
