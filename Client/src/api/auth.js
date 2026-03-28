@@ -27,3 +27,12 @@ export const verifyUser = async(token)=>{
      const response = await api.get(`/api/auth/me/${token}`);
      return response.data
 }
+
+export const forgetPassword = async(email)=>{
+   const response = await api.post('/api/auth/forget-password', {email})
+   return response.data
+}
+export const resetPassword = async(data)=>{
+   const response = await api.post("/api/auth/reset-password",data)
+   return response.data
+}

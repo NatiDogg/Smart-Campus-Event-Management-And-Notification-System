@@ -7,13 +7,14 @@ import { useVerifySession } from './hooks/useAuth';
 import { AppContext } from './context/ContextProvider';
 import api from './api/axios';
 import GoogleSuccess from './route/GoogleSuccess';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/resetPassword';
 
 
 // Public Pages
 const Landing = lazy(() => import('./pages/Landing'));
 const Signin = lazy(() => import('./pages/SignIn'));
 const Login = lazy(() => import('./pages/Login'));
-
 // Shared Pages
 const Notifications = lazy(() => import('./pages/Notifications'));
 const Setting = lazy(()=>import('./components/Setting'))
@@ -87,7 +88,13 @@ function App() {
 
            {/* Google callback Success Route */}
            <Route path='/auth/success' element={<GoogleSuccess />} />
+           
+              {/* Forgot password route */}
+              <Route path='/forget-password' element={<ForgotPassword />} />
 
+               {/* Reset password route */}
+               <Route path='/reset-password' element={<ResetPassword />} />
+ 
           {/* Student Routes */}
           <Route path='/student' element={<ProtectedRoute role="student"><DashboardLayout /></ProtectedRoute>}>
             {/* NavLink to="/student/dashboard" with 'end' prop will match this index */}

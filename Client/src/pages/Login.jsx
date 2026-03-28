@@ -121,18 +121,16 @@ const Login = () => {
               />
             </div>
 
-            {/*<div class="w-full flex items-center justify-between mt-8 text-gray-500/80">
-                <div class="flex items-center gap-2">
-                    <input class="h-5" type="checkbox" id="checkbox" />
-                    <label class="text-sm" for="checkbox">Remember me</label>
-                </div>
-                <a class="text-sm underline" href="#">Forgot password?</a>
-            </div>*/}
+            <div class="w-full flex items-center justify-end mt-2 text-gray-500/80">
+                
+                
+                <Link to={'/forget-password'} className='text-sm hover:underline'>Forgot password?</Link>
+            </div>
 
             <button
             disabled={isPending}
               type="submit"
-              className="mt-8 w-full h-11 rounded-full text-white bg-blue-700 hover:opacity-90 transition-opacity cursor-pointer"
+              className="mt-4 w-full h-11 rounded-full text-white bg-blue-700 hover:opacity-90 transition-opacity cursor-pointer"
             >
               {isPending ? (<Loading size='sm' />) : 'Login'}
             </button>

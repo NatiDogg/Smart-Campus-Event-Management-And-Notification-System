@@ -447,6 +447,30 @@ class NotificationService {
       deletedNotification
      }
   }
+
+  //send email for password reset
+  async notifyUserPasswordReset(email: string, url: string){
+      return this.sendEmail(email,'Reset your password',`
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 8px;">
+        <h2 style="color: #333;">Password Reset Request</h2>
+        <p style="color: #555; font-size: 16px; line-height: 1.5;">
+            You requested a password reset. No worries, it happens to the best of us! 
+            Click the button below to set a new one:
+        </p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="${url}" 
+               style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+               Reset Your Password
+            </a>
+        </div>
+        <p style="color: #999; font-size: 12px; border-top: 1px solid #eeeeee; padding-top: 20px;">
+            If you didn't request this, you can safely ignore this email. 
+            <br>If the button doesn't work, copy and paste this link: <br>
+            <a href="${url}" style="color: #007bff;">${url}</a>
+        </p>
+    </div>
+    `)
+  }
 }
 
 export default new NotificationService();

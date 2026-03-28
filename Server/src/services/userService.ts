@@ -3,7 +3,7 @@ import adminModel from "../models/adminModel.js";
 import organizerModel from "../models/organizerModel.js";
 import studentModel from "../models/studentModel.js";
 import userModel from "../models/userModel.js";
-import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken, findAllStudents } from "../repositories/userRepository.js";
+import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken, findAllStudents, findUserByResetToken } from "../repositories/userRepository.js";
 import AppError from "../utils/appError.js";
 import { hashPassword } from "../utils/bcryptjs.js";
 import { UpdateProfileInput } from "../utils/zodUpdateValidator.js";
@@ -104,6 +104,11 @@ class UserService{
             message: "Profile Updated Successfully!",
             updatedUser
           }
+    }
+
+    async getUserByResetToken(token: string){
+       const user =  await findUserByResetToken(token);
+       return user;
     }
     
    

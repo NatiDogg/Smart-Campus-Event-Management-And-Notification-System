@@ -1,5 +1,5 @@
 import react, {useContext,useEffect} from "react";
-import {  loginUser, logoutUser, registerUser,verifySession, verifyUser } from "../api/auth";
+import {  forgetPassword, loginUser, logoutUser, registerUser,resetPassword,verifySession, verifyUser } from "../api/auth";
 import {useMutation,useQuery, useQueryClient} from '@tanstack/react-query'
 import { AppContext } from "../context/ContextProvider";
 import {toast} from 'react-hot-toast'
@@ -73,7 +73,7 @@ export const useVerifyUser = (token, options = {})=>{
 
 
 export const useVerifySession = () => {
-  const { setUser, setToken } = useContext(AppContext);
+  
 
   return useQuery({
     queryKey: ["session"],
@@ -84,3 +84,29 @@ export const useVerifySession = () => {
   });
 
 };
+
+export const useForgetPassword = ()=>{
+    return useMutation({
+      mutationFn: forgetPassword,
+      onSuccess: (data)=>{
+          toast.success(data.message)
+      },
+      onError:(error)=>{
+           const errorMessage = error.response?.data?.message || "Reset Password Failed"
+          toast.error(errorMessage)
+      }
+    })
+}
+
+export const useResetPassword = ()=>{
+    return useMutation({
+      mutationFn: resetPassword,
+      onSuccess:(data)=>{
+        toast.success(data.message)
+      },
+      onError: (error)=>{
+        const errorMessage = error.response?.data.message || "Reset Password Failed"
+        toast.error(errorMessage)
+      }
+    })
+}
