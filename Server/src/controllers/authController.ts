@@ -195,8 +195,15 @@ export const forgetPasswordHandler = async(req:Request, res:Response)=>{
          const {email} = parsed.data
          const normalizedEmail = email.toLowerCase()
          const user = await UserService.findUserByEmail(normalizedEmail)
-         if(!user){
-            throw new AppError("User not Found!",400);
+         const genericSuccess = {
+               success: true,
+               message: "If an account with this email exists, we will send you a reset link",
+         };
+          if(!user){
+            return res.status(200).json(genericSuccess)
+         }
+         if(user.provider.toLowerCase() === 'google'){
+            return res.status(200).json(genericSuccess)
          }
          const rawToken = crypto.randomBytes(32).toString("hex")
          const tokenHash = crypto.createHash('sha256').update(rawToken).digest("hex")
@@ -209,10 +216,7 @@ export const forgetPasswordHandler = async(req:Request, res:Response)=>{
        
          void NotificationService.notifyUserPasswordReset(user.email, resetUrl)
 
-         return res.status(200).json({
-            success: true,
-             message: "if an account with this email exists, we will send you a reset link"
-         })
+        return res.status(200).json(genericSuccess)
 
      } catch (error) {
       return handleError(res,error)
