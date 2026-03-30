@@ -233,26 +233,41 @@ class NotificationService {
   }
   // the logic for notifystudentdeadline
   async processDailyReminders() {
-    const now = new Date();
-    const tomorrowStart = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    const tomorrowEnd = new Date(now.getTime() + 25 * 60 * 60 * 1000);
+  // 1. Calculate "Start of Tomorrow" (00:00:00.000)
+  const tomorrowStart = new Date();
+  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+  tomorrowStart.setHours(0, 0, 0, 0);
 
-    const registrations =
-      await RegistrationService.getRegistrationDetailForReminder(
-        tomorrowStart,
-        tomorrowEnd
-      );
+  // 2. Calculate "End of Tomorrow" (23:59:59.999)
+  const tomorrowEnd = new Date();
+  tomorrowEnd.setDate(tomorrowEnd.getDate() + 1);
+  tomorrowEnd.setHours(23, 59, 59, 999);
 
-    for (const reg of registrations) {
-      if (reg.eventId && reg.studentId) {
-        const studentId = reg.studentId._id.toString();
-        const eventTitle = reg.eventId.title;
+  console.log(`[Cron] Scanning events between: ${tomorrowStart.toISOString()} and ${tomorrowEnd.toISOString()}`);
 
-        await this.notifyStudentDeadline(studentId, eventTitle);
-      }
+  const registrations = await RegistrationService.getRegistrationDetailForReminder(
+    tomorrowStart,
+    tomorrowEnd
+  );
+
+  for (const reg of registrations) {
+    // Ensure both event and student were successfully populated
+    if (reg.eventId && reg.studentId) {
+      const studentId = reg.studentId._id.toString();
+      const eventTitle = reg.eventId.title;
+      
+      // Optional: Add the event time to the notification for better UX
+      const eventTime = new Date(reg.eventId.startDate).toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+
+      await this.notifyStudentDeadline(studentId, `${eventTitle} at ${eventTime}`);
     }
-    console.log(`[Cron] Processed ${registrations.length} reminders.`);
   }
+  
+  console.log(`[Cron] Successfully processed ${registrations.length} reminders.`);
+}
   // notify students when they register for a new event
   async notifyStudentEventRegistrationStatus(
     eventId: string,

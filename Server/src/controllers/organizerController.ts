@@ -12,13 +12,17 @@ import AuditService from "../services/auditService.js";
 
 
 export const createEventHandler = async(req:AuthRequest, res:Response)=>{
+
        const {id} = req.userAccessInfo
        const file = req.file
         const parsed = createEventSchema.safeParse(req.body);
        if(!parsed.success){
+          const fieldErrors = parsed.error.flatten().fieldErrors
+          const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+           const errorMessage = fieldErrors[firstErrorKey]?.[0] || "Invalid input data";
         return res.status(400).json({
             success:false,
-            message: parsed.error.flatten()
+            message: errorMessage
         })
        }
        if(!file){
