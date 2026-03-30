@@ -1,11 +1,9 @@
 import { request, type Request, type Response } from "express";
 import { AuthRequest } from "../middlewares/authMiddleware.js";
 import { createOrganizerSchema } from "../utils/zodOrganizerValidator.js";
-import { categoryCreationSchema } from "../utils/zodCategoryValidator.js";
 import { isValid } from "../utils/validMongodbId.js";
 import { handleError } from "../helpers/handleError.js";
 import { announcementSchema } from "../utils/zodAnnouncementValidator.js";
-import CategoryService from "../services/categoryService.js";
 import OrganizerService from "../services/organizerService.js";
 import AnnouncementService from "../services/announcementService.js";
 import EventService from "../services/eventService.js";
@@ -38,28 +36,7 @@ export const createOrganizerHandler  =async(req: AuthRequest, res:Response)=>{
         }
 }
 
-export const createNewCategoryHandler = async(req:AuthRequest, res:Response)=>{
-       const parsed = categoryCreationSchema.safeParse(req.body)
-       const {id: adminId} = req.userAccessInfo
-       if(!parsed.success){
-         return res.status(400).json({
-          success:false,
-          message: parsed.error.flatten()
-         })
-       }
-     try {
-      const newCategory = await CategoryService.registerNewCategory(parsed.data);
-      void AuditService.logAction(adminId, "CREATED_CATEGORY", "category", newCategory._id.toString());
-      return res.status(201).json({
-        success: true,
-        message: "New Category Created Successfully",
-        newCategory
-      })
-       
-     } catch (error) {
-         return handleError(res,error);
-     }
-}
+
 
 export const approveEventHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
         const {id: eventId} = req.params
@@ -212,18 +189,6 @@ export const getAdminDashboardDataHandler = async(req:Request, res:Response)=>{
        }
 }  
 
-export const getAllCategoriesHandler = async(req:Request, res:Response)=>{
-     try {
-       const categories = await CategoryService.findAllAdminCategories()
-       return res.status(200).json({
-        success: true,
-        message: "Categories Fetched Successfully!",
-        categories
-       })
-     } catch (error) {
-      handleError(res,error)
-     }
-}
 
 export const getAllAuditLogsHandler = async(req: Request, res:Response)=>{
      try {

@@ -9,7 +9,7 @@ const Loading = ({ size = "sm", color = "white" }) => {
   return (
     <div className="flex justify-center items-center">
       <div
-        className={`${sizeClasses[size]} border-t-transparent border-${color} rounded-full animate-spin`}
+        className={`${sizeClasses[size]} border-t-transparent  border-${color} rounded-full animate-spin`}
         role="status"
       >
         <span className="sr-only">Loading...</span>

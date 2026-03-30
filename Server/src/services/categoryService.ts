@@ -25,7 +25,7 @@ class CategoryService{
 
 
        }
-       async findAllAdminCategories(){
+       async findAllCategories(){
         const categories = await getAllCategories()
         if(!categories){
           throw new AppError("Failed to Get Categories",500)

@@ -273,6 +273,7 @@ const CreateEvents = () => {
             </button>
             <button
               type="submit"
+              disabled={isPending}
               className="px-8 cursor-pointer hover:-translate-y-1 py-3 bg-blue-600 text-white text-sm font-bold rounded-2xl shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-95 transition-all"
             >
               {isPending ? (<Loading size='sm' />) :  ('Launch Event Request')}
