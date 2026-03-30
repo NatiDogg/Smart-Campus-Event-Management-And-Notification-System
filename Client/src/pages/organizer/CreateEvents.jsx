@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import {toast} from 'react-hot-toast'
 import { useCreateEvent } from '../../hooks/useEvent';
 import Loading from '../../components/Loading'
+import { useGetCategories } from '../../hooks/useCategory';
 const CreateEvents = () => {
      
      const [image, setImage] = useState(null);
@@ -18,6 +19,7 @@ const CreateEvents = () => {
       })
 
       const {data,error,mutate,isPending} = useCreateEvent()
+      const {data:categories,isLoading,error:isCategoryError} = useGetCategories()
 
      const handleFileChange = (e)=>{
         const file = e.target.files[0]
@@ -90,7 +92,10 @@ const CreateEvents = () => {
         </p>
       </div>
 
-      <form onSubmit={onSubmitHandler} className="bg-white rounded-3xl shadow-xl shadow-blue-900/5 border border-gray-100 overflow-hidden">
+      <form
+        onSubmit={onSubmitHandler}
+        className="bg-white rounded-3xl shadow-xl shadow-blue-900/5 border border-gray-100 overflow-hidden"
+      >
         <div className="p-8 space-y-8">
           {/* Main Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -100,12 +105,11 @@ const CreateEvents = () => {
               </label>
               <input
                 type="text"
-                 onChange={(e)=>handleInput(e)}
-                 value={eventData.title}
+                onChange={(e) => handleInput(e)}
+                value={eventData.title}
                 name="title"
                 placeholder="e.g. Annual Tech Symposium"
                 required
-                
                 className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all text-gray-900 font-medium"
               />
             </div>
@@ -114,14 +118,36 @@ const CreateEvents = () => {
                 Category
               </label>
               <select
-              onChange={(e)=>handleInput(e)}
-              value={eventData.category}
+                onChange={(e) => handleInput(e)}
+                value={eventData.category}
                 name="category"
                 className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all text-gray-900 font-medium"
               >
-                <option value="" disabled>Select a category</option>
-                <option value="tech">Technology</option>
-                
+                <option value="" disabled>
+                  Select a Category
+                </option>
+                {isLoading && (
+                  <option value='' disabled>
+                    Loading categories...
+                  </option>
+                )}
+
+                {categories &&
+                  categories.map((category) => {
+                    return (
+                      <option key={category._id} value={category.name}>
+                        {category.name}
+                      </option>
+                    );
+                  })}
+                {categories && categories.length === 0 && (
+                  <option className='p-12 text-center text-gray-500 italic' disabled value="">
+                    No categories created yet
+                  </option>
+                )}
+                {
+                  isCategoryError && <option disabled value=""> Error loading categories</option>
+                }
               </select>
             </div>
           </div>
@@ -131,7 +157,7 @@ const CreateEvents = () => {
               Description
             </label>
             <textarea
-              onChange={(e)=>handleInput(e)}
+              onChange={(e) => handleInput(e)}
               value={eventData.description}
               name="description"
               rows={4}
@@ -148,8 +174,8 @@ const CreateEvents = () => {
               </label>
               <input
                 type="datetime-local"
-                onChange={(e)=>handleInput(e)}
-                 value={eventData.startDate}
+                onChange={(e) => handleInput(e)}
+                value={eventData.startDate}
                 name="startDate"
                 placeholder="Oct 24, 2023"
                 required
@@ -162,8 +188,8 @@ const CreateEvents = () => {
               </label>
               <input
                 type="datetime-local"
-                onChange={(e)=>handleInput(e)}
-                 value={eventData.endDate}
+                onChange={(e) => handleInput(e)}
+                value={eventData.endDate}
                 name="endDate"
                 min={eventData.startDate}
                 required
@@ -176,26 +202,28 @@ const CreateEvents = () => {
               </label>
               <input
                 type="text"
-                onChange={(e)=>handleInput(e)}
-                 value={eventData.location}
+                onChange={(e) => handleInput(e)}
+                value={eventData.location}
                 name="location"
                 placeholder="6 kilo,Mandela Hall"
                 required
                 className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all text-gray-900 font-medium"
               />
             </div>
-             <div className="space-y-2">
-              <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Capacity</label>
-              <input 
-                type="number" 
-                onChange={(e)=>handleInput(e)}
-                 value={eventData.capacity}
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">
+                Capacity
+              </label>
+              <input
+                type="number"
+                onChange={(e) => handleInput(e)}
+                value={eventData.capacity}
                 name="capacity"
                 placeholder="5"
                 min={10}
                 max={500}
                 required
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all text-gray-900 font-medium" 
+                className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all text-gray-900 font-medium"
               />
             </div>
           </div>
@@ -276,7 +304,7 @@ const CreateEvents = () => {
               disabled={isPending}
               className="px-8 cursor-pointer hover:-translate-y-1 py-3 bg-blue-600 text-white text-sm font-bold rounded-2xl shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-95 transition-all"
             >
-              {isPending ? (<Loading size='sm' />) :  ('Launch Event Request')}
+              {isPending ? <Loading size="sm" /> : "Launch Event Request"}
             </button>
           </div>
         </div>

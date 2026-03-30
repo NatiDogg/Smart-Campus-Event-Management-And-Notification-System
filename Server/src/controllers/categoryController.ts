@@ -4,6 +4,7 @@ import CategoryService from "../services/categoryService.js"
 import { AuthRequest } from "../middlewares/authMiddleware.js"
 import { categoryCreationSchema } from "../utils/zodCategoryValidator.js"
 import AuditService from "../services/auditService.js"
+import { isValid } from "../utils/validMongodbId.js"
 
 
 export const createNewCategoryHandler = async(req:AuthRequest, res:Response)=>{
@@ -43,4 +44,24 @@ export const getAllCategoriesHandler = async(req:Request, res:Response)=>{
      } catch (error) {
       handleError(res,error)
      }
+}
+
+export const deleteCategoryHandler = async(req:Request<{id: string}>, res:Response)=>{
+         const {id: categoryId} = req.params
+         if(!isValid(categoryId)){
+          return res.status(400).json({
+            success: false,
+            message: 'Invalid Id Format!'
+          })
+         }
+    try {
+        const result = await CategoryService.removeCategory(categoryId)
+        return res.status(200).json({
+          success: true,
+          message: "Category Deleted Successfully",
+          deletedCategory: result
+        })
+    } catch (error) {
+      return handleError(res,error)
+    }
 }

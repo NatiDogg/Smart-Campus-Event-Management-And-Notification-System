@@ -10,3 +10,7 @@ export const getCategories = async()=>{
     return response.data.categories
     
 }
+export const deleteCategory = async(id)=>{
+   const response = await api.delete(`/api/category/delete/${id}`)
+   return response.data
+}

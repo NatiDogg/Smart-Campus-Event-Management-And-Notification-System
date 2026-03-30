@@ -1,4 +1,4 @@
-import { createCategory, findCategory, getAllCategories } from "../repositories/categoryRepository.js";
+import { createCategory, findAndDeleteCategoryById, findCategory, getAllCategories } from "../repositories/categoryRepository.js";
 import AppError from "../utils/appError.js";
 import { categoryCreationType } from "../utils/zodCategoryValidator.js";
 
@@ -31,6 +31,13 @@ class CategoryService{
           throw new AppError("Failed to Get Categories",500)
         }
         return categories;
+       }
+       async removeCategory(categoryId: string){
+          const deletedCategory = await findAndDeleteCategoryById(categoryId)
+          if(!deletedCategory){
+            throw new AppError("Failed to delete Category now",500)
+          }
+          return deletedCategory
        }
        
 }
