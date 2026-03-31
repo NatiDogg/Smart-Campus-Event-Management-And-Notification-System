@@ -12,8 +12,8 @@ class AuditService{
         }
       
     }
-    async getAuditLogs(){
-       const allLogs = await getAllAuditLogs()
+    async getAuditLogs(page: number, limit: number){
+       const allLogs = await getAllAuditLogs(page, limit)
         if(!allLogs){
           throw new AppError("Failed to fetch AuditLogs!",500)
         }

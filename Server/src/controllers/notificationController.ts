@@ -33,6 +33,7 @@ export const removeNotificationHandler = async(req:AuthRequest<{id: string}>, re
         }
          try {
             const result = await NotificationService.deleteUserNotification(notificationId)
+            return res.status(200).json(result)
          } catch (error) {
              return handleError(res,error)
          }

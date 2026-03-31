@@ -190,15 +190,3 @@ export const getAdminDashboardDataHandler = async(req:Request, res:Response)=>{
 }  
 
 
-export const getAllAuditLogsHandler = async(req: Request, res:Response)=>{
-     try {
-        const result = await AuditService.getAuditLogs()
-        return res.status(200).json({
-          success: true,
-          message: "Audit Logs Retrieved Successfully!",
-          result
-        })
-     } catch (error) {
-      return handleError(res,error)
-     }
-}
