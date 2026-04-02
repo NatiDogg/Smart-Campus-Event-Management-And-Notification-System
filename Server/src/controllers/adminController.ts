@@ -16,9 +16,12 @@ export const createOrganizerHandler  =async(req: AuthRequest, res:Response)=>{
         const parsed = createOrganizerSchema.safeParse(req.body);
         const {id: adminId} = req.userAccessInfo
         if(!parsed.success){
+           const fieldErrors = parsed.error.flatten().fieldErrors
+          const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+           const errorMessage = fieldErrors[firstErrorKey]?.[0] || "Invalid input data";
             return res.status(400).json({
                 success: false,
-                message: parsed.error.flatten()
+                message: errorMessage
 
             })
         }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 export const AppContext = createContext()
 const ContextProvider = ({children}) => {
      const [openMenu, setOpenMenu] = useState(false);
+     const [activeModal, setActiveModal] = useState(null);
      const [user, setUser] = useState(null);
      const [token, setToken] = useState(null);
      const navigate = useNavigate()
@@ -13,6 +14,8 @@ const ContextProvider = ({children}) => {
       
          openMenu,
          setOpenMenu,
+         activeModal,
+         setActiveModal,
          user,
          setUser,
          token,

@@ -3,10 +3,12 @@ import AppError from "../utils/appError.js";
 import { hashPassword } from "../utils/bcryptjs.js";
 import { organizerCreationType } from "../utils/zodOrganizerValidator.js";
 import UserService from "./userService.js";
+import crypto from 'crypto'
+import { organizerDTO } from "../repositories/organizerRepository.js";
 
 class OrganizerService{
-     async createNewOrganizer(organizerData:organizerCreationType){
-        const newlyCreatedOrganizer = await createOrganizer(organizerData)
+     async createNewOrganizer(organizerData:organizerDTO){
+        const newlyCreatedOrganizer = await createOrganizer(organizerData);
         return newlyCreatedOrganizer;
      }
      async getOrganizerById(organizerId: string){
@@ -20,8 +22,8 @@ class OrganizerService{
         if (existingUser) {
             throw new AppError("A user with this email already exists!", 400);
         }
-
-       const hashedPassword = await hashPassword(organizerData.password);
+       const randomPassword = crypto.randomBytes(16).toString("hex")
+       const hashedPassword = await hashPassword(randomPassword);
        const newlyCreatedOrganizer = await this.createNewOrganizer({...organizerData,
             email: normalizedEmail,
             password: hashedPassword})

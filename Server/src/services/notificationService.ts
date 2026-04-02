@@ -451,8 +451,8 @@ class NotificationService {
       notifications
      }
   }
-  async deleteUserNotification(notificationId: string){
-     const deletedNotification = await deleteNotification(notificationId);
+  async deleteUserNotification(userId: string,notificationId: string){
+     const deletedNotification = await deleteNotification(userId,notificationId);
      if(!deletedNotification){
       throw new AppError("Failed to delete notification right now!",500)
      }
