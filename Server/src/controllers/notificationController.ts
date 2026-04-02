@@ -25,14 +25,15 @@ export const getNotificationsHandler = async (req:AuthRequest,res: Response)=>{
 export const removeNotificationHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
         const {id: userId} = req.userAccessInfo
         const {id: notificationId} = req.params
-        if(!isValid(userId)){
+        if(!isValid(userId) || !isValid(notificationId)){
             return res.status(400).json({
                 success:false,
                 message: "Invalid ID Format!"
             })
         }
          try {
-            const result = await NotificationService.deleteUserNotification(notificationId)
+            const result = await NotificationService.deleteUserNotification(userId,notificationId)
+            return res.status(200).json(result)
          } catch (error) {
              return handleError(res,error)
          }

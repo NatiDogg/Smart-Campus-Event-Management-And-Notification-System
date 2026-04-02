@@ -17,7 +17,8 @@ import subscriptionRouter from './routes/subscriptionRoutes.js';
 import studentRouter from './routes/studentRoutes.js';
 import notificationRouter from './routes/notificationRoutes.js';
 import feedBackRouter from './routes/feedBackRoutes.js';
-import { run } from './services/recommendationService.js';
+import categoryRouter from './routes/categoryRoutes.js';
+import auditLogRouter from './routes/auditLogRoutes.js';
 config();
 
 const app:Express = express();
@@ -34,7 +35,8 @@ app.use(cookieParser())
 app.use(cors(corsOptions))
 
 //routes
-
+app.use('/api/category',categoryRouter)
+app.use("/api/audit",auditLogRouter)
 // Authentication (Login, Register, Logout)
 app.use("/api/auth",authRouter);
 

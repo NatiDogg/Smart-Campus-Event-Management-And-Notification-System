@@ -53,7 +53,7 @@ const ResetPassword = () => {
 
     }
        
-
+    if(!token) return null
        
   return (
     <section className="bg-gray-50 dark:bg-gray-900 ">
