@@ -42,7 +42,7 @@ const ForgotPassword = () => {
         </div>
         <div className="flex flex-col gap-4 mt-4">
                <h2 className="text-xl font-bold text-gray-900">Reset Password</h2>
-               <p className="text-sm text-gray-500">Enter your university email and we'll send you a 6-digit verification code to reset your password.</p>
+               <p className="text-sm text-gray-500">Enter your university email and we'll send you a link to reset your password.</p>
                <input required name="email" value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="name@university.edu" className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200" />
                <button disabled={isPending} type='submit'  className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg hover:bg-blue-700 hover:-translate-y-1 cursor-pointer transition-all">
                  {isPending ? (<Loading size='sm' />) : ('Send Reset Link')}

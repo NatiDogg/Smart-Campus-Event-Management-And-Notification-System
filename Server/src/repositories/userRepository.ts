@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 
 
 export const  getAll = ()=>{
-     return userModel.find({})
+     return userModel.find({}).sort({createdAt: -1})
 }
 
 export const findById = (userId: string)=>{

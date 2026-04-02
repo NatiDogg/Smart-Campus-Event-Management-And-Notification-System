@@ -1,15 +1,32 @@
 import React, { useContext } from 'react'
 import { Icons } from './Icons';
 import { AppContext } from '../context/ContextProvider';
+import { useDeleteUser } from '../hooks/useAdmin';
+import toast from 'react-hot-toast';
+import Loading from './Loading';
 const DeleteUser = () => {
-    const {setActiveModal} = useContext(AppContext)
+    const {setActiveModal,activeModal} = useContext(AppContext)
+    const {mutate, isPending, error} = useDeleteUser()
 
+     const deleteUserHandler = ()=>{
+         if(activeModal.data){
+            mutate(activeModal.data,{
+              onSuccess:()=>{
+                 setActiveModal({name: null, data: null})
+              }
+            })
+         }
+         else{
+            return toast.error("Failed to delete user")
+        
+         }
+     }
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
       {/* Overlay/Backdrop */}
       <div 
         className="absolute inset-0 bg-gray-900/40 backdrop-blur-md transition-opacity" 
-        onClick={()=>setActiveModal(null)} 
+        onClick={()=>setActiveModal({name: null, data:null})} 
       />
 
       {/* Modal Content */}
@@ -32,14 +49,15 @@ const DeleteUser = () => {
         {/* Action Buttons */}
         <div className="flex flex-col gap-3">
           <button
-            
+             disabled={isPending}
+            onClick={deleteUserHandler}
             className="w-full cursor-pointer py-5 bg-red-600 hover:bg-red-700 text-white rounded-3xl font-bold text-sm uppercase tracking-widest transition-all shadow-lg shadow-red-200 active:scale-[0.98]"
           >
-             Delete User
+             {isPending ? (<Loading size='sm' color='white' />) : (' Delete User')}
           </button>
           
           <button
-             onClick={()=>setActiveModal(null)}
+             onClick={()=>setActiveModal({name: null, data: null})}
             className="w-full py-5 cursor-pointer bg-gray-50 hover:bg-gray-100 text-gray-500 rounded-3xl font-bold text-sm uppercase tracking-widest transition-colors"
           >
             Cancel

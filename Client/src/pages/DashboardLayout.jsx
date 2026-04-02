@@ -13,8 +13,8 @@ const DashboardLayout = () => {
               <div>
                 <Outlet />
                  {/* if i have modals i will put them here*/}
-                  {activeModal === 'invite-organizer' && <CreateOrganizer />}
-                  {activeModal === 'delete-user' && <DeleteUser />}
+                  {activeModal.name === 'invite-organizer' && <CreateOrganizer />}
+                  {activeModal.name === 'delete-user' && <DeleteUser />}
               </div>
       </section>
   )
