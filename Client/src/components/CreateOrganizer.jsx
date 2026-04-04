@@ -37,7 +37,7 @@ const CreateOrganizer = () => {
                 organizationName: "",
                 phoneNumber: "",
               });
-               setActiveModal(null)
+               setActiveModal({name: null, data: null})
                
             }
           })

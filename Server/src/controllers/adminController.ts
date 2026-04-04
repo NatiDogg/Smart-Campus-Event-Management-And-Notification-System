@@ -116,10 +116,16 @@ export const getAllUsersHandler = async(req:Request, res:Response)=>{
 export const deactivateUserHandler = async(req:AuthRequest<{id:string}>, res:Response)=>{
          const { id: userId } = req.params;
          const {id: adminId} = req.userAccessInfo
-         if (!isValid(userId)) {
+         if (!isValid(userId) || !isValid(adminId)) {
            return res.status(400).json({
              success: false,
              message: "Invalid ID Format!!",
+           });
+         }
+         if(userId === adminId){
+           return res.status(400).json({
+             success: false,
+             message: "Failed to Deactivate Yourself",
            });
          }
          try {

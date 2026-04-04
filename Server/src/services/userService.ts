@@ -74,10 +74,20 @@ class UserService{
         }
     }
     async updateProfile(userId:string,updateData: UpdateProfileInput, role: "student" | 'admin' | 'organizer'){
-         
-          if(updateData.password){
+          const user = await this.findUserById(userId)
+           if(updateData.email){
+             const userWithThisEmailExists = await this.findUserByEmail(updateData.email);
+             if ( userWithThisEmailExists && userWithThisEmailExists._id.toString() !== userId) {
+               throw new AppError( "Email already in use by another account",400 );
+             }
+           }
+          if(updateData.password ){   
+             if(user.provider.toLowerCase() === 'google'){
+                 throw new AppError("Failed to update password",400)
+             }
              updateData.password = await hashPassword(updateData.password);
           }
+          
           let model;
           switch(role){
              case 'student':
@@ -100,7 +110,7 @@ class UserService{
           }
 
           return {
-            success: true,
+            success: true, 
             message: "Profile Updated Successfully!",
             updatedUser
           }

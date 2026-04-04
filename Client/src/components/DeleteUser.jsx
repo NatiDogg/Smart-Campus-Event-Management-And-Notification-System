@@ -13,12 +13,15 @@ const DeleteUser = () => {
             mutate(activeModal.data,{
               onSuccess:()=>{
                  setActiveModal({name: null, data: null})
+              },
+              onError:()=>{
+                 setActiveModal({name: null, data: null})
               }
             })
          }
          else{
-            return toast.error("Failed to delete user")
-        
+             toast.error("Failed to delete user")
+             setActiveModal({name: null, data: null})
          }
      }
   return (
@@ -51,14 +54,14 @@ const DeleteUser = () => {
           <button
              disabled={isPending}
             onClick={deleteUserHandler}
-            className="w-full cursor-pointer py-5 bg-red-600 hover:bg-red-700 text-white rounded-3xl font-bold text-sm uppercase tracking-widest transition-all shadow-lg shadow-red-200 active:scale-[0.98]"
+            className="w-full cursor-pointer py-5 bg-red-600 hover:bg-red-700 text-white rounded-3xl font-bold text-sm capitalize tracking-widest transition-all shadow-lg shadow-red-200 active:scale-[0.98]"
           >
-             {isPending ? (<Loading size='sm' color='white' />) : (' Delete User')}
+             {isPending ? (<Loading size='sm' color='white' />) : (' Delete ')}
           </button>
           
           <button
              onClick={()=>setActiveModal({name: null, data: null})}
-            className="w-full py-5 cursor-pointer bg-gray-50 hover:bg-gray-100 text-gray-500 rounded-3xl font-bold text-sm uppercase tracking-widest transition-colors"
+            className="w-full py-5 cursor-pointer bg-gray-50 hover:bg-gray-100 text-gray-500 rounded-3xl font-bold text-sm hover:text-red-600 capitalize tracking-widest transition-colors"
           >
             Cancel
           </button>
