@@ -1,13 +1,16 @@
-import React, { useState,useContext } from 'react';
+import React, { useState,useContext, useEffect } from 'react';
 import {AppContext} from '../context/ContextProvider.jsx'
 import { useUpdateProfile } from '../hooks/useProfile.js';
 import Loading from '../components/Loading.jsx'
+import { useGetCategories } from '../hooks/useCategory.js';
 
 
 const Setting = () => {
 
      const {user,setUser} = useContext(AppContext)
-     const {mutate,isPending,data} = useUpdateProfile()
+     const {mutate,isPending} = useUpdateProfile()
+     const {data ,isLoading,error,isFetching} = useGetCategories()
+
   const [fullName, setFullName] = useState(user.fullName);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState( '********');
@@ -15,7 +18,28 @@ const Setting = () => {
   const [department, setDepartment] = useState(user?.department || '');
   const [organizationName, setOrganizationName] = useState(user?.organizationName || '');
    const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
+
+   const [subscribedCategories, setSubscribedCategories] = useState([]);
+
    
+    const handleSubscription = (categoryId)=>{
+       
+        if(subscribedCategories.includes(categoryId)){
+           
+           setSubscribedCategories(prevSub => prevSub.filter(id => id !== categoryId));
+        }
+        else{
+          setSubscribedCategories(prevSub=>([
+            ...prevSub,
+            categoryId
+          ]))
+        }
+       
+
+    }
+
+    
+
 
       
  
@@ -66,12 +90,13 @@ const Setting = () => {
          mutate(updateData,{
            onSuccess:(data)=>{
              setUser(data.updatedUser)
+
            }
          })
      }
 
   
-
+    if (!user) return <Loading size='md' />;
   
 
   return (
@@ -96,7 +121,7 @@ const Setting = () => {
               {user.email}
             </p>
             <div className="flex gap-3 pt-2">
-              <span className="px-4 py-1.5 bg-blue-100 text-blue-700 text-[8px] md:text-[9px] font-black rounded-full uppercase ">
+              <span className="px-4 py-1.5 grid place-content-center bg-blue-100 text-blue-700 text-[8px] md:text-[9px] font-black rounded-full uppercase ">
                 {user.role}
               </span>
               <span className="px-4 text-center py-1.5 bg-green-100 text-green-700 text-[8px] md:text-[9px] font-black rounded-full uppercase tracking-widest">
@@ -170,7 +195,6 @@ const Setting = () => {
                 Password
               </label>
               <input
-                
                 type="password"
                 value={password}
                 disabled={user.provider?.toLowerCase() === "google"}
@@ -183,7 +207,7 @@ const Setting = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {ROLE_FIELDS[user.role].map((field, index) => (
+              {ROLE_FIELDS[user.role]?.map((field, index) => (
                 <div key={index} className="space-y-2 flex flex-col gap-1">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
                     {field.label}
@@ -198,8 +222,12 @@ const Setting = () => {
               ))}
             </div>
           </div>
-          <button disabled={isPending} onClick={onSubmitHandler} className="w-full cursor-pointer py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]">
-            {isPending ? (<Loading size='sm' />) : ('Update Profile') }
+          <button
+            disabled={isPending}
+            onClick={onSubmitHandler}
+            className="w-full hover:-translate-y-1.5 cursor-pointer py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all duration-200 shadow-xl shadow-blue-100 active:scale-[0.98]"
+          >
+            {isPending ? <Loading size="sm" /> : "Update Profile"}
           </button>
         </div>
 
@@ -226,6 +254,34 @@ const Setting = () => {
               <h2 className="text-2xl font-black text-gray-900 tracking-tight">
                 Preferences
               </h2>
+            </div>
+            <div className="space-y-4 pt-6 border-t flex flex-col gap-2 border-gray-100">
+              <label className="text-[14px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                Subscribed Categories
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {(isLoading || isFetching ) && <div className='p-3 w-full flex justify-center items-center'><Loading size='sm' color='black' /></div>}
+                { data && data?.map((cat,index) => (
+                  <button
+                    key={cat.name}
+                     onClick={()=>handleSubscription(cat._id)}
+                    className={`px-5 py-2.5 rounded-xl text-xs font-black border transition-all ${
+                    subscribedCategories.includes(cat._id) 
+                    ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-50' 
+                    : 'bg-white border-gray-200 text-gray-400 hover:border-gray-400'
+                  }`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+               <button
+            
+            
+            className="w-full hover:-translate-y-1.5 cursor-pointer py-3 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all duration-200 shadow-xl shadow-blue-100 active:scale-[0.98]"
+          >
+            Save
+          </button>
             </div>
           </div>
         )}
