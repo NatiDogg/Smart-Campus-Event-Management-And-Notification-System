@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const subscriptionSchema = z.object({
     
-    body: z.array(z.string())
+    categories: z.array(z.string())
 });
 
 

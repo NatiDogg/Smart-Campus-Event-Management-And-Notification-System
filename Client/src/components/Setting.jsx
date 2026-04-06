@@ -3,13 +3,18 @@ import {AppContext} from '../context/ContextProvider.jsx'
 import { useUpdateProfile } from '../hooks/useProfile.js';
 import Loading from '../components/Loading.jsx'
 import { useGetCategories } from '../hooks/useCategory.js';
+import { useGetSubscribedCategories,useSubscribeCategory } from '../hooks/useStudent.js';
+
 
 
 const Setting = () => {
 
      const {user,setUser} = useContext(AppContext)
      const {mutate,isPending} = useUpdateProfile()
-     const {data ,isLoading,error,isFetching} = useGetCategories()
+     const {data:categories ,isLoading,error,isFetching} = useGetCategories()
+     const {mutate: subscribeCategory, isPending: isSubscribingCategory} = useSubscribeCategory()
+     const {data: userSubscribedCategories,isLoading:isSavedCategoriesLoading} = useGetSubscribedCategories()
+
 
   const [fullName, setFullName] = useState(user.fullName);
   const [email, setEmail] = useState(user.email);
@@ -20,11 +25,11 @@ const Setting = () => {
    const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
 
    const [subscribedCategories, setSubscribedCategories] = useState([]);
-
+   
    
     const handleSubscription = (categoryId)=>{
        
-        if(subscribedCategories.includes(categoryId)){
+        if(subscribedCategories?.includes(categoryId)){
            
            setSubscribedCategories(prevSub => prevSub.filter(id => id !== categoryId));
         }
@@ -39,7 +44,19 @@ const Setting = () => {
     }
 
     
+    const saveSubscription = ()=>{
+       subscribeCategory({ categories: subscribedCategories });
+    }
 
+    useEffect(()=>{
+      const preferred = userSubscribedCategories?.preferredCategories;
+       if(user.role.toLowerCase() === 'student' && Array.isArray(preferred)){
+         
+         const categoryIds = preferred.map(cat => (typeof cat === 'object' ? cat._id : cat));
+         
+        setSubscribedCategories(categoryIds);
+       }
+    },[userSubscribedCategories,user.role])
 
       
  
@@ -260,13 +277,13 @@ const Setting = () => {
                 Subscribed Categories
               </label>
               <div className="flex flex-wrap gap-2">
-                {(isLoading || isFetching ) && <div className='p-3 w-full flex justify-center items-center'><Loading size='sm' color='black' /></div>}
-                { data && data?.map((cat,index) => (
+                {(isLoading || isFetching || isSavedCategoriesLoading ) && <div className='p-3 w-full flex justify-center items-center'><Loading size='sm' color='black' /></div>}
+                { categories && categories?.map((cat,index) => (
                   <button
                     key={cat.name}
                      onClick={()=>handleSubscription(cat._id)}
                     className={`px-5 py-2.5 rounded-xl text-xs font-black border transition-all ${
-                    subscribedCategories.includes(cat._id) 
+                    subscribedCategories?.includes(cat._id) 
                     ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-50' 
                     : 'bg-white border-gray-200 text-gray-400 hover:border-gray-400'
                   }`}
@@ -276,11 +293,18 @@ const Setting = () => {
                 ))}
               </div>
                <button
-            
-            
+                disabled={isSubscribingCategory}
+                onClick={saveSubscription}
             className="w-full hover:-translate-y-1.5 cursor-pointer py-3 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all duration-200 shadow-xl shadow-blue-100 active:scale-[0.98]"
           >
-            Save
+            {isSubscribingCategory ? 
+                <div className='flex flex-row w-full items-center justify-center gap-1'>
+                   <Loading size='sm' />
+                   <span className='text-xs'>saving</span>
+                </div>
+                :
+                ('Save')
+            }
           </button>
             </div>
           </div>

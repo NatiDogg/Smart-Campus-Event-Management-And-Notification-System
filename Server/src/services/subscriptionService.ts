@@ -31,7 +31,10 @@ class SubscriptionService{
      async getStudentSubscription(studentId: string){
        const subscriptions = await findStudentSubscription(studentId);
        if (!subscriptions) {
-        return { preferredCategories: [] };
+        return { success: true,
+          message: 'Retrieved All Subscriptions', 
+          subscriptions: [] 
+         };
        }
        return {
           success: true,
