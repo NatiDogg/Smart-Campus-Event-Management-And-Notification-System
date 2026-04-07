@@ -22,7 +22,8 @@ type adminEmailEventType={
 
 }
 type organizerEventType = {
-    id: string
+    id: string,
+    eventId: string
      title: string,
      imageUrl: string
 }
@@ -223,7 +224,7 @@ class NotificationService {
     const subject = isApproved
       ? `🎉 Approved: ${eventDetails.title}`
       : `Rejected: ${eventDetails.title}`;
-    return this.sendEmail(organizer.email, subject, html,organizer._id.toString(),eventDetails.id.toString());
+    return this.sendEmail(organizer.email, subject, html,organizer._id.toString(),eventDetails.eventId.toString());
   }
   // notify student when his registered event deadline is approching
   async notifyStudentDeadline(userId: string, eventTitle: string) {

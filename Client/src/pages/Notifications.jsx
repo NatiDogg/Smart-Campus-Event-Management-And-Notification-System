@@ -39,33 +39,33 @@ const Notifications = () => {
               >
                 <div
                   className={`w-14 h-14 hidden rounded-2xl md:flex items-center justify-center shrink-0 ${
-                    n.title.includes("Approved") ||
-                    n.title.includes("registered")
+                    n.title.toLowerCase().includes("Approved") ||
+                    n.title.toLowerCase().includes("registered")
                       ? "bg-green-100 text-green-600"
                       : n.title.includes("reminder") ||
                         n.title.includes("updated")
                       ? "bg-orange-100 text-orange-600"
-                      : n.title.includes("rejected") ||
-                        n.title.includes("unregistered") ||
-                        n.title.includes("canceled")
+                      : n.title.toLowerCase().includes("rejected") ||
+                        n.title.toLowerCase().includes("unregistered") ||
+                        n.title.toLowerCase().includes("canceled")
                       ? "bg-red-100 text-red-600"
                       : "bg-blue-100 text-blue-600"
                   }`}
                 >
-                  {n.title.includes("New Event Submission") && <Icons.Plus />}
-
-                 
-                  {(n.title.includes("reminder") ||
-                    n.title.includes("updated")) && <Icons.Calendar />}
-
-                  {(n.title.includes("rejected") ||
-                    n.title.includes("unregistered") ||
-                    n.title.includes("canceled")) && (
-                    <Icons.Plus className="rotate-45" />
+                  {n.title.toLowerCase().includes("new event submission") && (
+                    <Icons.Plus />
                   )}
 
-                  
-                  {n.title.includes(" event") && <Icons.Explore />}
+                  {(n.title.toLowerCase().toLowerCase().includes("reminder") ||
+                    n.title.includes("updated")) && <Icons.Calendar />}
+
+                  {(n.title.toLowerCase().includes("rejected") ||
+                    n.title.toLowerCase().includes("unregistered") ||
+                    n.title.toLowerCase().includes("canceled")) && (
+                    <Icons.Report className="rotate-45" />
+                  )}
+                   
+                  {n.title.toLowerCase().includes(" approved") && <Icons.Plus />}
                 </div>
 
                 <div className="flex-1 space-y-1">
@@ -78,7 +78,7 @@ const Notifications = () => {
                         {formatDistanceToNow(n.createdAt, { addSuffix: true })}
                       </span>
                       <button
-                        onClick={()=>mutate(n._id)}
+                        onClick={() => mutate(n._id)}
                         className="p-2 cursor-pointer text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
                         title="Delete notification"
                       >
@@ -87,7 +87,14 @@ const Notifications = () => {
                     </div>
                   </div>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    {n.message}, {n.eventId.title}
+                    {n.message}
+                    
+                    {n.eventId?.title &&
+                      !n.message.includes(n.eventId.title) && (
+                        <span className="font-semibold block mt-1">
+                          Event: {n.eventId.title}
+                        </span>
+                      )}
                   </p>
                 </div>
               </div>

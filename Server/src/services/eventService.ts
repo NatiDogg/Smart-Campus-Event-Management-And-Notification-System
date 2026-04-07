@@ -190,6 +190,7 @@ class EventService {
     }
     void NotificationService.notifyOrganizerEventStatus({
        id: updatedEvent.organizedBy,
+       eventId: updatedEvent._id,
         title: updatedEvent.title,
         imageUrl: updatedEvent.imageUrl,
       }, "approved");
@@ -202,6 +203,7 @@ class EventService {
       }
        void NotificationService.notifyOrganizerEventStatus({
              id: rejectedEvent.organizedBy,
+             eventId: rejectedEvent._id,
              title: rejectedEvent.title,
             imageUrl: rejectedEvent.imageUrl
           }, "rejected");

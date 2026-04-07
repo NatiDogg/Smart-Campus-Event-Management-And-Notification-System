@@ -39,9 +39,9 @@ const AuditLog = () => {
                 <div className="flex items-center gap-6">
                   <div
                     className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 duration-300 ${
-                      log.action.toLowerCase().includes("approved")
+                      log.action.toLowerCase().includes("approved") || log.action.toLowerCase().includes("registered") || log.action.toLowerCase().includes("created")
                         ? "bg-green-100 text-green-600"
-                        : log.action.toLowerCase().includes("rejected")
+                        : log.action.toLowerCase().includes("rejected") || log.action.toLowerCase().includes("deactivated")
                         ? "bg-red-100 text-red-600"
                         : "bg-indigo-100 text-indigo-600"
                     }`}

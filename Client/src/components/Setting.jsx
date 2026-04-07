@@ -282,7 +282,7 @@ const Setting = () => {
                   <button
                     key={cat.name}
                      onClick={()=>handleSubscription(cat._id)}
-                    className={`px-5 py-2.5 rounded-xl text-xs font-black border transition-all ${
+                    className={`px-5 py-2.5 cursor-pointer rounded-xl text-xs font-black border transition-all ${
                     subscribedCategories?.includes(cat._id) 
                     ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-50' 
                     : 'bg-white border-gray-200 text-gray-400 hover:border-gray-400'
