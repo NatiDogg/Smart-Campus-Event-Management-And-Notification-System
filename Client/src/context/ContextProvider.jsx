@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 export const AppContext = createContext()
 const ContextProvider = ({children}) => {
      const [openMenu, setOpenMenu] = useState(false);
-     const [activeModal, setActiveModal] = useState(null);
+     const [activeModal, setActiveModal] = useState({name: null, data: null});
      const [user, setUser] = useState(null);
      const [token, setToken] = useState(null);
      const navigate = useNavigate()

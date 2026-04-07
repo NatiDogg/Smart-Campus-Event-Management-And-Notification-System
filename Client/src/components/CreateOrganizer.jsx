@@ -37,7 +37,7 @@ const CreateOrganizer = () => {
                 organizationName: "",
                 phoneNumber: "",
               });
-               setActiveModal(null)
+               setActiveModal({name: null, data: null})
                
             }
           })
@@ -46,7 +46,7 @@ const CreateOrganizer = () => {
           
      }
   return (
-    <div onClick={()=>setActiveModal(null)} className="fixed  inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div onClick={()=>setActiveModal({name: null, data: null})} className="fixed  inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div onClick={(e)=>e.stopPropagation()} className="bg-white rounded-[2.5rem] w-full max-w-xl p-6 md:p-10 space-y-8 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl md:text-3xl font-black text-gray-900">Create Event Organizer</h2>
             <form onSubmit={onSubmitHandler} id="organizer-form" className="space-y-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4">
@@ -69,7 +69,7 @@ const CreateOrganizer = () => {
               </div>
             </form>
             <div className="flex flex-col-reverse md:flex-row gap-4">
-              <button type='button' onClick={() => setActiveModal(null)} className="flex-1 cursor-pointer py-4 text-gray-500 hover:text-red-600 font-bold">Cancel</button>
+              <button type='button' onClick={() => setActiveModal({name: null, data: null})} className="flex-1 cursor-pointer py-4 text-gray-500 hover:text-red-600 font-bold">Cancel</button>
               <button disabled={isPending} form="organizer-form"  className="flex-1 transition-all duration-150 hover:-translate-y-1 py-4 bg-blue-600 text-white hover:bg-blue-500 cursor-pointer font-bold rounded-2xl shadow-xl">{isPending ? (<Loading size='sm' />) : ('Create Account')}</button>
             </div>
           </div>

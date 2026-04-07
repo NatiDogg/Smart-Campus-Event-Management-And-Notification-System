@@ -15,7 +15,7 @@ adminRouter.post("/createOrganizer",createOrganizerHandler as unknown as Request
 adminRouter.patch("/approve/:id",approveEventHandler as unknown as RequestHandler)
 adminRouter.patch("/reject/:id",rejectEventHandler as unknown as RequestHandler)
 adminRouter.get("/users", getAllUsersHandler)
-adminRouter.delete("/deactivate",deactivateUserHandler as unknown as RequestHandler);
+adminRouter.delete("/deactivate/:id",deactivateUserHandler as unknown as RequestHandler);
 adminRouter.get("/events", getAllEventsHandler);
 adminRouter.post("/createAnnouncement",createAnnouncementHandler as unknown as RequestHandler);
 adminRouter.get("/dashboard",getAdminDashboardDataHandler);

@@ -14,17 +14,19 @@ export const subscribeToCategoryHandler = async(req:AuthRequest, res:Response)=>
                 message: "Invalid Id Format"
             })
         }
-        const parsed = subscriptionSchema.safeParse({body: req.body});
+        
+        const parsed = subscriptionSchema.safeParse(req.body);
+        
         if (!parsed.success) {
           return res.status(400).json({
             success: false,
-            message: "Invalid input: Expected an array of strings",
+            message: "Invalid input data",
             errors: parsed.error.flatten()
           });
         }
         
       try {
-         const result = await SubscriptionService.subscribeToCategory(studentId,parsed.data.body);
+         const result = await SubscriptionService.subscribeToCategory(studentId,parsed.data.categories);
          return res.status(201).json(result)
       } catch (error) {
          return handleError(res,error)

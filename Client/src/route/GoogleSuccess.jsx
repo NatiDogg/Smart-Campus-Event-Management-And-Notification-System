@@ -19,7 +19,7 @@ const GoogleSuccess = () => {
         if(isSuccess && data?.user){
             setToken(token);
             setUser(data.user)
-            toast.success(data.message || "Authenticated Successfully")
+           
             navigate(`/${data.user.role}`, {replace: true});
         }
         // If verification failed
