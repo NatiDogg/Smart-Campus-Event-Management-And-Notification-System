@@ -317,10 +317,7 @@ const Setting = () => {
 export default Setting;
 
 
-{/*
-  ${preferences.aiRecommendationsEnabled ? 'bg-blue-600' : 'bg-gray-200'}
-   ${preferences.aiRecommendationsEnabled ? 'right-1' : 'left-1'}
-  */}
+
 
 
 

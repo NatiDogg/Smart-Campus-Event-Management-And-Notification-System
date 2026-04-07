@@ -9,14 +9,7 @@ const studentModel = userModel.discriminators?.student || userModel.discriminato
        studentId: {
         type: String,
         unique: true
-       },
-       interests:[
-         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Category",
-            
-         }
-       ]
+       }
        
        
 }));

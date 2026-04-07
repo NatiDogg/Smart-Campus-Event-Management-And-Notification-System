@@ -10,6 +10,8 @@ import GoogleSuccess from './route/GoogleSuccess';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/resetPassword';
 
+import useFcmToken from './hooks/useFcmToken'
+
 
 // Public Pages
 const Landing = lazy(() => import('./pages/Landing'));
@@ -63,6 +65,8 @@ function App() {
      const {setUser,user, setToken} = useContext(AppContext)
      const {data,isPending} = useVerifySession()
      
+    useFcmToken(user);
+
 
      useEffect(()=>{
         if(data){
@@ -74,7 +78,7 @@ function App() {
 
      if (isPending || (data && !user)) {
          return <PageLoader />;
-  }
+      }
   return (
     <main className='flex flex-col min-h-screen'>
       <Toaster position='bottom-right' />
