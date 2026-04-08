@@ -25,7 +25,7 @@ const Notifications = () => {
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {(isLoading || isFetching) && (
+        {isLoading  && (
           <div className="p-4 flex flex-col  justify-center items-center">
             <Loading size="md" color="black" />
           </div>

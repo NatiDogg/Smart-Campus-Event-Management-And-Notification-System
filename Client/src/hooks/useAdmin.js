@@ -1,5 +1,5 @@
 import {useQuery, useMutation,useQueryClient} from '@tanstack/react-query'
-import { getAllUsers,deleteUser } from '../api/admin'
+import { getAllUsers,deleteUser,getAdminDashboard } from '../api/admin'
 import {toast} from 'react-hot-toast'
 
 export const useGetAllUsers = ()=>{
@@ -37,6 +37,16 @@ export const useDeleteUser = ()=>{
         },
         onSettled:()=>{
            queryClient.invalidateQueries({queryKey: ['users']})
+            queryClient.invalidateQueries({queryKey: ['adminDashboard']})
         }
+    })
+}
+
+export const useGetAdminDashboard = ()=>{
+    return useQuery({
+        queryKey:['adminDashboard'],
+        queryFn: getAdminDashboard,
+        staleTime: 60000,
+        refetchOnWindowFocus: false
     })
 }

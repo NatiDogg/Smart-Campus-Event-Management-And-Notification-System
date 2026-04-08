@@ -187,9 +187,7 @@ export const getAdminDashboardDataHandler = async(req:Request, res:Response)=>{
           return res.status(200).json({
             success: true,
             message: "Admin Dashboard Retrieved Successfully!",
-            activeUsers: activeUsers.length,
-            activeEvents: activeEvents,
-            pendingEvents: pendingEvents.length,
+            dashboardInfo: [{label: 'Campus Users', value: activeUsers.length}, {label: 'Active Events', value: activeEvents}, {label: 'Pending Events', value: pendingEvents.length}],
             categoryDistribution: categoryDistribution,
             attendanceTrend: attendanceTrend
           })

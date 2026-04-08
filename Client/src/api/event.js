@@ -21,3 +21,7 @@ export const rejectEvent = async(eventId)=>{
   return response.data;
 }
 
+export const getAdminAllEvents = async()=>{
+  const response = await api.get("/api/admin/events")
+  return response.data;
+}

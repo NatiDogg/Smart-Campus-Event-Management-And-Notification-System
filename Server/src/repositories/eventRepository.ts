@@ -57,7 +57,7 @@ export const rejectPendingEvent = (id: string)=>{ // admin
     return eventModel.findByIdAndUpdate(eventId,{status: "rejected"},{returnDocument: "after"});
 }
 export const getAdminEvents = ()=>{
-    return eventModel.find({}).sort({createdAt: -1})
+    return eventModel.find({}).populate('organizedBy', 'organizationName').sort({createdAt: -1})
 }
 
 export const updateEventRegistrationCount = (eventId: string, amount: number) => {

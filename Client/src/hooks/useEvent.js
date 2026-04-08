@@ -1,5 +1,5 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
-import { createEvent,getPendingEvents,approveEvent,rejectEvent } from '../api/event'
+import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents } from '../api/event'
 
 import toast from 'react-hot-toast'
 
@@ -53,7 +53,9 @@ export const useApproveEvent = ()=>{
          toast.error(error.response?.data?.message || 'Failed to approve Event') 
         },
         onSettled:()=>{
-          queryClient.invalidateQueries({queryKey: ['pendingEvents']})
+          queryClient.invalidateQueries({ queryKey: ['pendingEvents'] });
+          queryClient.invalidateQueries({ queryKey: ['adminAllEvents'] });
+           queryClient.invalidateQueries({queryKey: ['adminDashboard']});
         }
     })
 }
@@ -83,7 +85,20 @@ export const useRejectEvent = ()=>{
          toast.error(error.response?.data?.message || 'Failed to reject Event') 
         },
         onSettled:()=>{
-         queryClient.invalidateQueries({queryKey: ['pendingEvents']})
+         queryClient.invalidateQueries({ queryKey: ['pendingEvents'] });
+         queryClient.invalidateQueries({ queryKey: ['adminAllEvents'] });
+          queryClient.invalidateQueries({queryKey: ['adminDashboard']});
         }
     })
 }
+
+export const useGetAdminAllEvents = ()=>{
+     return useQuery({
+        queryKey: ['adminAllEvents'],
+        queryFn: getAdminAllEvents,
+        staleTime: 60000,
+        refetchOnWindowFocus: false
+     })
+}
+
+

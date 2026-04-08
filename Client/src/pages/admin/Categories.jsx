@@ -101,7 +101,7 @@ const Categories = () => {
               </h3>
             </div>
             <div className="divide-y p-2 divide-gray-50">
-              {(isLoading || isFetching) && !error && (
+              {isLoading  && !error && (
                 <div className="py-12">
                   <Loading size="md" color="black" />
                 </div>

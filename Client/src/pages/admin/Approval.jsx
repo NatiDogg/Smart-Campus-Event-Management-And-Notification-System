@@ -33,18 +33,18 @@ const Approval = () => {
         </div>
         <div className="flex bg-white rounded-2xl p-1 border border-gray-100 shadow-sm">
           <button className="px-6 py-2 rounded-xl bg-blue-50 text-blue-600 text-xs md:text-sm text-nowrap font-bold">
-            Pending ({data?.events?.length || 0})
+           Pending ({isLoading ? '...' : (data?.events?.length || 0)})
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8">
-        {(isLoading || isFetching) && (
+        {isLoading && (
           <div className="mt-10 flex flex-col justify-center items-center">
             <Loading size="md" color="black" />
           </div>
         )}
-        {!isLoading && !isFetching && (data && data?.events?.length === 0 || error ) && (
+        {!isLoading && (data && data?.events?.length === 0 || error ) && (
           <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
               <Icons.Explore className="w-10 h-10 text-gray-300" />
@@ -55,7 +55,7 @@ const Approval = () => {
             </p>
           </div>
         )}
-        {data &&
+        {data && 
           data.events?.map((event) => (
             <div
               key={event._id}
@@ -72,8 +72,8 @@ const Approval = () => {
               <div className="flex-1 flex flex-col gap-3 justify-between py-2">
                 <div>
                   <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
-                    <span className="px-3 py-1 bg-none md:bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase rounded-full tracking-wider">
-                      {event.category.name}
+                    <span className="px-3 py-1 bg-none md:bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase rounded-full ">
+                      {event.category?.name || 'Category Deleted'}
                     </span>
                     <span className="text-xs text-gray-400 font-medium">
                       {`${format(new Date(event.startDate), "PPP")} ${format(
@@ -93,8 +93,9 @@ const Approval = () => {
                   <p className="text-gray-500 line-clamp-2 text-sm leading-relaxed">
                     {event.description}
                   </p>
-                  <div className="mt-4 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                  <div className="mt-4 flex items-center gap-4">
+                     <div className="flex items-center gap-1">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
@@ -108,9 +109,19 @@ const Approval = () => {
                       Organizer:{" "}
                       <span className="text-blue-600">
                         {event.organizedBy?.organizationName ||
-                          "Deleted Organzier"}
+                          "Deleted Organizer"}
                       </span>
                     </span>
+                     </div>
+                     <div className='flex items-center gap-1'>
+                       <span className="text-sm font-bold text-gray-700">
+                      Location:{" "}
+                      <span className="text-gray-400">
+                        {event.location}
+                      </span>
+                    </span>
+
+                     </div>
                   </div>
                 </div>
 
