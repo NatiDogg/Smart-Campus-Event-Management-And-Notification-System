@@ -47,7 +47,7 @@ const CreateOrganizer = () => {
      }
   return (
     <div onClick={()=>setActiveModal({name: null, data: null})} className="fixed  inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div onClick={(e)=>e.stopPropagation()} className="bg-white rounded-[2.5rem] w-full max-w-xl p-6 md:p-10 space-y-8 animate-in zoom-in-95 duration-200">
+          <div onClick={(e)=>e.stopPropagation()} className="bg-white rounded-3xl w-full max-w-xl p-6 md:p-10 space-y-8 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl md:text-3xl font-black text-gray-900">Create Event Organizer</h2>
             <form onSubmit={onSubmitHandler} id="organizer-form" className="space-y-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4">
               <div className="space-y-1 flex flex-col gap-1">

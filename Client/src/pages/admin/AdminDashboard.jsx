@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { CategoryBarChart, TrendChart } from "../../components/Charts";
 import { Icons } from "../../components/Icons";
 import { useGetAdminDashboard } from "../../hooks/useAdmin";
@@ -6,14 +6,14 @@ import { useGetAdminAllEvents } from "../../hooks/useEvent";
 import Loading from "../../components/Loading.jsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {Link} from 'react-router-dom'
+import {AppContext} from '../../context/ContextProvider.jsx'
 
 const AdminDashboard = () => {
+  const {setActiveModal} = useContext(AppContext);
   const {data:dashboardData,isLoading:isDashboardDataLoading} = useGetAdminDashboard();
   const { data, isLoading, error } = useGetAdminAllEvents();
  
-    if(dashboardData){
-      console.log(dashboardData)
-    }
+    
   
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -41,7 +41,7 @@ const AdminDashboard = () => {
           </p>
         </div>
         <div className="flex flex-wrap gap-4">
-          <button className="px-6 py-4 cursor-pointer bg-blue-600 text-white rounded-2xl font-bold shadow-2xl hover:bg-blue-700 transition-all flex items-center gap-2 active:scale-95">
+          <button onClick={()=>setActiveModal({name: 'create-announcement', data: null})} className="px-6 py-4 cursor-pointer bg-blue-600 text-white rounded-2xl font-bold shadow-2xl hover:bg-blue-700 transition-all flex items-center gap-2 active:scale-95">
             <Icons.Plus /> Create Announcement
           </button>
           <Link to={'/admin/users'}>

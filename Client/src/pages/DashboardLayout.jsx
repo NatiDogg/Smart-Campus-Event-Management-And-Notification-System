@@ -4,6 +4,8 @@ import Header from '../components/Header'
 import { AppContext } from '../context/ContextProvider'
 import CreateOrganizer from '../components/CreateOrganizer'
 import DeleteUser from '../components/DeleteUser'
+import CreateAnnouncement from '../components/createAnnouncement'
+
 const DashboardLayout = () => {
    const { activeModal } = useContext(AppContext)
 
@@ -15,6 +17,7 @@ const DashboardLayout = () => {
                  {/* if i have modals i will put them here*/}
                   {activeModal.name === 'invite-organizer' && <CreateOrganizer />}
                   {activeModal.name === 'delete-user' && <DeleteUser />}
+                  {activeModal.name === 'create-announcement' && <CreateAnnouncement />}
               </div>
       </section>
   )
