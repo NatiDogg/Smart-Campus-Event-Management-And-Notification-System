@@ -99,7 +99,7 @@ export const deleteEventHandler = async(req:AuthRequest<{id: string}>, res:Respo
 
     try {
          
-        const result = await EventService.deleteEvent(organizerId,eventId);
+        const result = await EventService.cancelEvent(organizerId,eventId);
         return res.status(200).json(result);
          
         
@@ -142,10 +142,9 @@ export const getOrganizerDashboardHandler = async(req:AuthRequest, res:Response)
             success: true,
             message: "Organizer Dashboard Data Fetched Successfully!",
             activeEvents: activeEvents,
-            ActiveEventsLength: activeEvents.length,
-            attendanceCount: attendedStudentCount,
-            pendingEventsCount: pendingEventsCount,
-            averageRating: averageRating
+            dashboardInfo: [{label: 'Live Events', value: activeEvents.length},{label: 'Attendees', value:attendedStudentCount},{label: 'Pending', value:pendingEventsCount },{label: 'Average Rating', value: averageRating}],
+          
+            
            })
             
          } catch (error) {

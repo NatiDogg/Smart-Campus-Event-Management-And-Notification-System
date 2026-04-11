@@ -11,7 +11,7 @@ organizerRouter.use(isOrganizer as unknown as RequestHandler);
 organizerRouter.post("/create", upload.single("image"),createEventHandler as unknown as RequestHandler);
 organizerRouter.get("/events",getEventsByOrganizerHandler as unknown as RequestHandler);
 organizerRouter.put("/update/:id",updateEventHandler as unknown as RequestHandler)
-organizerRouter.delete("/deleteEvent/:id", deleteEventHandler as unknown as RequestHandler);
+organizerRouter.put("/cancelEvent/:id", deleteEventHandler as unknown as RequestHandler);
 organizerRouter.get("/feedbacks",getOrganizerFeedbacksHandler as unknown as RequestHandler);
 organizerRouter.get("/dashboard",getOrganizerDashboardHandler as unknown as RequestHandler);
 organizerRouter.get("/event/:id",getRegisteredStudentsForEventHandler as unknown as RequestHandler);

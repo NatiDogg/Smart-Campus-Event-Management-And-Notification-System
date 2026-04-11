@@ -72,8 +72,8 @@ class AttendanceService {
   }
   async getAllAttendedStudents(organizerId: string) {
     const count = await findAllAttendendStudentNumber(organizerId);
-    if (!count) {
-      throw new AppError("Failed to Count Attended Students!", 500);
+    if (count === undefined || count === null) {
+    throw new AppError("Failed to Count Attended Students!", 500);
     }
     return count;
   }

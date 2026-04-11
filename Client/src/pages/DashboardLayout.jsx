@@ -5,6 +5,7 @@ import { AppContext } from '../context/ContextProvider'
 import CreateOrganizer from '../components/CreateOrganizer'
 import DeleteUser from '../components/DeleteUser'
 import CreateAnnouncement from '../components/createAnnouncement'
+import CancelEvent from './organizer/CancelEvent'
 
 const DashboardLayout = () => {
    const { activeModal } = useContext(AppContext)
@@ -18,6 +19,7 @@ const DashboardLayout = () => {
                   {activeModal.name === 'invite-organizer' && <CreateOrganizer />}
                   {activeModal.name === 'delete-user' && <DeleteUser />}
                   {activeModal.name === 'create-announcement' && <CreateAnnouncement />}
+                  {activeModal.name === 'cancel-event' && <CancelEvent />}
               </div>
       </section>
   )

@@ -1,5 +1,5 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
-import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents } from '../api/event'
+import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents, cancelEvent } from '../api/event'
 
 import toast from 'react-hot-toast'
 
@@ -18,7 +18,26 @@ export const useCreateEvent = ()=>{
         }
     })
 
+
 }
+
+export const useCancelEvent = ()=>{
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: cancelEvent,
+        onSuccess:(data)=>{
+          toast.success(data.message)
+          queryClient.invalidateQueries({queryKey: ['organizerDashboard']})
+        },
+        onError:(error)=>{
+          const errorMessage = error.response?.data.message || 'Failed to Delete Event'
+          toast.error(errorMessage)
+        }
+    })
+}
+
+
+
 export const useGetPendingEvents = ()=>{
     return useQuery({
         queryKey: ['pendingEvents'],

@@ -34,13 +34,21 @@ export const updateOrganizerEvent = (eventData: eventupdateType, eventId: string
     
     return eventModel.findByIdAndUpdate(id, eventData,{returnDocument: "after"}).populate({path: "organizedBy", select: "fullName email organizationName"})
 }
-export const deleteOrganizerEvent = (eventId: string, organizerId: string)=>{ //organizer
-     return eventModel.findOneAndDelete({
-           _id: new Types.ObjectId(eventId),
-           organizedBy: new Types.ObjectId(organizerId)
-     })
-
-}
+export const cancelOrganizerEvent = async (eventId: string, organizerId: string) => {
+  return await eventModel.findOneAndUpdate(
+    { 
+      _id: new Types.ObjectId(eventId), 
+      organizedBy: new Types.ObjectId(organizerId) // 🛡️ Security: Must own the event
+    },
+    { 
+      $set: { status: 'cancelled' } 
+    },
+    { 
+      returnDocument: 'after', 
+      runValidators: true 
+    }
+  );
+};
 
 export const findAllEvents = ()=>{ //student
      return eventModel.find({status: "approved"}).populate("category", "name").populate("organizedBy", "organizationName").sort({ startDate: 1 })
