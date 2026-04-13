@@ -9,8 +9,8 @@ export const createEvent = async(eventData)=>{
         
 }
 
-export const editEvent = async(updateData)=>{
-   const response = await api.put('/api/organizer/update', updateData);
+export const editEvent = async({id, updateData})=>{
+   const response = await api.put(`/api/organizer/update/${id}`, updateData);
    return response.data;
 }
 

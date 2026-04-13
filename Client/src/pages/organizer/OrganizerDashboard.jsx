@@ -9,7 +9,8 @@ import {AppContext} from '../../context/ContextProvider'
 const OrganizerDashboard = () => {
    const {setActiveModal} = useContext(AppContext);
   const { data: dashboardData, isLoading: isDashboardDataLoading } = useGetOrganizerDashboard();
-
+ 
+   
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
