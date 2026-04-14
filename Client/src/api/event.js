@@ -36,3 +36,7 @@ export const getAdminAllEvents = async()=>{
   const response = await api.get("/api/admin/events")
   return response.data;
 }
+export const getOrganizerAllEvents = async()=>{
+   const response = await api.get('/api/organizer/events');
+   return response.data
+}

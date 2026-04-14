@@ -117,7 +117,7 @@ const OrganizerDashboard = () => {
                         <button className="px-4 py-2 cursor-pointer bg-gray-900 text-white rounded-lg text-xs font-bold hover:bg-gray-800 transition-all">
                           Check-In
                         </button>
-                        <button onClick={()=>setActiveModal({name: 'cancel-event', data: event._id})} className="p-2 cursor-pointer text-gray-400 hover:text-red-600 transition-colors" title="Delete event">
+                        <button onClick={()=>setActiveModal({name: 'cancel-event', data: event._id})} className="p-2 cursor-pointer text-gray-400 hover:text-red-600 transition-colors" title="Cancel event">
                           <Icons.Cancel />
                         </button>
                       </>

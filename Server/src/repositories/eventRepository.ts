@@ -21,7 +21,7 @@ export const findEvent = (title: string, startDate: Date)=>{
     return eventModel.findOne({title,startDate});
 }
 export const getOrganizerEvents = (id:string)=>{ //organizer
-    return  eventModel.find({organizedBy: new Types.ObjectId(id)}).sort({createdAt: -1});
+    return  eventModel.find({organizedBy: new Types.ObjectId(id)}).populate('category', 'name').sort({createdAt: -1});
 }
 
 export const findEventById = (eventId:string)=>{ 
@@ -38,7 +38,7 @@ export const cancelOrganizerEvent = async (eventId: string, organizerId: string)
   return await eventModel.findOneAndUpdate(
     { 
       _id: new Types.ObjectId(eventId), 
-      organizedBy: new Types.ObjectId(organizerId) // 🛡️ Security: Must own the event
+      organizedBy: new Types.ObjectId(organizerId) 
     },
     { 
       $set: { status: 'cancelled' } 
@@ -111,7 +111,7 @@ export const getOrganizerEventStatusDistribution = async(organizerId: string)=>{
 } 
 
 export const getAllActiveEvents = ()=>{
-   return  eventModel.countDocuments({status: "approved"})
+   return  eventModel.countDocuments({status: "approved", endDate: {$gte: new Date()}})
 }
 
 

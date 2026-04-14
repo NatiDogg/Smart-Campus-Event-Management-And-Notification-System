@@ -1,16 +1,17 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
-import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents, cancelEvent, editEvent } from '../api/event'
+import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents, cancelEvent, editEvent, getOrganizerAllEvents } from '../api/event'
 
 import toast from 'react-hot-toast'
 
 
 export const useCreateEvent = ()=>{
-     
+      const queryClient = useQueryClient()
     return useMutation({
         mutationFn: createEvent,
         onSuccess:(data)=>{
           toast.success(data.message)
-          
+          queryClient.invalidateQueries({queryKey: ['organizerDashboard']})
+          queryClient.invalidateQueries({queryKey:['organizerAllEvents']})
         },
         onError: (error)=>{
             const errorMessage = error.response?.data.message || 'Failed to create Event'
@@ -27,6 +28,7 @@ export const useEditEvent = ()=>{
      onSuccess:(data)=>{
        toast.success(data.message)
        queryClient.invalidateQueries({queryKey: ['organizerDashboard']})
+        queryClient.invalidateQueries({queryKey:['organizerAllEvents']})
      },
      onError:(error)=>{
       const errorMessage = error.response?.data?.message || 'Failed to edit Event'
@@ -42,6 +44,7 @@ export const useCancelEvent = ()=>{
         onSuccess:(data)=>{
           toast.success(data.message)
           queryClient.invalidateQueries({queryKey: ['organizerDashboard']})
+          queryClient.invalidateQueries({queryKey:['organizerAllEvents']})
         },
         onError:(error)=>{
           const errorMessage = error.response?.data.message || 'Failed to Delete Event'
@@ -132,6 +135,15 @@ export const useGetAdminAllEvents = ()=>{
         staleTime: 60000,
         refetchOnWindowFocus: false
      })
+}
+
+export const useGetOrganizerAllEvents = ()=>{
+  return useQuery({
+    queryKey: ['organizerAllEvents'],
+    queryFn: getOrganizerAllEvents,
+    staleTime: 60000,
+    refetchOnWindowFocus: false
+  })
 }
 
 

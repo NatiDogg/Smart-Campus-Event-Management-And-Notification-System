@@ -89,7 +89,7 @@ export const updateEventHandler = async(req:AuthRequest<{id: string}>, res: Resp
          }
 }
 
-export const deleteEventHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
+export const deleteEventHandler = async(req:AuthRequest<{id: string}>, res:Response): Promise<any>=>{
      const { id: organizerId } = req.userAccessInfo;
      const { id: eventId } = req.params;
 
