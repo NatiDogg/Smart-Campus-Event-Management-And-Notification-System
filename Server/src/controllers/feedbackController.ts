@@ -10,7 +10,7 @@ export const submitFeedbackHandler = async(req:AuthRequest<{id: string}>, res:Re
     const {id: studentId} = req.userAccessInfo
     const {id: eventId} = req.params
     const parsed = feedbackSchema.safeParse(req.body);
-     if(!isValid(studentId)){
+     if(!isValid(studentId) || !isValid(eventId)){
         return res.status(400).json({
             success: false,
             message: "Invalid ID Format!"

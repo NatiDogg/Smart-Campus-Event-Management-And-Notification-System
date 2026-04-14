@@ -1,15 +1,18 @@
-import React, { useState,useContext } from 'react'
+import React, { useState,useContext, useEffect } from 'react'
 import { Icons } from '../../components/Icons'
 import { useGetOrganizerDashboard } from '../../hooks/useOrganizer'
 import Loading from '../../components/Loading'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight,Star } from "lucide-react";
 import {format} from 'date-fns'
 import {AppContext} from '../../context/ContextProvider'
+import { useGetFeedbacks } from '../../hooks/useFeedback'
+
 const OrganizerDashboard = () => {
    const {setActiveModal} = useContext(AppContext);
   const { data: dashboardData, isLoading: isDashboardDataLoading } = useGetOrganizerDashboard();
- 
+  const {data:feedbacksData,isLoading:isFeedbacksLoading} = useGetFeedbacks()
+   
    
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,7 +26,9 @@ const OrganizerDashboard = () => {
   const currentEvents = activeEvents.slice(indexOfFirstEvent, indexOfLastEvent);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+  
+   const slicedFeedbacks = feedbacksData?.feedbacks.slice(0,4) || []
+   console.log(slicedFeedbacks);
   return (
     <div className="space-y-12 p-5">
       {/* Header Section */}
@@ -173,30 +178,26 @@ const OrganizerDashboard = () => {
             </Link>
           </div>
           <div className="space-y-6">
-            {[
-              { name: 'Alex J.', comment: 'Loved the React workshop!', rating: 5 },
-              { name: 'Maria G.', comment: 'Great content, very clear.', rating: 4 },
-              { name: 'Sven S.', comment: 'Networking was top notch.', rating: 5 },
-            ].map((fb, i) => (
-              <div key={i} className="space-y-2 group cursor-pointer">
+            {slicedFeedbacks.map((feedback, index) => (
+              <div key={index} className="space-y-2 group cursor-pointer">
                 <div className="flex justify-between items-center">
-                  <span className="font-bold text-gray-900">{fb.name}</span>
+                  <span className="font-bold text-gray-900">{feedback.studentId.fullName}</span>
                   <div className="flex gap-0.5">
-                    {[...Array(fb.rating)].map((_, j) => (
-                      <svg key={j} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-yellow-400">
-                        <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
-                      </svg>
+                    {[...Array(feedback.rating)].map((_, j) => (
+                      <div key={j} className='flex flex-row items-center'>
+                         <Star fill='#facc15' color='#facc15' size={13} />
+                      </div>
                     ))}
                   </div>
                 </div>
-                <p className="text-sm text-gray-500 line-clamp-2 italic group-hover:text-gray-900 transition-colors">"{fb.comment}"</p>
+                <p className="text-sm text-gray-500 line-clamp-2 italic group-hover:text-gray-900 transition-colors">"{feedback.comment}"</p>
               </div>
             ))}
           </div>
           <div className="pt-6 border-t border-gray-50">
              <div className="bg-blue-50 p-4 rounded-2xl">
                 <p className="text-[10px] font-black italic text-blue-600 tracking-widest mb-1">Tip</p>
-                <p className="text-xs text-blue-700 font-medium leading-relaxed">Responding to feedback increases student trust by 80%.</p>
+                <p className="text-xs text-blue-700 font-medium leading-relaxed">Responding to feedback increases student trust by 80%. </p>
              </div>
           </div>
         </div>

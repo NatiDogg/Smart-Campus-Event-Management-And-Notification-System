@@ -49,8 +49,8 @@ const OrganizerEvents = () => {
       </div>
 
       {/* Events Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
-        {isLoading && <div> <Loading size='md' color='black' /></div>}
+      <div className={`${isLoading ? 'flex w-full' : ''}grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10`}>
+        {isLoading && <div className='flex flex-col p-5 justify-center items-center w-full'> <Loading size='md' color='black' /></div>}
         {filteredEvents?.map((event) => (
           <div key={event._id} className="group flex flex-col h-full rounded-4xl bg-white border border-gray-100 hover:border-gray-200 hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500 overflow-hidden">
             
@@ -93,7 +93,7 @@ const OrganizerEvents = () => {
                 </div>
                 <div className="flex items-center gap-3 text-gray-400">
                   <MapPin className="w-4 h-4 text-gray-900" />
-                  <span className="text-xs font-bold text-gray-700">{event.location}</span>
+                  <span className="text-xs font-bold text-gray-400">{event.location}</span>
                 </div>
               </div>
             </div>

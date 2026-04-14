@@ -18,15 +18,17 @@ export const checkAlreadySubmittedFeedback = (studentId: string, eventId: string
     });
 }
 
-export const findOrganizerFeedbacks = (organizerId: string)=>{
-    return feedbackModel.find({}).populate("studentId", "fullName profile").populate({
-         path: "eventId",
-         match: {
-            organizedBy: new Types.ObjectId(organizerId)
-         },
-         select: "title"
-    }).sort({createdAt: -1}).lean()
-}
+export const findOrganizerFeedbacks = async (organizerId: string) => {
+    return feedbackModel.find()
+        .populate({
+            path: "eventId",
+            select: "title",
+            match: { organizedBy: new Types.ObjectId(organizerId) }
+        })
+        .populate("studentId", "fullName profile")
+        .sort({ createdAt: -1 })
+        .lean();
+};
 
 export const findOrganizerAverageRating = async(organizerId: string)=>{
      const result = await feedbackModel.aggregate([
