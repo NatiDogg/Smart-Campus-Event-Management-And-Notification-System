@@ -3,7 +3,7 @@ import { Icons } from '../../components/Icons'
 import { useGetOrganizerDashboard } from '../../hooks/useOrganizer'
 import Loading from '../../components/Loading'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight,Star } from "lucide-react";
+import { ChevronLeft, ChevronRight,Star,MessageSquareOff } from "lucide-react";
 import {format} from 'date-fns'
 import {AppContext} from '../../context/ContextProvider'
 import { useGetFeedbacks } from '../../hooks/useFeedback'
@@ -178,21 +178,34 @@ const OrganizerDashboard = () => {
             </Link>
           </div>
           <div className="space-y-6">
-            {slicedFeedbacks.map((feedback, index) => (
+            {isFeedbacksLoading && <div className='flex flex-col justify-center items-center'> <Loading size='sm' color='black' /></div>}
+            { slicedFeedbacks.length > 0 && slicedFeedbacks.map((feedback, index) => (
               <div key={index} className="space-y-2 group cursor-pointer">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-gray-900">{feedback.studentId.fullName}</span>
                   <div className="flex gap-0.5">
-                    {[...Array(feedback.rating)].map((_, j) => (
-                      <div key={j} className='flex flex-row items-center'>
-                         <Star fill='#facc15' color='#facc15' size={13} />
-                      </div>
-                    ))}
+                    {[...Array(5)].map((_, j) => (
+              <Star 
+                key={j} 
+                fill={j < feedback.rating ? '#facc15' : 'none'} 
+                color={j < feedback.rating ? '#facc15' : '#e5e7eb'} 
+                size={13} 
+              />
+            ))}
                   </div>
                 </div>
                 <p className="text-sm text-gray-500 line-clamp-2 italic group-hover:text-gray-900 transition-colors">"{feedback.comment}"</p>
               </div>
-            ))}
+            )) }
+            {(!isFeedbacksLoading && slicedFeedbacks.length === 0) && (<div className="flex flex-col items-center justify-center py-10 px-4 text-center  rounded-xl ">
+    <div className="bg-white p-3 rounded-full shadow-sm mb-3">
+      <MessageSquareOff className="text-gray-400" size={28} />
+    </div>
+    <h3 className="text-sm font-semibold text-gray-900">No recent feedback</h3>
+    <p className="text-xs text-gray-500 mt-1 max-w-50">
+      When students leave reviews for your events, they will appear here.
+    </p>
+  </div>)}
           </div>
           <div className="pt-6 border-t border-gray-50">
              <div className="bg-blue-50 p-4 rounded-2xl">
