@@ -1,5 +1,5 @@
 import {useMutation, useQuery} from '@tanstack/react-query'
-import {getOrganizerDashboard} from '../api/organizer'
+import {getOrganizerDashboard,getRegisteredStudents} from '../api/organizer'
 
 
 export const  useGetOrganizerDashboard = ()=>{
@@ -8,6 +8,15 @@ export const  useGetOrganizerDashboard = ()=>{
         queryFn: getOrganizerDashboard,
         staleTime: 60000,
         refetchOnWindowFocus: false
+    })
+}
+export const useGetRegisteredStudents = (eventId,options = {})=>{
+    return useQuery({
+        queryKey:['registeredStudents',eventId],
+        queryFn:()=>getRegisteredStudents(eventId),
+        staleTime: 60000,
+        refetchOnWindowFocus: false,
+        ...options
     })
 }
 

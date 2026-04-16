@@ -14,7 +14,7 @@ organizerRouter.put("/update/:id",updateEventHandler as unknown as RequestHandle
 organizerRouter.put("/cancelEvent/:id", deleteEventHandler as unknown as RequestHandler);
 organizerRouter.get("/feedbacks",getOrganizerFeedbacksHandler as unknown as RequestHandler);
 organizerRouter.get("/dashboard",getOrganizerDashboardHandler as unknown as RequestHandler);
-organizerRouter.get("/event/:id",getRegisteredStudentsForEventHandler as unknown as RequestHandler);
+organizerRouter.get("/registeredStudents/:id",getRegisteredStudentsForEventHandler as unknown as RequestHandler);
 organizerRouter.patch("/attendance/mark/:id",markStudentAttendanceHandler as unknown as RequestHandler);
 organizerRouter.get("/analytics",getOrganizerAnalytics as unknown as RequestHandler);
 

@@ -11,7 +11,7 @@ import AttendanceService from "../services/attendanceService.js";
 import AuditService from "../services/auditService.js";
 
 
-export const createEventHandler = async(req:AuthRequest, res:Response)=>{
+export const createEventHandler = async(req:AuthRequest, res:Response):Promise<any>=>{
 
        const {id} = req.userAccessInfo
        const file = req.file
@@ -198,7 +198,9 @@ export const getRegisteredStudentsForEventHandler = async(req:AuthRequest<{id: s
         }
      try {
         const event = await EventService.getEventById(eventId);
-        if(!event || event.organizedBy.toString() !== organizerId){
+        if(!event || event.organizedBy._id.toString() !== organizerId.toString()){
+           console.log(event.organizedBy.toString())
+           console.log(organizerId.toString())
           throw new AppError("You do not have permission to view this event's attendance.", 403);
         }
         const [registrations,attendanceRecords] = await Promise.all([RegistrationService.getStudentsRegistrationStatus(eventId), AttendanceService.getAttendanceSheetForEvent(eventId)])
