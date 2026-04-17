@@ -240,7 +240,7 @@ export const markStudentAttendanceHandler = async(req: AuthRequest<{id: string}>
        }
         try {
             const event = await EventService.getEventById(eventId);
-        if(!event || event.organizedBy.toString() !== organizerId){
+        if(!event || event.organizedBy._id.toString() !== organizerId.toString()){
           throw new AppError("Unauthorized: You do not own this event", 403);
         }
          const record = await AttendanceService.takeAttendance(studentId,eventId,organizerId,isPresent)

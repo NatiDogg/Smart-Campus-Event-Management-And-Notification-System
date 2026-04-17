@@ -1,6 +1,6 @@
-import {useMutation, useQuery} from '@tanstack/react-query'
-import {getOrganizerDashboard,getRegisteredStudents} from '../api/organizer'
-
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import {getOrganizerDashboard,getRegisteredStudents,markStudentAttendance} from '../api/organizer'
+import {toast} from 'react-hot-toast'
 
 export const  useGetOrganizerDashboard = ()=>{
     return useQuery({
@@ -20,31 +20,38 @@ export const useGetRegisteredStudents = (eventId,options = {})=>{
     })
 }
 
+export const useMarkStudentAttendance = ()=>{
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn:markStudentAttendance,
+        onMutate:async(variables)=>{
+            await queryClient.cancelQueries({queryKey: ['registeredStudents', variables.eventId]})
+            const previousRegistrationList = queryClient.getQueryData(['registeredStudents', variables.eventId])
+            queryClient.setQueryData(['registeredStudents', variables.eventId], (old)=>{
+                if (!old) return old;
+                return {
+                    ...old,
+                    registeredStudent: old.registeredStudent.map((reg)=> reg.student._id === variables.data.studentId ? {...reg, isPresent: variables.data.isPresent} : reg)
+                }
+            })
+            return {previousRegistrationList}
+        },
+        onSuccess:(data,variables)=>{
+          toast.success(data.message)
+           
+        },
+        onError:(error,variables,context)=>{
+            if(context?.previousRegistrationList){
+                queryClient.setQueryData(['registeredStudents',variables.eventId], context.previousRegistrationList)
+            }
+          const errorMessage = error.response?.data?.message || 'Failed to mark Attendance'
+          toast.error(errorMessage)
+        },
+        onSettled:(data,error,variables)=>{
+          queryClient.invalidateQueries({queryKey: ['registeredStudents',variables.eventId]})
+        }
+    })
+}
 
-{/*
 
-ActiveEventsLength: 4
-activeEvents: (4) [{…}, {…}, {…}, {…}]
-attendanceCount: 0
-averageRating: 0
-message:  "Organizer Dashboard Data Fetched Successfully!"
-pendingEventsCount : 0
-success :  true
-*/}
-
-//registeredstudents
-{/*{success: true, message: 'Registered Student Fetched Successfully!', registeredStudent: Array(0)}*/}
-{/*success: true, message: 'Registered Student Fetched Successfully!', registeredStudent: Array(3)}
-message:  "Registered Student Fetched Successfully!"
-registeredStudent: Array(3)
-0: {student: {…}, isPresent: false, attendanceId: null}
-1: {student: {…}, isPresent: false, attendanceId: null}
-2: {student: {…}, isPresent: false, attendanceId: null}
-length: 3
-[[Prototype]]
-: 
-Array(0)
-success
-: 
-true*/}
 
