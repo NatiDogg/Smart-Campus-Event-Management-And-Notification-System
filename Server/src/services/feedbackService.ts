@@ -24,11 +24,14 @@ class FeedbackService{
       return  feedback;
     }
     async getOrganizerFeedbacks(organizerId: string){
-      const feedbacks = await findOrganizerFeedbacks(organizerId);
-      if (!feedbacks) {
+      const rawFeedbacks = await findOrganizerFeedbacks(organizerId);
+      if (rawFeedbacks === null || rawFeedbacks === undefined) {
+        
         throw new AppError("Could not retrieve feedbacks", 500);
       }
-      return feedbacks.filter(feedback=>feedback.eventId !== null);
+     const filteredFeedbacks = rawFeedbacks.filter(f => f.eventId !== null);
+     return filteredFeedbacks;
+
     }
     async getAverageRating(organizerId: string){
        const averageRating = await findOrganizerAverageRating(organizerId);

@@ -8,6 +8,7 @@ export const useCreateOrganizer = ()=>{
         onSuccess:(data)=>{
             toast.success(data.message)
             queryClient.invalidateQueries({queryKey: ['users']})
+             queryClient.invalidateQueries({queryKey: ['adminDashboard']})
         },
         onError:(error)=>{
              const errorMessage = error.response?.data.message || 'Failed to Invite organizer'

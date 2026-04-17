@@ -8,6 +8,17 @@ export const createEvent = async(eventData)=>{
      return response.data
         
 }
+
+export const editEvent = async({id, updateData})=>{
+   const response = await api.put(`/api/organizer/update/${id}`, updateData);
+   return response.data;
+}
+
+
+export const cancelEvent = async(eventId)=>{
+  const response = await api.put(`/api/organizer/cancelEvent/${eventId}`)
+  return response.data
+}
 export const getPendingEvents = async()=>{
     const response = await api.get("/api/admin/pendingEvents");
     return response.data;
@@ -21,3 +32,11 @@ export const rejectEvent = async(eventId)=>{
   return response.data;
 }
 
+export const getAdminAllEvents = async()=>{
+  const response = await api.get("/api/admin/events")
+  return response.data;
+}
+export const getOrganizerAllEvents = async()=>{
+   const response = await api.get('/api/organizer/events');
+   return response.data
+}

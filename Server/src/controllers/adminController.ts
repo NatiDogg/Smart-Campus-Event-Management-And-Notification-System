@@ -145,9 +145,12 @@ export const createAnnouncementHandler = async(req:AuthRequest, res:Response)=>{
           const parsed = announcementSchema.safeParse(req.body);
           const {id: adminId} = req.userAccessInfo
           if(!parsed.success){
+            const fieldErrors = parsed.error.flatten().fieldErrors
+            const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+            const errorMessage = fieldErrors[firstErrorKey]?.[0] || "Invalid input data";
             return res.status(400).json({
                success:false,
-               message: parsed.error.flatten()
+               message: errorMessage
             })
           }
           try {
@@ -187,9 +190,7 @@ export const getAdminDashboardDataHandler = async(req:Request, res:Response)=>{
           return res.status(200).json({
             success: true,
             message: "Admin Dashboard Retrieved Successfully!",
-            activeUsers: activeUsers.length,
-            activeEvents: activeEvents,
-            pendingEvents: pendingEvents.length,
+            dashboardInfo: [{label: 'Campus Users', value: activeUsers.length}, {label: 'Active Events', value: activeEvents}, {label: 'Pending Events', value: pendingEvents.length}],
             categoryDistribution: categoryDistribution,
             attendanceTrend: attendanceTrend
           })

@@ -46,3 +46,4 @@ export const unRegisterStudentToEventHandler = async(req:AuthRequest<{id: string
         return handleError(res,error);
      }
 }
+

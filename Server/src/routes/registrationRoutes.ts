@@ -6,8 +6,8 @@ import { registerStudentToEventHandler,unRegisterStudentToEventHandler } from '.
 const registrationRouter = express.Router()
 registrationRouter.use(authUser as unknown as RequestHandler)
 
-registrationRouter.post("/register",registerStudentToEventHandler as unknown as RequestHandler)
-registrationRouter.delete("/unregister",unRegisterStudentToEventHandler as unknown as RequestHandler)
+registrationRouter.post("/register/:id",registerStudentToEventHandler as unknown as RequestHandler)
+registrationRouter.delete("/unregister/:id",unRegisterStudentToEventHandler as unknown as RequestHandler)
 
 
 export default registrationRouter;

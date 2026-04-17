@@ -1,4 +1,4 @@
-import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, deleteOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents, countOrganizerPendingEvents, getOrganizerEventStatusDistribution, getAllActiveEvents} from "../repositories/eventRepository.js";
+import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, cancelOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents, countOrganizerPendingEvents, getOrganizerEventStatusDistribution, getAllActiveEvents} from "../repositories/eventRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
@@ -115,19 +115,18 @@ class EventService {
 
         
   }
-  async deleteEvent(organizerId: string, eventId: string){
-      const deletedEvent  = await deleteOrganizerEvent(eventId, organizerId)
-      if (!deletedEvent) {
+  async cancelEvent(organizerId: string, eventId: string){
+
+      const cancelledEvent  = await cancelOrganizerEvent(eventId, organizerId)
+      if (!cancelledEvent) {
         throw new AppError("Event not found or unauthorized", 404);
       }
-      if(deletedEvent.imagePublicId){
-          await deleteFromCloudinary(deletedEvent.imagePublicId)
-      }
-      void NotificationService.notifyStudentEventStatus(deletedEvent._id.toString(), 'canceled');
+       
+      void NotificationService.notifyStudentEventStatus(eventId, 'canceled');
 
        return {
         success: true,
-        message: "Event Deleted Successfully!"
+        message: "Event Cancelled Successfully!"
        }
 
   }

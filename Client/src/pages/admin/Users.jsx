@@ -55,7 +55,7 @@ const Users = () => {
         </div>
 
         <div className="divide-y divide-gray-50">
-          {(isLoading || isFetching) && (
+          {isLoading  && (
             <div className='p-4 text-center'>
               <Loading size='md' color='black' />
             </div>

@@ -11,7 +11,7 @@ import AttendanceService from "../services/attendanceService.js";
 import AuditService from "../services/auditService.js";
 
 
-export const createEventHandler = async(req:AuthRequest, res:Response)=>{
+export const createEventHandler = async(req:AuthRequest, res:Response):Promise<any>=>{
 
        const {id} = req.userAccessInfo
        const file = req.file
@@ -70,9 +70,12 @@ export const updateEventHandler = async(req:AuthRequest<{id: string}>, res: Resp
          
          const parsed = updateEventSchema.safeParse(req.body);
          if(!parsed.success){
+           const fieldErrors = parsed.error.flatten().fieldErrors
+          const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+           const errorMessage = fieldErrors[firstErrorKey]?.[0] || "Invalid input data";
             return res.status(400).json({
                 success:false,
-                message:parsed.error.flatten()
+                message:errorMessage
             })
          }
      
@@ -86,7 +89,7 @@ export const updateEventHandler = async(req:AuthRequest<{id: string}>, res: Resp
          }
 }
 
-export const deleteEventHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
+export const deleteEventHandler = async(req:AuthRequest<{id: string}>, res:Response): Promise<any>=>{
      const { id: organizerId } = req.userAccessInfo;
      const { id: eventId } = req.params;
 
@@ -99,7 +102,7 @@ export const deleteEventHandler = async(req:AuthRequest<{id: string}>, res:Respo
 
     try {
          
-        const result = await EventService.deleteEvent(organizerId,eventId);
+        const result = await EventService.cancelEvent(organizerId,eventId);
         return res.status(200).json(result);
          
         
@@ -142,10 +145,9 @@ export const getOrganizerDashboardHandler = async(req:AuthRequest, res:Response)
             success: true,
             message: "Organizer Dashboard Data Fetched Successfully!",
             activeEvents: activeEvents,
-            ActiveEventsLength: activeEvents.length,
-            attendanceCount: attendedStudentCount,
-            pendingEventsCount: pendingEventsCount,
-            averageRating: averageRating
+            dashboardInfo: [{label: 'Live Events', value: activeEvents.length},{label: 'Attendees', value:attendedStudentCount},{label: 'Pending', value:pendingEventsCount },{label: 'Average Rating', value: averageRating}],
+          
+            
            })
             
          } catch (error) {
@@ -196,7 +198,9 @@ export const getRegisteredStudentsForEventHandler = async(req:AuthRequest<{id: s
         }
      try {
         const event = await EventService.getEventById(eventId);
-        if(!event || event.organizedBy.toString() !== organizerId){
+        if(!event || event.organizedBy._id.toString() !== organizerId.toString()){
+           console.log(event.organizedBy.toString())
+           console.log(organizerId.toString())
           throw new AppError("You do not have permission to view this event's attendance.", 403);
         }
         const [registrations,attendanceRecords] = await Promise.all([RegistrationService.getStudentsRegistrationStatus(eventId), AttendanceService.getAttendanceSheetForEvent(eventId)])
@@ -209,6 +213,7 @@ export const getRegisteredStudentsForEventHandler = async(req:AuthRequest<{id: s
             att => att.studentId.toString() === reg.studentId._id.toString()
         );
          return {
+           _id: reg._id,
             student: reg.studentId,
             isPresent: attendance ? attendance.isPresent : false,
             attendanceId: attendance ? attendance._id : null
@@ -235,7 +240,7 @@ export const markStudentAttendanceHandler = async(req: AuthRequest<{id: string}>
        }
         try {
             const event = await EventService.getEventById(eventId);
-        if(!event || event.organizedBy.toString() !== organizerId){
+        if(!event || event.organizedBy._id.toString() !== organizerId.toString()){
           throw new AppError("Unauthorized: You do not own this event", 403);
         }
          const record = await AttendanceService.takeAttendance(studentId,eventId,organizerId,isPresent)

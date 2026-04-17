@@ -21,7 +21,7 @@ export const findEvent = (title: string, startDate: Date)=>{
     return eventModel.findOne({title,startDate});
 }
 export const getOrganizerEvents = (id:string)=>{ //organizer
-    return  eventModel.find({organizedBy: new Types.ObjectId(id)}).sort({createdAt: -1});
+    return  eventModel.find({organizedBy: new Types.ObjectId(id)}).populate('category', 'name').sort({createdAt: -1});
 }
 
 export const findEventById = (eventId:string)=>{ 
@@ -34,13 +34,21 @@ export const updateOrganizerEvent = (eventData: eventupdateType, eventId: string
     
     return eventModel.findByIdAndUpdate(id, eventData,{returnDocument: "after"}).populate({path: "organizedBy", select: "fullName email organizationName"})
 }
-export const deleteOrganizerEvent = (eventId: string, organizerId: string)=>{ //organizer
-     return eventModel.findOneAndDelete({
-           _id: new Types.ObjectId(eventId),
-           organizedBy: new Types.ObjectId(organizerId)
-     })
-
-}
+export const cancelOrganizerEvent = async (eventId: string, organizerId: string) => {
+  return await eventModel.findOneAndUpdate(
+    { 
+      _id: new Types.ObjectId(eventId), 
+      organizedBy: new Types.ObjectId(organizerId) 
+    },
+    { 
+      $set: { status: 'cancelled' } 
+    },
+    { 
+      returnDocument: 'after', 
+      runValidators: true 
+    }
+  );
+};
 
 export const findAllEvents = ()=>{ //student
      return eventModel.find({status: "approved"}).populate("category", "name").populate("organizedBy", "organizationName").sort({ startDate: 1 })
@@ -57,7 +65,7 @@ export const rejectPendingEvent = (id: string)=>{ // admin
     return eventModel.findByIdAndUpdate(eventId,{status: "rejected"},{returnDocument: "after"});
 }
 export const getAdminEvents = ()=>{
-    return eventModel.find({}).sort({createdAt: -1})
+    return eventModel.find({}).populate('organizedBy', 'organizationName').sort({createdAt: -1})
 }
 
 export const updateEventRegistrationCount = (eventId: string, amount: number) => {
@@ -103,7 +111,7 @@ export const getOrganizerEventStatusDistribution = async(organizerId: string)=>{
 } 
 
 export const getAllActiveEvents = ()=>{
-   return  eventModel.countDocuments({status: "approved"})
+   return  eventModel.countDocuments({status: "approved", endDate: {$gte: new Date()}})
 }
 
 

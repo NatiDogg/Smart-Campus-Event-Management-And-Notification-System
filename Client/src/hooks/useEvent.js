@@ -1,16 +1,17 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
-import { createEvent,getPendingEvents,approveEvent,rejectEvent } from '../api/event'
+import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents, cancelEvent, editEvent, getOrganizerAllEvents } from '../api/event'
 
 import toast from 'react-hot-toast'
 
 
 export const useCreateEvent = ()=>{
-     
+      const queryClient = useQueryClient()
     return useMutation({
         mutationFn: createEvent,
         onSuccess:(data)=>{
           toast.success(data.message)
-          
+          queryClient.invalidateQueries({queryKey: ['organizerDashboard']})
+          queryClient.invalidateQueries({queryKey:['organizerAllEvents']})
         },
         onError: (error)=>{
             const errorMessage = error.response?.data.message || 'Failed to create Event'
@@ -18,7 +19,42 @@ export const useCreateEvent = ()=>{
         }
     })
 
+
 }
+export const useEditEvent = ()=>{
+   const queryClient = useQueryClient()
+   return useMutation({
+     mutationFn: editEvent,
+     onSuccess:(data)=>{
+       toast.success(data.message)
+       queryClient.invalidateQueries({queryKey: ['organizerDashboard']})
+        queryClient.invalidateQueries({queryKey:['organizerAllEvents']})
+     },
+     onError:(error)=>{
+      const errorMessage = error.response?.data?.message || 'Failed to edit Event'
+      toast.error(errorMessage)
+     }
+   })
+}
+
+export const useCancelEvent = ()=>{
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: cancelEvent,
+        onSuccess:(data)=>{
+          toast.success(data.message)
+          queryClient.invalidateQueries({queryKey: ['organizerDashboard']})
+          queryClient.invalidateQueries({queryKey:['organizerAllEvents']})
+        },
+        onError:(error)=>{
+          const errorMessage = error.response?.data.message || 'Failed to Delete Event'
+          toast.error(errorMessage)
+        }
+    })
+}
+
+
+
 export const useGetPendingEvents = ()=>{
     return useQuery({
         queryKey: ['pendingEvents'],
@@ -53,7 +89,9 @@ export const useApproveEvent = ()=>{
          toast.error(error.response?.data?.message || 'Failed to approve Event') 
         },
         onSettled:()=>{
-          queryClient.invalidateQueries({queryKey: ['pendingEvents']})
+          queryClient.invalidateQueries({ queryKey: ['pendingEvents'] });
+          queryClient.invalidateQueries({ queryKey: ['adminAllEvents'] });
+           queryClient.invalidateQueries({queryKey: ['adminDashboard']});
         }
     })
 }
@@ -83,7 +121,29 @@ export const useRejectEvent = ()=>{
          toast.error(error.response?.data?.message || 'Failed to reject Event') 
         },
         onSettled:()=>{
-         queryClient.invalidateQueries({queryKey: ['pendingEvents']})
+         queryClient.invalidateQueries({ queryKey: ['pendingEvents'] });
+         queryClient.invalidateQueries({ queryKey: ['adminAllEvents'] });
+          queryClient.invalidateQueries({queryKey: ['adminDashboard']});
         }
     })
 }
+
+export const useGetAdminAllEvents = ()=>{
+     return useQuery({
+        queryKey: ['adminAllEvents'],
+        queryFn: getAdminAllEvents,
+        staleTime: 60000,
+        refetchOnWindowFocus: false
+     })
+}
+
+export const useGetOrganizerAllEvents = ()=>{
+  return useQuery({
+    queryKey: ['organizerAllEvents'],
+    queryFn: getOrganizerAllEvents,
+    staleTime: 60000,
+    refetchOnWindowFocus: false
+  })
+}
+
+

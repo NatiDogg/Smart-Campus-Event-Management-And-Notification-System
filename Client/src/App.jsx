@@ -35,6 +35,7 @@ const CreateEvents = lazy(() => import('./pages/organizer/CreateEvents'));
 const CheckIn = lazy(() => import('./pages/organizer/CheckIn'));
 const OrganizerAnalytics = lazy(() => import('./pages/organizer/OrganizerAnalytics'));
 const Feedback = lazy(() => import('./pages/organizer/Feedback'));
+const EditEvent = lazy(()=>import('../src/pages/organizer/EditEvent') )
 
 // Admin Pages
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
@@ -119,6 +120,7 @@ function App() {
             <Route path='check-in' element={<CheckIn />} />
             <Route path='analytics' element={<OrganizerAnalytics />} />
             <Route path='feedback' element={<Feedback />} />
+            <Route path='edit/:id' element={<EditEvent />} />
              {sharedRoutes}
           </Route>
 
