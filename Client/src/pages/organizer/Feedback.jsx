@@ -29,7 +29,7 @@ const Feedback = () => {
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-black text-xl">
-                  <img className='' src={feedback.studentId.profile} alt={`${feedback.studentId.fullName} profile picture`} />
+                  <img className='rounded-full' src={feedback.studentId.profile} alt={`${feedback.studentId.fullName} profile picture`} />
                 </div>
                 <div>
                   <h4 className="font-black text-gray-900">{feedback.studentId.fullName}</h4>

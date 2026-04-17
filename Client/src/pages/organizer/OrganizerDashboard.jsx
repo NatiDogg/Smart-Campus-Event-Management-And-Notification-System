@@ -28,7 +28,7 @@ const OrganizerDashboard = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
    const slicedFeedbacks = feedbacksData?.feedbacks.slice(0,4) || []
-   console.log(slicedFeedbacks);
+   
   return (
     <div className="space-y-12 p-5">
       {/* Header Section */}
@@ -119,9 +119,11 @@ const OrganizerDashboard = () => {
                           <Icons.Edit />
                         </button>
                         </Link>
-                        <button className="px-4 py-2 cursor-pointer bg-gray-900 text-white rounded-lg text-xs font-bold hover:bg-gray-800 transition-all">
-                          Check-In
-                        </button>
+                         <Link to={`/organizer/check-in?id=${event._id}`}>
+                           <button className="px-4 py-2 cursor-pointer bg-gray-900 text-white rounded-lg text-xs font-bold hover:bg-gray-800 transition-all">
+                             Check-In
+                           </button>
+                         </Link>
                         <button onClick={()=>setActiveModal({name: 'cancel-event', data: event._id})} className="p-2 cursor-pointer text-gray-400 hover:text-red-600 transition-colors" title="Cancel event">
                           <Icons.Cancel />
                         </button>

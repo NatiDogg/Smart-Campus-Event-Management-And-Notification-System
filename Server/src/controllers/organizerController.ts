@@ -213,6 +213,7 @@ export const getRegisteredStudentsForEventHandler = async(req:AuthRequest<{id: s
             att => att.studentId.toString() === reg.studentId._id.toString()
         );
          return {
+           _id: reg._id,
             student: reg.studentId,
             isPresent: attendance ? attendance.isPresent : false,
             attendanceId: attendance ? attendance._id : null

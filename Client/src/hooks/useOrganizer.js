@@ -32,3 +32,19 @@ pendingEventsCount : 0
 success :  true
 */}
 
+//registeredstudents
+{/*{success: true, message: 'Registered Student Fetched Successfully!', registeredStudent: Array(0)}*/}
+{/*success: true, message: 'Registered Student Fetched Successfully!', registeredStudent: Array(3)}
+message:  "Registered Student Fetched Successfully!"
+registeredStudent: Array(3)
+0: {student: {…}, isPresent: false, attendanceId: null}
+1: {student: {…}, isPresent: false, attendanceId: null}
+2: {student: {…}, isPresent: false, attendanceId: null}
+length: 3
+[[Prototype]]
+: 
+Array(0)
+success
+: 
+true*/}
+
