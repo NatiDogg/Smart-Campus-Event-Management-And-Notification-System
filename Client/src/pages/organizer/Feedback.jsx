@@ -2,6 +2,7 @@ import React from 'react'
 import {useGetFeedbacks} from '../../hooks/useFeedback'
 import { MessageSquareOff, Star } from "lucide-react";
 import Loading from '../../components/Loading'
+import { Icons } from '../../components/Icons';
 const Feedback = () => {
      const {data,isLoading:isFeedbackLoading,error} = useGetFeedbacks()
 
@@ -29,10 +30,10 @@ const Feedback = () => {
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-black text-xl">
-                  <img className='rounded-full' src={feedback.studentId.profile} alt={`${feedback.studentId.fullName} profile picture`} />
+                  <img className='rounded-full' src={feedback.studentId?.profile || `https://ui-avatars.com/api/?name=deleteduser&background=2563EB&color=fff`} alt={`${feedback.studentId?.fullName || "Deleted User"} profile picture`} />
                 </div>
                 <div>
-                  <h4 className="font-black text-gray-900">{feedback.studentId.fullName}</h4>
+                  <h4 className="font-black text-gray-900">{feedback.studentId?.fullName || "Deleted User"}</h4>
                   <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{feedback.createdAt}</p>
                 </div>
               </div>

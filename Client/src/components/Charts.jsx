@@ -22,9 +22,10 @@ const CATEGORY_DATA = [
 ];
 
 export const TrendChart = ({data})=>{
+     const actualData = data?.length > 0 ? data : LINE_DATA
     return (<div className="h-64 w-full min-w-0">
     <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
+      <LineChart data={actualData}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
         <XAxis dataKey="name" fontSize={12} stroke="#9CA3AF" />
         <YAxis fontSize={12} stroke="#9CA3AF" />
@@ -37,7 +38,7 @@ export const TrendChart = ({data})=>{
 }
 
 export const CategoryBarChart = ({data }) => {
-      const actualData = data.length > 0 ? data : CATEGORY_DATA
+      const actualData = data?.length > 0 ? data : CATEGORY_DATA
      return (
       <div className="h-64 w-full min-w-0">
     <ResponsiveContainer width="100%" height={250}>

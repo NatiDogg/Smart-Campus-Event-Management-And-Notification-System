@@ -184,7 +184,7 @@ const OrganizerDashboard = () => {
             { slicedFeedbacks.length > 0 && slicedFeedbacks.map((feedback, index) => (
               <div key={index} className="space-y-2 group cursor-pointer">
                 <div className="flex justify-between items-center">
-                  <span className="font-bold text-gray-900">{feedback.studentId.fullName}</span>
+                  <span className="font-bold text-gray-900">{feedback.studentId?.fullName || "Deleted User"}</span>
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, j) => (
               <Star 

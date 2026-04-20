@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {getOrganizerDashboard,getRegisteredStudents,markStudentAttendance} from '../api/organizer'
+import {getOrganizerDashboard,getRegisteredStudents,markStudentAttendance,organizerAnalytics} from '../api/organizer'
 import {toast} from 'react-hot-toast'
 
 export const  useGetOrganizerDashboard = ()=>{
@@ -50,6 +50,14 @@ export const useMarkStudentAttendance = ()=>{
         onSettled:(data,error,variables)=>{
           queryClient.invalidateQueries({queryKey: ['registeredStudents',variables.eventId]})
         }
+    })
+}
+export const useGetOrganizerAnalytics = ()=>{
+    return useQuery({
+        queryKey: ['organizerAnalytics'],
+        queryFn:organizerAnalytics,
+        staleTime: 60000,
+        refetchOnWindowFocus: false
     })
 }
 
