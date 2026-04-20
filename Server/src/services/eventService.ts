@@ -226,11 +226,10 @@ class EventService {
   }
   async getOrgnanizerApprovalAnalytics(organizerId: string){
        const rawStats = await getOrganizerEventStatusDistribution(organizerId);
-       const stats= {approved: 0, pending: 0, rejected: 0, total: 0}
+       const stats= {approved: 0, rejected: 0, total: 0}
 
        rawStats.forEach(stat=>{
          if(stat._id === 'approved') stats.approved = stat.count
-         if (stat._id === "pending") stats.pending = stat.count;
          if (stat._id === "rejected") stats.rejected = stat.count;
          stats.total += stat.count;
        })
