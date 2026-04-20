@@ -105,7 +105,7 @@ class EventService {
         if(!updatedEvent){
           throw new AppError("Can't Update Event right now. Please try again",400)
         }
-        void NotificationService.notifyStudentEventStatus(updatedEvent._id.toString(), 'updated');
+        void NotificationService.notifyStudentEventStatus(updatedEvent._id.toString(), 'updated',updatedEvent.title);
         return {
           success: true,
           message: "Event updated Successfully!",
@@ -122,7 +122,7 @@ class EventService {
         throw new AppError("Event not found or unauthorized", 404);
       }
        
-      void NotificationService.notifyStudentEventStatus(eventId, 'canceled');
+      void NotificationService.notifyStudentEventStatus(eventId, 'canceled',cancelledEvent.title);
 
        return {
         success: true,

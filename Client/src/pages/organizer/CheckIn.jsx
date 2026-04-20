@@ -193,7 +193,7 @@ const CheckIn = () => {
         {/*<div className="space-y-6">
           <div className="bg-blue-600 rounded-3xl p-8 text-white shadow-2xl space-y-4">
             <h3 className="text-xl font-bold">Quick QR Scan</h3>
-            <p className="text-blue-100 text-sm">Scan student IDs for instant check-in.</p>
+            <p className="text-blue-100 text-sm">Scan student code for instant attendance.</p>
             <button className="w-full py-4 bg-white text-blue-600 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2">
               Open Camera
             </button>

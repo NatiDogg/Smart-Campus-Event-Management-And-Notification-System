@@ -41,9 +41,9 @@ export const CategoryBarChart = ({data }) => {
      return (
       <div className="h-64 w-full min-w-0">
     <ResponsiveContainer width="100%" height={250}>
-      <BarChart data={actualData} layout="vertical">
+      <BarChart data={actualData} layout="vertical" margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
         <XAxis type="number" hide />
-        <YAxis dataKey="category" type="category" fontSize={12} stroke="#4B5563" width={80} />
+        <YAxis dataKey="category" type="category" fontSize={12} stroke="#4B5563" width={80} padding={{ top: 20, bottom: actualData.length === 1 ? 150 : 0 }} />
         <Tooltip />
         <Bar dataKey="registrations" fill="#2563EB" radius={[0, 4, 4, 0]} barSize={20} />
       </BarChart>

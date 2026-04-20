@@ -32,7 +32,7 @@ export const findEventById = (eventId:string)=>{
 export const updateOrganizerEvent = (eventData: eventupdateType, eventId: string)=>{ //organizer
     const id = new Types.ObjectId(eventId);
     
-    return eventModel.findByIdAndUpdate(id, eventData,{returnDocument: "after"}).populate({path: "organizedBy", select: "fullName email organizationName"})
+    return eventModel.findByIdAndUpdate(id, eventData).populate({path: "organizedBy", select: "fullName email organizationName"})
 }
 export const cancelOrganizerEvent = async (eventId: string, organizerId: string) => {
   return await eventModel.findOneAndUpdate(
