@@ -13,3 +13,7 @@ export const markStudentAttendance = async({eventId, data})=>{
    const response = await api.patch(`api/organizer/attendance/mark/${eventId}`, data)
    return response.data
 }
+export const organizerAnalytics = async()=>{
+   const response = await api.get('/api/organizer/analytics');
+   return response.data;
+}

@@ -82,7 +82,7 @@ class RegistrationService{
     async getAllEventRegistrationForOrganizer(organizerId: string){
         const totalRegistration = await findAllEventRegistrationForOrganizer(organizerId);
         if(!totalRegistration){
-          throw new AppError("Failed to Get total Engagement!",500);
+          return 0
         }
         return totalRegistration
     }

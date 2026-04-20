@@ -101,12 +101,26 @@ const OrganizerEvents = () => {
         ))}
       </div>
 
-      {filteredEvents?.length === 0 && (
+      { !isLoading &&  filteredEvents?.length === 0 && (
         <div className="py-32 text-center space-y-4">
           <div className="inline-block p-6 rounded-full bg-gray-50">
             <Search className="w-10 h-10 text-gray-300" />
           </div>
-          <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">No matches found for "{searchQuery}"</p>
+          {searchQuery ? (
+      
+      <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">
+        No matches found for "{searchQuery}"
+      </p>
+    ) : (
+      
+      <div className="space-y-2">
+        <p className="text-gray-900 font-black text-xl">No events yet</p>
+        <p className="text-gray-400 font-medium">
+          You haven't created any events. Start by creating your first one!
+        </p>
+       
+      </div>
+    )}
         </div>
       )}
     </div>
