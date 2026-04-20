@@ -7,11 +7,7 @@ const OrganizerAnalytics = () => {
    
      const {data,isLoading} = useGetOrganizerAnalytics()
 
-     useEffect(()=>{
-          if(data){
-            console.log(data)
-          }
-     },[data])
+     
   return (
      <div className="space-y-10 p-5">
       <div className="space-y-2">

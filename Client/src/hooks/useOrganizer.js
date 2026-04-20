@@ -62,16 +62,7 @@ export const useGetOrganizerAnalytics = ()=>{
 }
 
 
-{
-    /*
-    approvalStat: {approved: 2, pending: 0, rejected: 1, total: 5, approvalRate: '40.0%'}
-attendanceTrends: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-categoryDemographics: [{…}]
-message: "Organizer Analytics Fetched Successfully!"
-success: true
-totalEngagement:  3
-    */
-}
+
 
 
 
