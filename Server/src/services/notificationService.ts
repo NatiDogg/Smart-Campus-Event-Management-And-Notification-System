@@ -282,8 +282,8 @@ class NotificationService {
 
     const isRegistered = status === "registered";
     const subject = isRegistered
-      ? `Confirmed: ${event.name}`
-      : `Cancelled: ${event.name}`;
+      ? `Confirmed: ${event.title}`
+      : `Cancelled: ${event.title}`;
 
     // UI Variables
     const themeColor = isRegistered ? "#007bff" : "#6c757d";
@@ -336,7 +336,7 @@ class NotificationService {
     return this.sendEmail(student.email, subject, html,student._id.toString(),event._id.toString());
   }
   // notify students when the event they registered got updated or canceled
-  async notifyStudentEventStatus( eventId: string, status: "updated" | "canceled") {
+  async notifyStudentEventStatus( eventId: string, status: "updated" | "canceled", oldTitle?: string) {
     const registrations =  await RegistrationService.getStudentsRegistrationStatus(eventId);
 
     if (!registrations || registrations.length === 0) {
@@ -344,7 +344,8 @@ class NotificationService {
       return;
     }
 
-    const eventTitle = registrations[0].eventId?.title || "Event";
+    const eventTitle = oldTitle || registrations[0].eventId?.title || "Event";
+    
 
     // Define dynamic content based on status
     const isCanceled = status === "canceled";
