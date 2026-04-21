@@ -69,7 +69,7 @@ export const getAdminEvents = ()=>{
 }
 
 export const updateEventRegistrationCount = (eventId: string, amount: number) => {
-  return eventModel.findByIdAndUpdate(new Types.ObjectId(eventId), { $inc: { registrationCount: amount } }, {    new: true, runValidators: true } );
+  return eventModel.findByIdAndUpdate(new Types.ObjectId(eventId), { $inc: { registrationCount: amount } }, {    returnDocument: 'after', runValidators: true } );
 }
 export const findPopularEvents = (limit: number) => {
   return eventModel.find({ status: "approved" })

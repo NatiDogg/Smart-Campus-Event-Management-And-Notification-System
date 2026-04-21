@@ -4,6 +4,7 @@ import type {Request, Response} from 'express'
 import { isValid } from '../utils/validMongodbId.js'
 import RegistrationService from '../services/registrationService.js'
 import { handleError } from '../helpers/handleError.js'
+import AIService from '../services/aiService.js'
 
 
 export const registerStudentToEventHandler = async(req:AuthRequest<{id: string}>, res:Response)=>{
@@ -20,6 +21,7 @@ export const registerStudentToEventHandler = async(req:AuthRequest<{id: string}>
           try {
 
             const result = await RegistrationService.RegisterStudentToEvent(studentId, eventId)
+            void AIService.refreshStudentRecommendations(studentId);
             return res.status(201).json(result);
 
             
@@ -40,6 +42,7 @@ export const unRegisterStudentToEventHandler = async(req:AuthRequest<{id: string
      try {
 
         const result = await RegistrationService.unRegisterStudentToEvent(studentId,eventId)
+        void AIService.refreshStudentRecommendations(studentId);
         res.status(200).json(result)
         
      } catch (error) {

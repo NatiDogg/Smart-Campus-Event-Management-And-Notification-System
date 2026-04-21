@@ -7,8 +7,10 @@ import { isValid } from "../utils/validMongodbId.js"
 import RegistrationService from "../services/registrationService.js"
 import InterestService from "../services/interestService.js"
 import AttendanceService from "../services/attendanceService.js"
+import AIService from "../services/aiService.js"
 import EventService from "../services/eventService.js"
 import AppError from "../utils/appError.js"
+
 export const getAllStudentEventsHandler = async (req: AuthRequest, res:Response)=>{
          const {id: studentId} = req.userAccessInfo
           if(!isValid(studentId)){
@@ -67,6 +69,28 @@ export const getStudentCalendarHandler = async (req:AuthRequest, res:Response)=>
      } catch (error) {
       return handleError(res,error);
      }
+}
+
+export const getStudentAiRecommendations = async(req:AuthRequest, res:Response)=>{
+        const {id: studentId} = req.userAccessInfo
+
+        if(!isValid(studentId)){
+          return res.status(400).json({
+            success: false,
+            message: 'Invalid ID Format'
+          })
+        }
+       try {
+          const recommendations = await AIService.getRecommendations(studentId)
+          
+          return res.status(200).json({
+            success: true,
+            message: 'recommedation retrieved successfully',
+            recommendations
+          })
+       } catch (error) {
+         return handleError(res,error)
+       }
 }
 
 
