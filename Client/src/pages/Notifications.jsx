@@ -1,15 +1,57 @@
-import React,{useState,useEffect} from 'react'
-import {formatDistanceToNow} from 'date-fns'
-import {Icons} from '../components/Icons'
+import React, { useState, useEffect } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { Icons } from '../components/Icons';
 import { useDeleteNotification, useGetNotification } from '../hooks/useNotification';
-import Loading from '../components/Loading'
+import Loading from '../components/Loading';
+
 const Notifications = () => {
-  
+  const { data: notifications, isLoading, isFetching, error } = useGetNotification();
+  const { isPending, mutate, data: deletedNotification } = useDeleteNotification();
 
-   const {data:notifications,isLoading, isFetching,error} = useGetNotification()
-   const {isPending,mutate,data:deletedNotification} = useDeleteNotification()
+  useEffect(() => {
+    if (notifications) {
+      console.log(notifications);
+    }
+  }, [notifications]);
 
-    
+  // Helper to determine styles and icons based on title keywords
+  const getTheme = (title) => {
+    const t = title.toLowerCase();
+
+    if (t.includes("approved") || t.includes("registered") || t.includes("confirmed")) {
+      return {
+        colorClass: "bg-green-100 text-green-600",
+        icon: <Icons.Plus />
+      };
+    }
+
+    if (t.includes("reminder") || t.includes("updated")) {
+      return {
+        colorClass: "bg-orange-100 text-orange-600",
+        icon: <Icons.Calendar />
+      };
+    }
+
+    // Using "cancel" catches both "canceled" and "cancelled"
+    if (t.includes("rejected") || t.includes("unregistered") || t.includes("cancel")) {
+      return {
+        colorClass: "bg-red-100 text-red-600",
+        icon: <Icons.Report className="rotate-45" />
+      };
+    }
+
+    if (t.includes("new event submission")) {
+      return {
+        colorClass: "bg-blue-100 text-blue-600",
+        icon: <Icons.Plus />
+      };
+    }
+
+    return {
+      colorClass: "bg-blue-100 text-blue-600",
+      icon: null
+    };
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -25,83 +67,60 @@ const Notifications = () => {
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {isLoading  && (
-          <div className="p-4 flex flex-col  justify-center items-center">
+        {isLoading && (
+          <div className="p-4 flex flex-col justify-center items-center">
             <Loading size="md" color="black" />
           </div>
         )}
+
         {notifications && notifications.length > 0 && (
           <div className="divide-y divide-gray-50">
-            {notifications.map((n) => (
-              <div
-                key={n._id}
-                className={`p-8 flex items-start gap-6 hover:bg-gray-50/50 transition-colors group `}
-              >
+            {notifications.map((n) => {
+              const theme = getTheme(n.title);
+              
+              return (
                 <div
-                  className={`w-14 h-14 hidden rounded-2xl md:flex items-center justify-center shrink-0 ${
-                    n.title.toLowerCase().includes("Approved") ||
-                    n.title.toLowerCase().includes("registered")
-                      ? "bg-green-100 text-green-600"
-                      : n.title.includes("reminder") ||
-                        n.title.includes("updated")
-                      ? "bg-orange-100 text-orange-600"
-                      : n.title.toLowerCase().includes("rejected") ||
-                        n.title.toLowerCase().includes("unregistered") ||
-                        n.title.toLowerCase().includes("canceled")
-                      ? "bg-red-100 text-red-600"
-                      : "bg-blue-100 text-blue-600"
-                  }`}
+                  key={n._id}
+                  className="p-8 flex items-start gap-6 hover:bg-gray-50/50 transition-colors group"
                 >
-                  {n.title.toLowerCase().includes("new event submission") && (
-                    <Icons.Plus />
-                  )}
-
-                  {(n.title.toLowerCase().toLowerCase().includes("reminder") ||
-                    n.title.includes("updated")) && <Icons.Calendar />}
-
-                  {(n.title.toLowerCase().includes("rejected") ||
-                    n.title.toLowerCase().includes("unregistered") ||
-                    n.title.toLowerCase().includes("canceled")) && (
-                    <Icons.Report className="rotate-45" />
-                  )}
-                   
-                  {n.title.toLowerCase().includes(" approved") && <Icons.Plus />}
-                </div>
-
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-black text-gray-900 uppercase tracking-widest text-sm">
-                      {n.title}
-                    </h3>
-                    <div className="flex flex-col md:flex-row items-center gap-4">
-                      <span className="text-xs text-gray-400 font-medium">
-                        {formatDistanceToNow(n.createdAt, { addSuffix: true })}
-                      </span>
-                      <button
-                        onClick={() => mutate(n._id)}
-                        className="p-2 cursor-pointer text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                        title="Delete notification"
-                      >
-                        <Icons.Delete />
-                      </button>
-                    </div>
+                  <div className={`w-14 h-14 hidden rounded-2xl md:flex items-center justify-center shrink-0 ${theme.colorClass}`}>
+                    {theme.icon}
                   </div>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    {n.message}
-                    
-                    {n.eventId?.title &&
-                      !n.message.includes(n.eventId.title) && (
+
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-black text-gray-900 uppercase tracking-widest text-sm">
+                        {n.title}
+                      </h3>
+                      <div className="flex flex-col md:flex-row items-center gap-4">
+                        <span className="text-xs text-gray-400 font-medium">
+                          {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
+                        </span>
+                        <button
+                          onClick={() => mutate(n._id)}
+                          className="p-2 cursor-pointer text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          title="Delete notification"
+                        >
+                          <Icons.Delete />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {n.message}
+                      {n.eventId?.title && !n.message.includes(n.eventId.title) && (
                         <span className="font-semibold block mt-1">
                           Event: {n.eventId.title}
                         </span>
                       )}
-                  </p>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
-        {(error || (notifications && notifications.length === 0)) && (
+
+        {(error || (notifications && notifications.length === 0)) && !isLoading && (
           <div className="p-20 text-center space-y-4">
             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto text-gray-300">
               <Icons.Notifications />
@@ -117,6 +136,6 @@ const Notifications = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Notifications
+export default Notifications;

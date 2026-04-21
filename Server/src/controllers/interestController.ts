@@ -4,6 +4,7 @@ import type {Request, Response} from 'express'
 import { isValid } from '../utils/validMongodbId.js'
 import InterestService from '../services/interestService.js'
 import { handleError } from '../helpers/handleError.js'
+import AIService from '../services/aiService.js'
 
 export const markInterestHandler = async(req:AuthRequest<{id:string}>, res:Response)=>{
 
@@ -18,6 +19,7 @@ export const markInterestHandler = async(req:AuthRequest<{id:string}>, res:Respo
           }
     try {
         const result = await InterestService.addInterest(studentId, eventId)
+        void AIService.refreshStudentRecommendations(studentId);
         return res.status(201).json(result)
         
     } catch (error) {
@@ -36,6 +38,7 @@ export const unMarkInterestHandler = async(req:AuthRequest, res:Response)=>{
     }
     try {
         const result = await InterestService.removeInterest(studentId, eventId)
+        void AIService.refreshStudentRecommendations(studentId);
          return res.status(200).json(result)
     } catch (error) {
         return handleError(res,error);
