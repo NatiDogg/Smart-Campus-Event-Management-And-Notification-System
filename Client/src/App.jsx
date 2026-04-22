@@ -27,6 +27,7 @@ const Events = lazy(() => import('./pages/student/Events'));
 const Calendar = lazy(() => import('./pages/student/Calendar'));
 const MyEvents = lazy(() => import('./pages/student/MyEvents'));
 const Announcements = lazy(() => import('./pages/student/Announcements'));
+const Recommendations = lazy(()=> import('./components/Recommendations'));
 
 // Organizer Pages
 const OrganizerDashboard = lazy(() => import('./pages/organizer/OrganizerDashboard'));
@@ -108,6 +109,7 @@ function App() {
             <Route path='my-events' element={<MyEvents />} />
             <Route path='calendar' element={<Calendar />} />
             <Route path='announcements' element={<Announcements />} />
+            <Route path='recommendations' element={<Recommendations />} />
             {sharedRoutes}
              
           </Route>

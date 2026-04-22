@@ -1,5 +1,5 @@
 import { useMutation,useQuery,useQueryClient } from "@tanstack/react-query";
-import { subscribeCategory,getSubscribedCategories } from "../api/student";
+import { subscribeCategory,getSubscribedCategories,getRecommendations } from "../api/student";
 import toast from "react-hot-toast";
 
 
@@ -28,6 +28,15 @@ export const useSubscribeCategory = ()=>{
           toast.error(errorMessage)
         }
      })
+}
+
+export const useGetRecommendations = ()=>{
+    return useQuery({
+       queryKey: ['aiRecommendations'],
+       queryFn: getRecommendations,
+       staleTime: 60000,
+       refetchOnWindowFocus: false
+    })
 }
 
 
