@@ -81,7 +81,14 @@ export const getStudentAiRecommendations = async(req:AuthRequest, res:Response)=
           })
         }
        try {
-          const recommendations = await AIService.getRecommendations(studentId)
+          let recommendations = await AIService.getRecommendations(studentId)
+
+          if(recommendations.length === 0){
+             await AIService.refreshStudentRecommendations(studentId);
+    
+             recommendations = await AIService.getRecommendations(studentId);
+          }
+
           
           return res.status(200).json({
             success: true,
