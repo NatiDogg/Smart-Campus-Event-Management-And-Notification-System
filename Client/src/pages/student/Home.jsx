@@ -22,7 +22,7 @@ const Home = () => {
               Hello, {user?.fullName.split(" ")[0] || "User"}! 👋
             </h2>
             <p className="text-blue-100 text-[16px] max-w-lg leading-relaxed">
-              You have 0 events coming up. Your AI-powered feed has found {recommendations?.length || 0} new events matching your interests.
+              You have 0 events coming up. {recommendations?.length > 0 ?  (`Your AI-powered feed has found ${recommendations?.length || 0} new events matching your interests`) : (`You are all caught up! 0 new recommendations found.`) }.
             </p>
             <div className="flex flex-col items-center md:flex-row gap-4 pt-4">
               <Link to={"/student/events"}>
