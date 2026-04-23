@@ -37,10 +37,18 @@ export const removeToken = (userId: string, staleToken: string[])=>{
 export const findAllStudents = ()=>{
      return userModel.find({role: "student"});
 }
+
+export const findAllOrganizers = ()=>{
+     return userModel.find({role: 'organizer'}).select('organizationName').sort({createdAt: -1}).lean()
+}
+
+
+
 export const findUserByResetToken = (token: string)=>{
      return userModel.findOne({
            resetPasswordToken: token,
            resetPasswordExpire: {$gte: new Date()}
      })
 }
+
 

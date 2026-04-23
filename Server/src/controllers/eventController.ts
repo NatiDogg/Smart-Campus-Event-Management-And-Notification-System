@@ -9,7 +9,11 @@ import { handleError } from "../helpers/handleError.js";
 export const getAllEventsHandler = async(req:Request, res:Response)=>{
        try {
          const result = await EventService.getAllEvents()
-         res.status(200).json(result);
+         res.status(200).json( {
+        success: true,
+        message: result.length > 0 ? "Events Retrieved Successfully!" : "No events have been created yet!",
+        result
+      });
         
        } catch (error) {
         return handleError(res,error);

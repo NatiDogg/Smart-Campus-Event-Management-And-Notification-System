@@ -132,11 +132,10 @@ class EventService {
   }
   async getAllEvents(){
       const events = await findAllEvents();
-      return {
-        success: true,
-        message: events.length > 0 ? "Events Retrieved Successfully!" : "No events have been created yet!",
-        events
+      if(!events){
+        throw new AppError("Failed to get Events",500)
       }
+      return events;
   }
   async getSingleEvent(eventId: string,studentId: string){
 

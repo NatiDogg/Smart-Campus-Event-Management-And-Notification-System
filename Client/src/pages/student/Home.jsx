@@ -11,11 +11,7 @@ const Home = () => {
      const {data: recommendations,isLoading: isRecommendationsLoading,isError} = useGetRecommendations()
      const {data: events,isLoading: isStudentEventsLoading,error:eventsError} = useGetStudentEvents()
 
-     useEffect(()=>{
-        if(events){
-          console.log(events)
-        }
-     },[events])
+    
  
       
      

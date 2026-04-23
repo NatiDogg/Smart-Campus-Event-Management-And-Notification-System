@@ -18,4 +18,5 @@ organizerRouter.get("/registeredStudents/:id",getRegisteredStudentsForEventHandl
 organizerRouter.patch("/attendance/mark/:id",markStudentAttendanceHandler as unknown as RequestHandler);
 organizerRouter.get("/analytics",getOrganizerAnalytics as unknown as RequestHandler);
 
+
 export default organizerRouter;

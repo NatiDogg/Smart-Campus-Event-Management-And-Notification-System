@@ -1,5 +1,5 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
-import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents, cancelEvent, editEvent, getOrganizerAllEvents } from '../api/event'
+import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents, cancelEvent, editEvent, getOrganizerAllEvents, getAllEvents } from '../api/event'
 
 import toast from 'react-hot-toast'
 
@@ -142,6 +142,15 @@ export const useGetOrganizerAllEvents = ()=>{
     queryKey: ['organizerAllEvents'],
     queryFn: getOrganizerAllEvents,
     staleTime: 60000,
+    refetchOnWindowFocus: false
+  })
+}
+
+export const useGetAllEvents = ()=>{
+  return useQuery({
+    queryKey: ['all-events'],
+    queryFn: getAllEvents,
+    staleTime:60000,
     refetchOnWindowFocus: false
   })
 }
