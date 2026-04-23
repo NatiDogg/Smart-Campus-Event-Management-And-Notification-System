@@ -2,13 +2,20 @@ import React,{useContext,useEffect,useState} from 'react'
 import {AppContext} from '../../context/ContextProvider'
 import {Icons} from '../../components/Icons'
 import { Link } from 'react-router-dom'
-import { useGetRecommendations } from '../../hooks/useStudent'
+import { useGetRecommendations,useGetStudentEvents } from '../../hooks/useStudent'
 import EventCard from '../../components/EventCard'
 import Loading from '../../components/Loading'
 const Home = () => {
 
      const {user} = useContext(AppContext)
      const {data: recommendations,isLoading: isRecommendationsLoading,isError} = useGetRecommendations()
+     const {data: events,isLoading: isStudentEventsLoading,error:eventsError} = useGetStudentEvents()
+
+     useEffect(()=>{
+        if(events){
+          console.log(events)
+        }
+     },[events])
  
       
      
@@ -22,7 +29,13 @@ const Home = () => {
               Hello, {user?.fullName.split(" ")[0] || "User"}! 👋
             </h2>
             <p className="text-blue-100 text-[16px] max-w-lg leading-relaxed">
-              You have 0 events coming up. {recommendations?.length > 0 ?  (`Your AI-powered feed has found ${recommendations?.length || 0} new events matching your interests`) : (`You are all caught up! 0 new recommendations found.`) }.
+              You have 0 events coming up.{" "}
+              {recommendations?.length > 0
+                ? `Your AI-powered feed has found ${
+                    recommendations?.length || 0
+                  } new events matching your interests`
+                : `You are all caught up! 0 new recommendations found.`}
+              
             </p>
             <div className="flex flex-col items-center md:flex-row gap-4 pt-4">
               <Link to={"/student/events"}>
@@ -73,10 +86,10 @@ const Home = () => {
               </h6>
             </div>
           </div>
-          <Link to={'/student/recommendations'}>
-           <button className="text-sm font-bold cursor-pointer text-blue-600 hover:text-blue-800  px-5 py-2 rounded-full hover:underline transition-colors">
-            View All
-          </button>
+          <Link to={"/student/recommendations"}>
+            <button className="text-sm font-bold cursor-pointer text-blue-600 hover:text-blue-800  px-5 py-2 rounded-full hover:underline transition-colors">
+              View All
+            </button>
           </Link>
         </div>
         {isRecommendationsLoading ? (
@@ -99,20 +112,82 @@ const Home = () => {
           </div>
         ) : recommendations?.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-10 gap-1  border-gray-200 rounded-2xl">
-            <div className='rounded-full p-4 bg-blue-50'><Icons.Explore /></div>
+            <div className="rounded-full p-4 bg-blue-50">
+              <Icons.Explore />
+            </div>
             <p className="text-gray-400 text-sm text-center">
               No specific matches found yet. <br />
               Join more events to help us learn what you like!
             </p>
           </div>
         ) : (
-          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {recommendations?.slice(0,3).map((event) => (
+            {recommendations?.slice(0, 3).map((event) => (
               <EventCard key={event._id} event={event} />
             ))}
           </div>
         )}
+      </div>
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-4 justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 hidden md:flex  bg-orange-100 text-orange-600 rounded-2xl items-center justify-center shadow-inner">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6 text-orange-600"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 18L9 11.25l4.306 4.307a.515.515 0 00.774-.002L21.75 4.5M21.75 4.5v5.338m0-5.338H16.41"
+                />
+              </svg>
+            </div>
+            <div>
+              <h6 className="text-xl font-black capitalize text-gray-900 tracking-tight">
+                Popular Around Campus
+              </h6>
+            </div>
+          </div>
+          <Link to={"/student/events"}>
+            <button className="text-sm font-bold cursor-pointer text-blue-600 hover:text-blue-800  px-5 py-2 rounded-full hover:underline transition-colors">
+              Explore All
+            </button>
+          </Link>
+        </div>
+        
+          {
+            isStudentEventsLoading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loading size="md" color="black" />
+            <p className="mt-4 text-gray-500 animate-pulse">
+              Getting your Popular Events...
+            </p>
+          </div>
+        ) : eventsError || events?.popularEvents.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-10 gap-1  border-gray-200 rounded-2xl">
+            <div className="rounded-full p-4 bg-blue-50">
+              <Icons.Explore />
+            </div>
+            <p className="text-gray-400 text-sm text-center">
+              No trending events at the moment. <br />
+              New popular events will appear here soon
+            </p>
+          </div>
+        ) : (
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+               {events.popularEvents.map(event => (
+            <EventCard key={event._id} event={event}  />
+          ))}
+           </div>
+        )
+
+          }
+        
       </div>
     </div>
   );

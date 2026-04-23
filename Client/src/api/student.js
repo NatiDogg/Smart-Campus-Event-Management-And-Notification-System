@@ -14,6 +14,10 @@ export const getRecommendations = async()=>{
     const response = await api.get('/api/student/recommendations');
     return response.data.recommendations
 }
+export const getStudentEvents = async()=>{
+    const response = await api.get('/api/student/my-events');
+    return response.data;
+}
 
 
 
