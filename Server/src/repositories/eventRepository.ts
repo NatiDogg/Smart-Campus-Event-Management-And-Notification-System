@@ -26,7 +26,7 @@ export const getOrganizerEvents = (id:string)=>{ //organizer
 
 export const findEventById = (eventId:string)=>{ 
      const id = new Types.ObjectId(eventId);
-     return eventModel.findById(id).populate("organizedBy", "organizationName");
+     return eventModel.findById(id).populate("organizedBy", "organizationName").populate('category', 'name');
 }
 
 export const updateOrganizerEvent = (eventData: eventupdateType, eventId: string)=>{ //organizer

@@ -13,6 +13,7 @@ import ResetPassword from './components/resetPassword';
 import useFcmToken from './hooks/useFcmToken'
 
 
+
 // Public Pages
 const Landing = lazy(() => import('./pages/Landing'));
 const Signin = lazy(() => import('./pages/SignIn'));
@@ -28,6 +29,7 @@ const Calendar = lazy(() => import('./pages/student/Calendar'));
 const MyEvents = lazy(() => import('./pages/student/MyEvents'));
 const Announcements = lazy(() => import('./pages/student/Announcements'));
 const Recommendations = lazy(()=> import('./components/Recommendations'));
+const EventDetails = lazy(()=> import('./components/EventDetails'));
 
 // Organizer Pages
 const OrganizerDashboard = lazy(() => import('./pages/organizer/OrganizerDashboard'));
@@ -110,6 +112,7 @@ function App() {
             <Route path='calendar' element={<Calendar />} />
             <Route path='announcements' element={<Announcements />} />
             <Route path='recommendations' element={<Recommendations />} />
+            <Route path='details/:id' element={<EventDetails />} />
             {sharedRoutes}
              
           </Route>

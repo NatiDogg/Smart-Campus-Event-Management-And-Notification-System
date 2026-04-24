@@ -68,3 +68,7 @@ export const getAllAttendanceTrends = async () => {
     }
   ]);
 };
+
+export const getStudentEventAttendanceStatus = (studentId: string, eventId: string)=>{
+      return attendanceModel.findOne({studentId: new Types.ObjectId(studentId), eventId: new Types.ObjectId(eventId), isPresent: true})
+}
