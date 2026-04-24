@@ -2,10 +2,11 @@ import React,{useState,useEffect,useContext} from 'react'
 import { AppContext } from '../context/ContextProvider';
 import { useParams } from 'react-router-dom';
 import { useGetEventDetails } from '../hooks/useEvent';
+import {ChevronLeft} from 'lucide-react'
 import Loading from './Loading';
 const EventDetails = () => {
  
-      const {user} = useContext(AppContext)
+      const {user,navigate} = useContext(AppContext)
       const {id} = useParams()
       const {data,isLoading,error} = useGetEventDetails(id, {enabled: !!id})
 
@@ -29,12 +30,10 @@ const EventDetails = () => {
   return (
      <div className="max-w-6xl mx-auto space-y-8 p-5  pb-20">
       <button 
-       
-        className="flex items-center gap-2 text-gray-500 font-bold hover:text-blue-600 transition-colors"
+        onClick={()=>navigate('/student/events')}
+        className="flex items-center gap-2 cursor-pointer text-sm group text-gray-500 font-bold hover:text-blue-600 transition-colors"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-        </svg>
+        <ChevronLeft className='group-hover:-translate-x-1 transition-all duration-150' />
         Back to Events
       </button>
 
@@ -47,10 +46,10 @@ const EventDetails = () => {
             <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
             <div className="absolute bottom-8 left-8 text-white pr-8">
               <div className="flex items-center gap-3 mb-4">
-                <span className="px-4 py-1.5 bg-blue-600 text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg border border-blue-400/30">{data?.event.category.name}</span>
+                <span className="px-4 py-1.5 bg-blue-400 text-[8px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg border border-blue-400/30">{data?.event.category.name}</span>
                 
               </div>
-              <h1 className="text-4xl md:text-5xl font-black drop-shadow-xl leading-tight">{data?.event.title || 'Cancelled Event'}</h1>
+              <h1 className="text-3xl md:text-4xl font-black drop-shadow-xl leading-tight">{data?.event.title || 'Cancelled Event'}</h1>
             </div>
           </div>
 
@@ -100,30 +99,30 @@ const EventDetails = () => {
 
           {/* Feedback Section (Visible only for past or attended events) */}
           {data?.isAttended && (
-            <div className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm space-y-8 animate-in slide-in-from-top-4 duration-500">
+            <div className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm space-y-6 animate-in slide-in-from-top-4 duration-500">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                     <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-black text-gray-900">How was the event?</h2>
+                <h2 className="text-xl font-black text-gray-900">How was the event?</h2>
               </div>
 
               {data?.isfeedBackSubmitted ? (
-                <div className="p-10 bg-green-50 border border-green-100 rounded-3xl text-center space-y-4">
+                <div className="p-10 bg-green-50 border border-green-100 rounded-3xl text-center space-y-2">
                   <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-10 h-10">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-black text-green-900">Feedback Submitted!</h3>
-                  <p className="text-green-700 font-medium">Thank you for sharing your experience. Your rating helps our community grow.</p>
+                  <h3 className="text-xl font-black text-green-900">Feedback Submitted!</h3>
+                  <p className="text-green-700 font-light">Thank you for sharing your experience. Your rating helps our community grow.</p>
                 </div>
               ) : (
                 <form  className="space-y-8">
                   <div className="space-y-4 bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                    <p className="text-sm font-black text-gray-500 uppercase tracking-widest text-center">Rate your experience</p>
+                    <p className="text-xs font-black text-gray-500 uppercase tracking-widest text-center">Rate your experience</p>
                     <div className="flex justify-center gap-3">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
@@ -138,7 +137,7 @@ const EventDetails = () => {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill={(hoverRating || rating) >= star ? '#FBBF24' : '#E5E7EB'}
-                            className="w-12 h-12 drop-shadow-sm"
+                            className="w-8 h-8 drop-shadow-sm"
                           >
                             <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
                           </svg>
@@ -147,22 +146,22 @@ const EventDetails = () => {
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-3">
                     <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Give some Feedbacks</label>
                     <textarea
                       
                       rows={4}
                       placeholder="What did you learn? What could be improved?"
-                      className="w-full px-6 py-4 rounded-2xl resize-none bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all text-gray-900 font-medium placeholder-gray-400"
+                      className="w-full px-6 py-4 rounded-2xl text-sm resize-none bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all text-gray-900 font-medium placeholder-gray-400"
                     ></textarea>
                   </div>
 
                   <button
                     type="submit"
                     disabled={rating === 0}
-                    className="w-full py-5 bg-gray-900 text-white font-black text-lg rounded-2xl shadow-2xl hover:bg-gray-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed uppercase tracking-widest"
+                    className="w-full py-5 bg-gray-900 text-white font-black text-sm rounded-2xl shadow-2xl hover:bg-gray-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer uppercase tracking-widest"
                   >
-                    Submit Review
+                    Submit Feedback
                   </button>
                 </form>
               )}

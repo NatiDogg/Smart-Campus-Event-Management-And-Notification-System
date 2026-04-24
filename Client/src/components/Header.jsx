@@ -43,7 +43,7 @@ const Header = () => {
                   />
                 </div>
                 <span className="text-xl hidden md:flex font-bold tracking-tight text-slate-900">
-                  SmartCampus
+                  CampusEvents
                 </span>
               </Link>
             </div>
