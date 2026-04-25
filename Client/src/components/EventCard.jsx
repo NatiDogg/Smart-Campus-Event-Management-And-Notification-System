@@ -1,9 +1,21 @@
 import React from 'react'
 import {format} from 'date-fns'
 import { Link } from 'react-router-dom'
+import {useQueryClient} from '@tanstack/react-query'
+import {getEventDetails} from '../api/event'
 const EventCard = ({event}) => {
+   const queryClient = useQueryClient();
+
+   const handlePrefetch = (id)=>{
+    
+      queryClient.prefetchQuery({
+         queryKey: ['eventDetail', id],
+          queryFn: ()=> getEventDetails(id),
+          staleTime: 0
+      })
+   }
   return (
-    <Link to={`/student/details/${event._id}`}>
+    <Link onMouseEnter={()=>handlePrefetch(event._id)} to={`/student/details/${event._id}`}>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
         <div className="relative aspect-video overflow-hidden">
           <img

@@ -3,7 +3,7 @@ import {  forgetPassword, loginUser, logoutUser, registerUser,resetPassword,veri
 import {useMutation,useQuery, useQueryClient} from '@tanstack/react-query'
 import { AppContext } from "../context/ContextProvider";
 import {toast} from 'react-hot-toast'
-import api from "../api/axios";
+import api,{setIsLoggingOut} from "../api/axios";
 export const useRegisterUser = ()=>{
       const { setUser, setToken } = useContext(AppContext);
       return useMutation({
@@ -44,12 +44,15 @@ export const useLogoutUser = ()=>{
     const queryClient = useQueryClient()
     const { setUser, setToken } = useContext(AppContext);
     return useMutation({
-      mutationFn: logoutUser,
+      mutationFn: async()=>{
+         setIsLoggingOut(true);
+         return logoutUser();
+      },
       onSettled:(data,error)=>{
         setUser(null);
       setToken(null);
       delete api.defaults.headers.common['Authorization'];
-      queryClient.removeQueries();
+      queryClient.clear();
       toast.success(data?.message || "Logged out Successfully")
       if (error) {
         toast.success("Logged out Successfully")
