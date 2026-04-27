@@ -59,8 +59,20 @@ export const handleProfileUpdate = async (req:AuthRequest, res:Response)=>{
          return res.status(200).json(result)
          
       } catch (error) {
-         handleError(res,error);
+        return handleError(res,error);
       }
+}
+export const getAllOrganizersHandler = async(req:Request, res:Response)=>{
+   try {
+       const result = await UserService.getAllOrganizers()
+       return res.status(200).json({
+         success: true,
+         message: 'organizers retrieved successfully',
+         result
+       })
+   } catch (error) {
+      return handleError(res,error)
+   }
 }
 
 

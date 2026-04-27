@@ -21,7 +21,7 @@ export const registerStudentToEventHandler = async(req:AuthRequest<{id: string}>
           try {
 
             const result = await RegistrationService.RegisterStudentToEvent(studentId, eventId)
-            void AIService.refreshStudentRecommendations(studentId);
+            void AIService.refreshStudentRecommendations(studentId); 
             return res.status(201).json(result);
 
             

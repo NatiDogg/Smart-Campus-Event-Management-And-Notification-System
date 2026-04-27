@@ -15,6 +15,8 @@ const Setting = () => {
      const {mutate: subscribeCategory, isPending: isSubscribingCategory} = useSubscribeCategory()
      const {data: userSubscribedCategories,isLoading:isSavedCategoriesLoading} = useGetSubscribedCategories()
 
+     
+
 
   const [fullName, setFullName] = useState(user.fullName);
   const [email, setEmail] = useState(user.email);
@@ -121,14 +123,24 @@ const Setting = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="flex items-center gap-8">
           <div className="relative">
+          
             <img
-              src={
-                user.profile ||
-                `https://ui-avatars.com/api/?name=kebede&background=2563EB&color=fff&size=128`
-              }
-              className="w-30 h-30 rounded-3xl md:rounded-full object-cover shadow-2xl border-4 border-white"
-              alt="ProfileLarge"
-            />
+                    src={
+                      user.profile && user.profile.trim() !== ""
+                        ? user.profile.replace("http://", "https://")
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            user.fullName
+                          )}&background=2563EB&color=fff`
+                    }
+                    alt="user"
+                    onError={(e) => {
+                      
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        user.fullName
+                      )}&background=2563EB&color=fff`;
+                    }}
+                    className="w-30 h-30 rounded-3xl md:rounded-full object-cover shadow-2xl border-4 border-white"
+                  />
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">

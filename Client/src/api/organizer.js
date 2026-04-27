@@ -17,3 +17,5 @@ export const organizerAnalytics = async()=>{
    const response = await api.get('/api/organizer/analytics');
    return response.data;
 }
+
+

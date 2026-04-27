@@ -8,7 +8,7 @@ const interestRouter = express.Router();
 
 interestRouter.use(authUser as unknown as RequestHandler)
 
-interestRouter.post("/mark",markInterestHandler as unknown as RequestHandler);
-interestRouter.delete("/unmark",unMarkInterestHandler as unknown as RequestHandler);
+interestRouter.post("/mark/:id",markInterestHandler as unknown as RequestHandler);
+interestRouter.delete("/unmark/:id",unMarkInterestHandler as unknown as RequestHandler);
 
 export default interestRouter;

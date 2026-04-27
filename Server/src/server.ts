@@ -42,7 +42,7 @@ app.use("/api/auth",authRouter);
 
 // Public / Student Resources (Viewing Events)
 app.use("/api/event",eventRouter);
-app.use("api/student",studentRouter);
+app.use("/api/student",studentRouter);
 
 //student action marking or unmarking interest
 app.use("/api/interest",interestRouter);

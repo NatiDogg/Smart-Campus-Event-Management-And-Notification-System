@@ -1,4 +1,5 @@
 import {create,findEvent, getOrganizerEvents,updateOrganizerEvent,findEventById, cancelOrganizerEvent, findAllEvents, findPendingEvents, approvePendingEvent, getAdminEvents, updateEventRegistrationCount, findPopularEvents, rejectPendingEvent, findLiveApprovedEvents, countOrganizerPendingEvents, getOrganizerEventStatusDistribution, getAllActiveEvents} from "../repositories/eventRepository.js";
+import { getStudentEventAttendanceStatus } from "../repositories/attendanceRepository.js";
 import AppError from "../utils/appError.js";
 import type { eventCreationType, eventupdateType } from "../utils/zodEventValidator.js";
 import {uploadToCloudinary,deleteFromCloudinary,} from "../helpers/cloudinaryHelper.js";
@@ -132,15 +133,14 @@ class EventService {
   }
   async getAllEvents(){
       const events = await findAllEvents();
-      return {
-        success: true,
-        message: events.length > 0 ? "Events Retrieved Successfully!" : "No events have been created yet!",
-        events
+      if(!events){
+        throw new AppError("Failed to get Events",500)
       }
+      return events;
   }
   async getSingleEvent(eventId: string,studentId: string){
 
-     const [event, registration,registeredStudents,interested,isfeedBackSubmitted] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus(eventId),InterestService.hasStudentBeenInterested(studentId, eventId),FeedbackService.checkStudentFeedback(studentId, eventId)])
+     const [event, registration,registeredStudents,interested,isfeedBackSubmitted,isAttended] = await Promise.all([findEventById(eventId), RegistrationService.verifyStudentRegistrationStatus(studentId, eventId),RegistrationService.getStudentsRegistrationStatus(eventId),InterestService.hasStudentBeenInterested(studentId, eventId),FeedbackService.checkStudentFeedback(studentId, eventId),getStudentEventAttendanceStatus(studentId,eventId)])
      if(!event || event.status !== "approved"){
        throw new AppError("Event not found", 404);
      }
@@ -152,7 +152,9 @@ class EventService {
         isRegistered: !!registration,
         isInterested: !!interested,
         isfeedBackSubmitted: !!isfeedBackSubmitted,
-        registeredStudents: registeredStudents
+        registeredStudents: registeredStudents,
+        isAttended: !!isAttended
+
       }
 
       

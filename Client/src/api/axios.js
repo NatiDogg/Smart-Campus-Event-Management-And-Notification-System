@@ -4,6 +4,8 @@ const api = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000',
     withCredentials: true
 });
+let isLoggingOut = false;
+export const setIsLoggingOut = (val) => { isLoggingOut = val; };
 
 // attach the access token to every outgoing request
 api.interceptors.request.use(
@@ -23,6 +25,8 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+
+        if (isLoggingOut) return Promise.reject(error);
 
         // FIX #2: Use a clearer check for the refresh status
         if (error.response?.status === 401 && !originalRequest._retry) {

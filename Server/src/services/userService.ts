@@ -3,7 +3,7 @@ import adminModel from "../models/adminModel.js";
 import organizerModel from "../models/organizerModel.js";
 import studentModel from "../models/studentModel.js";
 import userModel from "../models/userModel.js";
-import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken, findAllStudents, findUserByResetToken } from "../repositories/userRepository.js";
+import { getAll,findById,findByEmail, deleteUser, updateFcmToken, removeToken, findAllStudents, findUserByResetToken,findAllOrganizers } from "../repositories/userRepository.js";
 import AppError from "../utils/appError.js";
 import { hashPassword } from "../utils/bcryptjs.js";
 import { UpdateProfileInput } from "../utils/zodUpdateValidator.js";
@@ -119,6 +119,15 @@ class UserService{
     async getUserByResetToken(token: string){
        const user =  await findUserByResetToken(token);
        return user;
+    }
+    async getAllOrganizers(){
+        const organizers = await findAllOrganizers()
+
+        if(!organizers){
+            throw new AppError("Failed to get Organizers", 400)
+        }
+        return organizers;
+
     }
     
    

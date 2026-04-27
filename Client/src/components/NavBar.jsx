@@ -39,7 +39,7 @@ const NavBar = ({setMenuOpen}) => {
         <>
           {
             navLinks.map((link,index)=>{
-              return <NavLink onClick={()=>setMenuOpen(false)} key={index} to={link.path} end className={({isActive})=> `px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+              return <NavLink onClick={()=>setMenuOpen(false)} key={index} to={link.path} end className={({isActive})=> `px-4 py-2 flex flex-col rounded-lg text-sm font-semibold transition-all duration-200 ${
           isActive
             ? 'bg-blue-600 text-white shadow-md shadow-blue-100'
             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'

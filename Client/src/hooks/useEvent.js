@@ -1,5 +1,5 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
-import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents, cancelEvent, editEvent, getOrganizerAllEvents } from '../api/event'
+import { createEvent,getPendingEvents,approveEvent,rejectEvent,getAdminAllEvents, cancelEvent, editEvent, getOrganizerAllEvents, getAllEvents,getEventDetails } from '../api/event'
 
 import toast from 'react-hot-toast'
 
@@ -145,5 +145,37 @@ export const useGetOrganizerAllEvents = ()=>{
     refetchOnWindowFocus: false
   })
 }
+
+export const useGetAllEvents = ()=>{
+  return useQuery({
+    queryKey: ['all-events'],
+    queryFn: getAllEvents,
+    staleTime:60000,
+    refetchOnWindowFocus: false
+  })
+}
+
+export const useGetEventDetails = (id, options = {})=>{
+  return useQuery({
+     queryKey: ['eventDetail', id],
+     queryFn: ()=> getEventDetails(id),
+     staleTime: 60000,
+     refetchOnWindowFocus: false,
+     ...options
+  })
+}
+
+{/*
+
+  {success: true, message: 'Event Retrieved Successfully!', event: {…}, isRegistered: false, isInterested: false, …}
+event: {_id: '69e625acb4487c88a1a30061', title: 'Annual Tech Event', description: 'this is an annual Tech Event description ', imageUrl: 'https://res.cloudinary.com/dnzn1uao7/image/upload/v1776690604/events/eite01y7hoglvvfszvjd.jpg', imagePublicId: 'events/eite01y7hoglvvfszvjd', …}
+isInterested: false
+isRegistered: false
+isfeedBackSubmitted: false
+message: "Event Retrieved Successfully!"
+registeredStudents: [{…}]
+isAttended: false
+success: true
+  */}
 
 

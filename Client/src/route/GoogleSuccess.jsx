@@ -34,7 +34,7 @@ const GoogleSuccess = () => {
       <div className="text-center">
         {/* A nice loading spinner */}
         <div className="inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-        <p className="mt-4 text-lg font-semibold text-gray-700">Setting up your SmartCampus account...</p>
+        <p className="mt-4 text-lg font-semibold text-gray-700">Setting up your CampusEvents account...</p>
       </div>
     </div>
   )

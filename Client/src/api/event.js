@@ -40,3 +40,13 @@ export const getOrganizerAllEvents = async()=>{
    const response = await api.get('/api/organizer/events');
    return response.data
 }
+
+export const getAllEvents = async()=>{
+    const response = await api.get('/api/event/all-events');
+    return response.data
+}
+
+export const getEventDetails = async(eventId)=>{
+  const response = await api.get(`/api/event/single-event/${eventId}`)
+  return response.data;
+}

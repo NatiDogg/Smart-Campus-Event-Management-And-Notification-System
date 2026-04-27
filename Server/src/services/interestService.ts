@@ -23,7 +23,7 @@ class InterestService{
        }
        return {
          success: true,
-         message: "Interest marked successfully!",
+         message: "Saved to interests",
          newInterest
        }
 
@@ -37,7 +37,7 @@ class InterestService{
          }
          return {
            success: true,
-           message: " Removed from your interests Successfully!",
+           message: "Removed from interests.",
          };
      }
      async hasStudentBeenInterested(studentId: string, eventId: string){
