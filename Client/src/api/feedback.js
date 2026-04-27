@@ -1,8 +1,9 @@
 import api from './axios'
 
 
-export const submitFeedback = async(eventId)=>{
-        const response = await api.post(`/api/feedback/${eventId}`)
+export const submitFeedback = async(feedbackData)=>{
+         const { id, ...rest } = feedbackData;
+        const response = await api.post(`/api/feedback/submit/${id}`, rest)
         return response.data
 }
 

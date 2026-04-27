@@ -22,6 +22,7 @@ export const useSubscribeCategory = ()=>{
         onSuccess:(data)=>{
             toast.success(data.message)
             queryClient.invalidateQueries({queryKey: ["subscribedCategories"]})
+            queryClient.invalidateQueries({queryKey: ['studentEvents']})
         },
         onError:(error)=>{
             const errorMessage = error.response?.data?.message || "Failed to save changes";

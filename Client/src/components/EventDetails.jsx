@@ -7,6 +7,8 @@ import Loading from './Loading';
 import {format} from 'date-fns'
 import { useRegisterStudent, useUnregisterStudent } from '../hooks/useRegister';
 import { useMarkInterest, useUnMarkInterest } from '../hooks/useInterest';
+import { useSubmitFeedback } from '../hooks/useFeedback';
+import toast from 'react-hot-toast';
 
 const EventDetails = () => {
  
@@ -17,7 +19,8 @@ const EventDetails = () => {
 
        //registration hooks
        const {mutate:registerStudent, isPending:isRegistering} = useRegisterStudent();
-       const {mutate:unregisterStudent, isPending:isUnregistering} = useUnregisterStudent()
+       const {mutate:unregisterStudent, isPending:isUnregistering} = useUnregisterStudent();
+       const {mutate: submitFeedback, isPending: isSubmitingFeedback} = useSubmitFeedback()
 
 
        //interest hooks
@@ -28,6 +31,8 @@ const EventDetails = () => {
 
       const [rating, setRating] = useState(0);
       const [hoverRating, setHoverRating] = useState(0);
+
+      const [comment, setComment] = useState('');
 
 
 
@@ -55,6 +60,37 @@ const EventDetails = () => {
             markInterest(id)
            }
 
+      }
+
+      
+
+      const onSubmitFeedbackHandler = (e)=>{
+          e.preventDefault()
+          if(!id) return toast.error("Something went Wrong")
+          if (!rating || rating === 0) {
+            return toast.error("Please provide a rating!");
+          }
+
+          if (!comment.trim()) {
+            return toast.error("Please write a comment!");
+          }
+          const finalData = {
+            rating,
+             comment,
+             id
+             
+
+          }
+          
+
+          submitFeedback(finalData,({
+            onSuccess:()=>{
+              setComment("")
+              setRating(0)
+              setHoverRating(0)
+
+            }
+          }))
       }
     
 
@@ -246,7 +282,7 @@ const EventDetails = () => {
                   </p>
                 </div>
               ) : (
-                <form className="space-y-8">
+                <form onSubmit={onSubmitFeedbackHandler} className="space-y-8">
                   <div className="space-y-4 bg-gray-50 p-6 rounded-2xl border border-gray-100">
                     <p className="text-xs font-black text-gray-500 uppercase tracking-widest text-center">
                       Rate your experience
@@ -259,7 +295,8 @@ const EventDetails = () => {
                           onMouseEnter={() => setHoverRating(star)}
                           onMouseLeave={() => setHoverRating(0)}
                           onClick={() => setRating(star)}
-                          className="transition-all hover:scale-125 active:scale-95"
+                          
+                          className="transition-all cursor-pointer hover:scale-125 active:scale-95"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -288,17 +325,21 @@ const EventDetails = () => {
                     </label>
                     <textarea
                       rows={4}
+                      onChange={(e)=>setComment(e.target.value)}
+                      value={comment}
+                      name='comment'
                       placeholder="What did you learn? What could be improved?"
                       className="w-full px-6 py-4 rounded-2xl text-sm resize-none bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all text-gray-900 font-medium placeholder-gray-400"
                     ></textarea>
                   </div>
 
                   <button
+                   
                     type="submit"
-                    disabled={rating === 0}
+                    disabled={rating === 0 || isSubmitingFeedback}
                     className="w-full py-5 bg-gray-900 text-white font-black text-sm rounded-2xl shadow-2xl hover:bg-gray-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer uppercase tracking-widest"
                   >
-                    Submit Feedback
+                    {isSubmitingFeedback ? (<Loading size='sm' color='white' />) : ('Submit Feedback')}
                   </button>
                 </form>
               )}
