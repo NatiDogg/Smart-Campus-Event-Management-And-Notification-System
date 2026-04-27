@@ -5,6 +5,7 @@ import type { Response } from "express"
 import { isValid } from "../utils/validMongodbId.js"
 import { subscriptionSchema } from "../utils/zodSubscriptionValidator.js"
 import SubscriptionService from "../services/subscriptionService.js"
+import AIService from "../services/aiService.js"
 
 export const subscribeToCategoryHandler = async(req:AuthRequest, res:Response)=>{
         const {id: studentId} = req.userAccessInfo
@@ -27,6 +28,7 @@ export const subscribeToCategoryHandler = async(req:AuthRequest, res:Response)=>
         
       try {
          const result = await SubscriptionService.subscribeToCategory(studentId,parsed.data.categories);
+         void AIService.refreshStudentRecommendations(studentId)
          return res.status(201).json(result)
       } catch (error) {
          return handleError(res,error)

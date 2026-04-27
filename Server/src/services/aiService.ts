@@ -2,6 +2,7 @@ import eventModel from "../models/eventModel.js";
 import interestModel from "../models/interestModel.js";
 import registrationModel from "../models/registrationModel.js";
 import recommendationModel from "../models/recommendationModel.js";
+import subscriptionModel from '../models/subscriptionModel.js'
 import { env } from "../utils/zodEnvFilesValidator.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Types } from "mongoose";
@@ -44,7 +45,7 @@ class AIService {
    */
   private async generateStudentRecommendations(studentId: string) {
     try {
-      const [history, interestedEvents, upcomingEvents] = await Promise.all([
+      const [history, interestedEvents, upcomingEvents,subscribedEvents] = await Promise.all([
         registrationModel.find({ studentId: new Types.ObjectId(studentId) }).populate({
           path: "eventId",
           select: "title category description",
@@ -59,6 +60,7 @@ class AIService {
           .select("title category description _id")
           .populate("category", "name")
           .limit(15),
+        subscriptionModel.findOne({studentId: new Types.ObjectId(studentId)}).populate("preferredCategories", "name")
       ]);
 
       const historyList = history.map(h => {
@@ -77,22 +79,26 @@ class AIService {
         category: (e.category as any)?.name,
         description: e.description
       }));
+      const preferredCategoriesList = subscribedEvents?.preferredCategories
+  ? subscribedEvents.preferredCategories.map((cat: any) => cat.name).join(", ")
+  : "No preferred categories set";
 
       const systemPrompt = `
         ROLE: 
         You are the "Smart Campus AI," a university event recommendation engine.
         
         CONTEXT:
-        - Registration History: ${historyList || "New User (No history)"}
-        - Explicit Interests: ${interestList || "New User (No interests)"}
+        - Subscribed Categories (Broad Interests): ${preferredCategoriesList}
+        - Registration History (Past Actions): ${historyList || "New User (No history yet)"}
+        - Explicit Interests (Wishlist): ${interestList || "New User (No interests marked yet)"}
         
         DATA POOL (Upcoming Events):
         ${JSON.stringify(upcomingList)}
 
         TASK:
         1. Select 3-5 best event IDs from the DATA POOL that the student has not yet registered for in their Registration History.
-        2. If the student is a "New User," select 3-5 diverse events (e.g., one tech, one social, one career) to help them explore the campus .
-        3. If the student has history or interests, prioritize matching those themes
+        2. If the student is a "New User," select 3-5 diverse events (e.g., one tech, one social, one career) to help them explore the campus.
+        3. If the student has subscribed categories, history or interests, prioritize matching those themes
         4. Return ONLY a raw JSON array of strings (the event IDs).
         5. DO NOT return objects, DO NOT return reasons.
         6. NO markdown, NO code blocks.
@@ -101,6 +107,7 @@ class AIService {
         ["65d2f...", "65d3a..."]
       `;
 
+      console.log("Ai Model started recommending...")
       const result = await this.model.generateContent(systemPrompt);
       const responseText = result.response.text().trim();
        console.log(responseText);

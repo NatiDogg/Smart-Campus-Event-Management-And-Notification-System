@@ -3,7 +3,7 @@ import CategoryService from "./categoryService.js";
 import { isValid } from "../utils/validMongodbId.js";
 import AppError from "../utils/appError.js";
 import categoryModel from "../models/categoryModel.js";
-import { createOrUpdateSubscription, findStudentSubscription } from "../repositories/subscriptionRepository.js";
+import { createOrUpdateSubscription, findStudentSubscription} from "../repositories/subscriptionRepository.js";
 
 class SubscriptionService{
      async subscribeToCategory(studentId: string,preferredCategories: string[]){
@@ -42,6 +42,7 @@ class SubscriptionService{
           subscriptions
        }
      }
+     
 }
 
 export default new SubscriptionService()

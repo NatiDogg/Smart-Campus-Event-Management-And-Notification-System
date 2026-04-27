@@ -30,6 +30,7 @@ const MyEvents = lazy(() => import('./pages/student/MyEvents'));
 const Announcements = lazy(() => import('./pages/student/Announcements'));
 const Recommendations = lazy(()=> import('./components/Recommendations'));
 const EventDetails = lazy(()=> import('./components/EventDetails'));
+const Subscription = lazy(()=> import('./pages/student/Subscription'))
 
 // Organizer Pages
 const OrganizerDashboard = lazy(() => import('./pages/organizer/OrganizerDashboard'));
@@ -47,6 +48,7 @@ const Approval = lazy(() => import('./pages/admin/Approval'));
 const AuditLog = lazy(() => import('./pages/admin/AuditLog'));
 const Categories = lazy(() => import('./pages/admin/Categories'));
 const Users = lazy(() => import('./pages/admin/Users'));
+
 
 
 const sharedRoutes = (
@@ -113,6 +115,7 @@ function App() {
             <Route path='announcements' element={<Announcements />} />
             <Route path='recommendations' element={<Recommendations />} />
             <Route path='details/:id' element={<EventDetails />} />
+            <Route path='subscription' element={<Subscription />} />
             {sharedRoutes}
              
           </Route>

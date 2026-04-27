@@ -2,19 +2,46 @@ import React,{useContext,useEffect,useState} from 'react'
 import {AppContext} from '../../context/ContextProvider'
 import {Icons} from '../../components/Icons'
 import { Link } from 'react-router-dom'
-import { useGetRecommendations,useGetStudentEvents } from '../../hooks/useStudent'
+import { useGetRecommendations,useGetStudentEvents, useGetSubscribedCategories } from '../../hooks/useStudent'
+import {useGetAllEvents} from '../../hooks/useEvent'
 import EventCard from '../../components/EventCard'
 import Loading from '../../components/Loading'
 const Home = () => {
 
+     const [subscribedFeed, setSubscribedFeed] = useState([])
      const {user} = useContext(AppContext)
-     const {data: recommendations,isLoading: isRecommendationsLoading,isError} = useGetRecommendations()
-     const {data: events,isLoading: isStudentEventsLoading,error:eventsError} = useGetStudentEvents()
-
-    
- 
-      
      
+      const { data: recommendations, isLoading, isError } = useGetRecommendations()
+     const {data: events,isLoading: isStudentEventsLoading,error:eventsError} = useGetStudentEvents()
+     const {data:subscribedCategories, isLoading: isSubscribedCategoriesLoading,isError: subError} = useGetSubscribedCategories()
+     const {data: allEvents, isLoading: isAllEventsLoading,isError: allEventsError} = useGetAllEvents()
+
+      
+ 
+     useEffect(() => {
+       const categories = subscribedCategories?.preferredCategories;
+       const events = allEvents?.result;
+
+       if (categories && events) {
+         
+         const subscribedNamesSet = new Set(categories.map((cat) => cat.name));
+
+         
+         const subscribedEvents = events.filter((event) =>
+          
+           subscribedNamesSet.has(event.category.name)
+         );
+
+          setSubscribedFeed(subscribedEvents);
+       }
+     }, [allEvents, subscribedCategories]);
+     
+    
+     const hasFeedError = subError || allEventsError;
+
+     const upcomingEvents = events?.registeredEvents?.filter((event)=>{
+         return new Date(event.endDate) >= new Date()
+     }).length || 0;
      
   return (
     <div className="flex flex-col gap-12 p-5">
@@ -25,13 +52,12 @@ const Home = () => {
               Hello, {user?.fullName.split(" ")[0] || "User"}! 👋
             </h2>
             <p className="text-blue-100 text-[16px] max-w-lg leading-relaxed">
-              You have 0 events coming up.{" "}
+              You have {upcomingEvents || 0} events coming up.{" "}
               {recommendations?.length > 0
                 ? `Your AI-powered feed has found ${
                     recommendations?.length || 0
                   } new events matching your interests`
                 : `You are all caught up! 0 new recommendations found.`}
-              
             </p>
             <div className="flex flex-col items-center md:flex-row gap-4 pt-4">
               <Link to={"/student/events"}>
@@ -44,6 +70,18 @@ const Home = () => {
                   View My Schedule
                 </button>
               </Link>
+              <Link to={"/student/recommendations"}>
+  <button className="relative overflow-hidden cursor-pointer bg-linear-to-r from-indigo-500 to-purple-500 text-white font-black px-8 py-4 rounded-2xl shadow-lg hover:shadow-indigo-500/40 transition-all active:scale-95 group">
+    {/* Subtle Inner Glow effect */}
+    <span className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-colors"></span>
+    
+    <span className="relative flex items-center gap-2">
+      <Icons.Magic className="w-5 h-5" /> 
+      Discover AI Picks
+    </span>
+  </button>
+</Link>
+              
             </div>
           </div>
           <div className="hidden lg:block w-64 h-64 bg-white/10 rounded-[3rem] backdrop-blur-xl border border-white/20 p-8 transform rotate-6 group-hover:rotate-12 transition-transform duration-700">
@@ -72,53 +110,43 @@ const Home = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+                  d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
                 />
               </svg>
             </div>
             <div>
               <h6 className="text-xl font-black capitalize text-gray-900 tracking-tight">
-                Our top AI recommendations
+                Your Subscribed Feed
               </h6>
             </div>
           </div>
-          <Link to={"/student/recommendations"}>
+          <Link to={"/student/subscription"}>
             <button className="text-sm font-bold cursor-pointer text-blue-600 hover:text-blue-800  px-5 py-2 rounded-full hover:underline transition-colors">
               View All
             </button>
           </Link>
         </div>
-        {isRecommendationsLoading ? (
+        {isSubscribedCategoriesLoading || isAllEventsLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <Loading size="md" color="black" />
             <p className="mt-4 text-gray-500 animate-pulse">
-              Analyzing your interests...
+              Getting your subscription feed...
             </p>
           </div>
-        ) : isError ? (
-          <div className="flex flex-col items-center justify-center p-8 bg-red-50/50 rounded-xl border border-red-100">
-            <div className="text-red-500 mb-2">⚠️</div>
-            <h3 className="text-red-800 font-semibold">
-              Couldn't load recommendations
-            </h3>
-            <p className="text-red-600 text-sm text-center">
-              The AI service is temporarily busy. Please refresh or try again
-              later.
-            </p>
-          </div>
-        ) : recommendations?.length === 0 ? (
+        ) : hasFeedError || subscribedFeed?.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-10 gap-1  border-gray-200 rounded-2xl">
             <div className="rounded-full p-4 bg-blue-50">
               <Icons.Explore />
             </div>
             <p className="text-gray-400 text-sm text-center">
               No specific matches found yet. <br />
-              Join more events to help us learn what you like!
+              Subscribe to your favorite categories to fill your feed with
+              events you'll love!
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {recommendations?.slice(0, 3).map((event) => (
+            {subscribedFeed?.slice(0, 5).map((event) => (
               <EventCard key={event._id} event={event} />
             ))}
           </div>
@@ -155,9 +183,8 @@ const Home = () => {
             </button>
           </Link>
         </div>
-        
-          {
-            isStudentEventsLoading ? (
+
+        {isStudentEventsLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <Loading size="md" color="black" />
             <p className="mt-4 text-gray-500 animate-pulse">
@@ -175,15 +202,12 @@ const Home = () => {
             </p>
           </div>
         ) : (
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-               {events.popularEvents.map(event => (
-            <EventCard key={event._id} event={event}  />
-          ))}
-           </div>
-        )
-
-          }
-        
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {events.popularEvents.slice(0, 4).map((event) => (
+              <EventCard key={event._id} event={event} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

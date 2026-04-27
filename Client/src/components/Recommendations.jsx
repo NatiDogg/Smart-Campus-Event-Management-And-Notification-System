@@ -29,7 +29,7 @@ const Recommendations = () => {
               </svg>
           </div>
           <div>
-            <h1 className="text-3xl font-black text-gray-900 tracking-tight">AI Recommended Events</h1>
+            <h1 className="text-3xl font-black text-gray-900 tracking-tight">Our top AI recommendations</h1>
             <p className="text-gray-500 font-medium">Personalized opportunities based on your campus activity</p>
           </div>
         </div>
@@ -82,3 +82,19 @@ const Recommendations = () => {
 }
 
 export default Recommendations
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
