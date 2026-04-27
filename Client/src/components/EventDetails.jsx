@@ -5,6 +5,8 @@ import { useGetEventDetails } from '../hooks/useEvent';
 import {ChevronLeft} from 'lucide-react'
 import Loading from './Loading';
 import {format} from 'date-fns'
+import { useRegisterStudent, useUnregisterStudent } from '../hooks/useRegister';
+
 const EventDetails = () => {
  
       const {user,navigate} = useContext(AppContext)
@@ -12,17 +14,33 @@ const EventDetails = () => {
       const {data,isLoading,error} = useGetEventDetails(id, {enabled: !!id})
 
 
+       const {mutate:registerStudent, isPending:isRegistering} = useRegisterStudent();
+       const {mutate:unregisterStudent, isPending:isUnregistering} = useUnregisterStudent()
+
+
       const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
+      const [hoverRating, setHoverRating] = useState(0);
 
 
 
-      
-    useEffect(()=>{
-         if(data){
-            console.log(data)
-         }
-    },[data])
+
+      const registrationHandler = ()=>{
+
+        if(!id || isRegistering || isUnregistering) return;
+
+        if(data?.isRegistered){
+          unregisterStudent(id)
+        }
+        else{
+          registerStudent(id)
+        }
+            
+      }
+
+      const interestHandler = ()=>{
+          
+      }
+    
 
     if(isLoading){
         return <div className='min-h-screen flex flex-col justify-center items-center'><Loading size='md' color='black' /></div>
@@ -318,19 +336,43 @@ const EventDetails = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <button
+                    onClick={registrationHandler}
                     disabled={
                       data?.isAttended ||
-                      data?.registeredStudents.length === data?.event.capacity
+                      (data?.registeredStudents?.length ===
+                        data?.event.capacity &&
+                        !data?.isRegistered)
                     }
-                    className={`w-full cursor-pointer py-5 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:border-gray-200 disabled:text-gray-500 disabled:shadow-none disabled:scale-100  rounded-2xl font-black text-lg transition-all shadow-2xl active:scale-95 border-2 ${
-                      data?.isRegistered
-                        ? "bg-green-600 border-green-600 text-white shadow-green-200"
-                        : data?.isAttended
-                        ? "bg-gray-100 border-gray-100 text-gray-400 cursor-not-allowed shadow-none"
-                        : "bg-blue-600 border-blue-600 text-white shadow-blue-200 hover:bg-blue-700"
-                    }`}
+                    className={`w-full relative overflow-hidden py-5 rounded-2xl font-black text-lg transition-all duration-300 border-2 active:scale-95 
+    ${
+      isRegistering || isUnregistering
+        ? "cursor-wait opacity-90"
+        : "cursor-pointer"
+    } 
+    ${
+      data?.isRegistered
+        ? "bg-green-600 border-green-600 text-white shadow-xl shadow-green-200"
+        : data?.isAttended
+        ? "bg-gray-100 border-gray-100 text-gray-400 cursor-not-allowed"
+        : "bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-200 hover:bg-blue-700 hover:-translate-y-0.5"
+    } 
+    disabled:bg-gray-200 disabled:border-gray-200 disabled:text-gray-500 disabled:shadow-none disabled:scale-100`}
                   >
-                    {data?.isRegistered ? "Registered ✓" : "Register Now"}
+                    
+                    <div className="flex items-center justify-center gap-2">
+                      {isRegistering || isUnregistering ? (
+                        <>
+                          <Loading size="sm" color="white" />
+                          <span className="animate-pulse">Processing...</span>
+                        </>
+                      ) : data?.isRegistered ? (
+                        "Registered ✓"
+                      ) : data?.isAttended ? (
+                        "Event Closed"
+                      ) : (
+                        "Register Now"
+                      )}
+                    </div>
                   </button>
                   <button
                     className={`w-full py-5 cursor-pointer rounded-2xl font-black text-lg transition-all border-2 flex items-center justify-center gap-2 ${
@@ -358,75 +400,77 @@ const EventDetails = () => {
                 </div>
 
                 {/* Registered Students Summary */}
-                
-                <div className="pt-6 border-t border-gray-50 space-y-4">
-                  {(() => {
-                    const registered = data?.registeredStudents.length || 0;
-                    const capacity = data?.event.capacity || 1;
-                    const percentage = Math.min(
-                      (registered / capacity) * 100,
-                      100
-                    );
-                    const isNearLimit = percentage >= 90 ;
 
-                    return (
-                      <div className="group">
-                        <div className="flex justify-between items-end mb-3">
-                          <div>
-                            <p className="text-[9px] mb-0.5 font-black text-gray-400 uppercase tracking-[0.15em]">
-                              Registration Status
-                            </p>
-                            <p
-                              className={`text-xs font-semibold ${
-                                isNearLimit ? "text-red-500" : "text-blue-500"
-                              }`}
-                            >
-                              {percentage.toFixed(0)}% Occupied
-                            </p>
+                {!data?.isAttended && (
+                  <div className="pt-6 border-t border-gray-50 space-y-4">
+                    {(() => {
+                      const registered = data?.registeredStudents.length || 0;
+                      const capacity = data?.event.capacity || 1;
+                      const percentage = Math.min(
+                        (registered / capacity) * 100,
+                        100
+                      );
+                      const isNearLimit = percentage >= 90;
+
+                      return (
+                        <div className="group">
+                          <div className="flex justify-between items-end mb-3">
+                            <div>
+                              <p className="text-[9px] mb-0.5 font-black text-gray-400 uppercase tracking-[0.15em]">
+                                Registration Status
+                              </p>
+                              <p
+                                className={`text-xs font-semibold ${
+                                  isNearLimit ? "text-red-500" : "text-blue-500"
+                                }`}
+                              >
+                                {percentage.toFixed(0)}% Occupied
+                              </p>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-sm font-black text-gray-900">
+                                {registered}
+                              </span>
+                              <span className="text-gray-400 font-bold text-sm">
+                                / {capacity}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-sm font-black text-gray-900">
-                              {registered}
-                            </span>
-                            <span className="text-gray-400 font-bold text-sm">
-                              / {capacity}
-                            </span>
-                          </div>
-                        </div>
 
-                        {/* The Premium Bar */}
-                        <div className="relative w-full bg-gray-100 dark:bg-gray-600 rounded-full h-5 p-1 shadow-inner  border-gray-100/50">
-                          <div
-                            className={`relative h-full rounded-full transition-all duration-1000 ease-out overflow-hidden ${
-                              isNearLimit
-                                ? "bg-linear-to-r from-red-500 to-orange-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
-                                : "bg-linear-to-r from-blue-600 to-indigo-500"
-                            }`}
-                            style={{ width: `${percentage}%` }}
-                          >
-                            {/* 1. Animated Shimmer Effect */}
-                            <div className="absolute inset-0 w-full h-full animate-[shimmer_2s_infinite] bg-linear-to-r from-transparent via-white/30 to-transparent -translate-x-full"></div>
-
-                            {/* 2. Diagonal Stripes (Glassmorphism style) */}
+                          {/* The Premium Bar */}
+                          <div className="relative w-full bg-gray-100 dark:bg-gray-600 rounded-full h-5 p-1 shadow-inner  border-gray-100/50">
                             <div
-                              className="absolute inset-0 opacity-20"
-                              style={{
-                                backgroundImage: `linear-gradient(45deg, rgba(255,255,255,0.4) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, transparent 75%, transparent)`,
-                                backgroundSize: "20px 20px",
-                              }}
-                            ></div>
-                          </div>
-                        </div>
+                              className={`relative h-full rounded-full transition-all duration-1000 ease-out overflow-hidden ${
+                                isNearLimit
+                                  ? "bg-linear-to-r from-red-500 to-orange-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+                                  : "bg-linear-to-r from-blue-600 to-indigo-500"
+                              }`}
+                              style={{ width: `${percentage}%` }}
+                            >
+                              {/* 1. Animated Shimmer Effect */}
+                              <div className="absolute inset-0 w-full h-full animate-[shimmer_2s_infinite] bg-linear-to-r from-transparent via-white/30 to-transparent -translate-x-full"></div>
 
-                        {(isNearLimit && percentage <100 ) && (
-                          <p className="mt-2 text-[9px] text-center font-bold text-red-400 animate-pulse uppercase tracking-tighter">
-                             Limited spots remaining!
-                          </p>
-                        )}
-                      </div>
-                    );
-                  })()}
-                </div>
+                              {/* 2. Diagonal Stripes (Glassmorphism style) */}
+                              <div
+                                className="absolute inset-0 opacity-20"
+                                style={{
+                                  backgroundImage: `linear-gradient(45deg, rgba(255,255,255,0.4) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, transparent 75%, transparent)`,
+                                  backgroundSize: "20px 20px",
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+
+                          {isNearLimit && percentage < 100 && (
+                            <p className="mt-2 text-[9px] text-center font-bold text-red-400 animate-pulse uppercase tracking-tighter">
+                              Limited spots remaining!
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
               </div>
             </div>
           </div>

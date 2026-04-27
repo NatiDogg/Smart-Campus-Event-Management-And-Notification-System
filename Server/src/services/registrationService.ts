@@ -39,7 +39,7 @@ class RegistrationService{
          void NotificationService.notifyStudentEventRegistrationStatus(eventId, studentId, "registered")
         return {
             success: true,
-            message: 'You are Registered to This Event Successfully!',
+            message: 'Registered successfully!',
             registration
         }
     }
@@ -62,7 +62,7 @@ class RegistrationService{
 
         return {
           success: true,
-          message: "Successfully unregistered from the event.",
+          message: "Unregistered successfully!",
         };
 
 
