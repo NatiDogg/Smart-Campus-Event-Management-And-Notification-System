@@ -4,37 +4,69 @@ import { markInterest,unMarkInterest } from "../api/interest";
 
 
 export const useMarkInterest = ()=>{
+    const queryClient = useQueryClient()
     return useMutation({
         mutationFn: markInterest,
-        onMutate:()=>{
+        onMutate:async(eventId)=>{
+             await queryClient.cancelQueries({queryKey: ['eventDetail', eventId]})
+             const previousEventDetail = queryClient.setQueryData(['eventDetail', eventId]);
+             queryClient.setQueryData(['eventDetail', eventId], (old)=>{
+                if(!old) return old;
+                return {
+                    ...old,
+                    isInterested: true
+                }
+             })
+
+             return {previousEventDetail}
 
         },
-        onSuccess:()=>{
-
+        onSuccess:(data)=>{
+           toast.success(data?.message || 'Marked Interest Successfully')
         },
-        onError:()=>{
-
+        onError:(error,eventId, context)=>{
+             if(context?.previousEventDetail){
+                queryClient.setQueryData(['eventDetail', eventId], context.previousEventDetail)
+             }
+             toast.error(error?.reponse?.data?.message || 'Failed to mark interest')
         },
-        onSettled:()=>{
-
+        onSettled:(data,error,eventId,context)=>{
+           queryClient.invalidateQueries({queryKey: ['eventDetail', eventId] })
         }
     })
 }
 
 export const useUnMarkInterest = ()=>{
+    const queryClient = useQueryClient()
     return useMutation({
         mutationFn: unMarkInterest,
-         onMutate:()=>{
+
+        onMutate:async(eventId)=>{
+             await queryClient.cancelQueries({queryKey: ['eventDetail', eventId]})
+             const previousEventDetail = queryClient.setQueryData(['eventDetail', eventId]);
+             queryClient.setQueryData(['eventDetail', eventId], (old)=>{
+                if(!old) return old;
+                return {
+                    ...old,
+                    isInterested: false
+                }
+             })
+
+             return {previousEventDetail}
 
         },
-        onSuccess:()=>{
-
+        onSuccess:(data)=>{
+           toast.success(data?.message || 'Unmarked Interest Successfully')
         },
-        onError:()=>{
-
+        onError:(error,eventId, context)=>{
+             if(context?.previousEventDetail){
+                queryClient.setQueryData(['eventDetail', eventId], context.previousEventDetail)
+             }
+             toast.error(error?.reponse?.data?.message || 'Failed to unmark interest')
         },
-        onSettled:()=>{
-            
+        onSettled:(data,error,eventId,context)=>{
+           queryClient.invalidateQueries({queryKey: ['eventDetail', eventId] })
         }
+         
     })
 }

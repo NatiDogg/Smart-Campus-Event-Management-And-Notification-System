@@ -73,15 +73,3 @@ export const useUnregisterStudent = ()=>{
 
 
 
-{/*
-
-  {success: true, message: 'Event Retrieved Successfully!', event: {…}, isRegistered: false, isInterested: false, …}
-event: {_id: '69e625acb4487c88a1a30061', title: 'Annual Tech Event', description: 'this is an annual Tech Event description ', imageUrl: 'https://res.cloudinary.com/dnzn1uao7/image/upload/v1776690604/events/eite01y7hoglvvfszvjd.jpg', imagePublicId: 'events/eite01y7hoglvvfszvjd', …}
-isInterested: false
-isRegistered: false
-isfeedBackSubmitted: false
-message: "Event Retrieved Successfully!"
-registeredStudents: [{…}]
-isAttended: false
-success: true
-  */}

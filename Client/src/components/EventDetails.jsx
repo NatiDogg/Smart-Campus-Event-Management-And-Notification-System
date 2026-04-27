@@ -6,6 +6,7 @@ import {ChevronLeft} from 'lucide-react'
 import Loading from './Loading';
 import {format} from 'date-fns'
 import { useRegisterStudent, useUnregisterStudent } from '../hooks/useRegister';
+import { useMarkInterest, useUnMarkInterest } from '../hooks/useInterest';
 
 const EventDetails = () => {
  
@@ -14,8 +15,15 @@ const EventDetails = () => {
       const {data,isLoading,error} = useGetEventDetails(id, {enabled: !!id})
 
 
+       //registration hooks
        const {mutate:registerStudent, isPending:isRegistering} = useRegisterStudent();
        const {mutate:unregisterStudent, isPending:isUnregistering} = useUnregisterStudent()
+
+
+       //interest hooks
+       const {mutate: markInterest, isPending:isMarking} = useMarkInterest()
+       const {mutate: unMarkInterest, isPending: isUnmarking} = useUnMarkInterest()
+       
 
 
       const [rating, setRating] = useState(0);
@@ -38,7 +46,15 @@ const EventDetails = () => {
       }
 
       const interestHandler = ()=>{
-          
+           if(!id || isMarking || isUnmarking) return;
+
+           if(data?.isInterested){
+            unMarkInterest(id)
+           }
+           else{
+            markInterest(id)
+           }
+
       }
     
 
@@ -375,6 +391,8 @@ const EventDetails = () => {
                     </div>
                   </button>
                   <button
+                   disabled={isUnmarking || isMarking}
+                   onClick={interestHandler}
                     className={`w-full py-5 cursor-pointer rounded-2xl font-black text-lg transition-all border-2 flex items-center justify-center gap-2 ${
                       data?.isInterested
                         ? "bg-purple-50 border-purple-200 text-purple-700"
