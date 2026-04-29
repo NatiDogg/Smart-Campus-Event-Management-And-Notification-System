@@ -51,7 +51,7 @@ export const cancelOrganizerEvent = async (eventId: string, organizerId: string)
 };
 
 export const findAllEvents = ()=>{ //student
-     return eventModel.find({status: "approved"}).populate("category", "name").populate("organizedBy", "organizationName").sort({ startDate: 1 })
+     return eventModel.find({status: "approved", startDate: {$gte: new Date()}}).populate("category", "name").populate("organizedBy", "organizationName").sort({ startDate: 1 }).lean()
 }
 export const findPendingEvents = ()=>{ //admin
       return eventModel.find({status: "pending"}).populate("category", "name").populate("organizedBy", "organizationName")
@@ -72,7 +72,7 @@ export const updateEventRegistrationCount = (eventId: string, amount: number) =>
   return eventModel.findByIdAndUpdate(new Types.ObjectId(eventId), { $inc: { registrationCount: amount } }, {    returnDocument: 'after', runValidators: true } );
 }
 export const findPopularEvents = (limit: number) => {
-  return eventModel.find({ status: "approved" })
+  return eventModel.find({ status: "approved", startDate: {$gte: new Date()} })
     .populate("category", "name")
     .sort({ registrationCount: -1 }) 
     .limit(limit)
