@@ -3,6 +3,7 @@ import {useGetFeedbacks} from '../../hooks/useFeedback'
 import { MessageSquareOff, Star } from "lucide-react";
 import Loading from '../../components/Loading'
 import { Icons } from '../../components/Icons';
+import {format} from 'date-fns'
 const Feedback = () => {
      const {data,isLoading:isFeedbackLoading,error} = useGetFeedbacks()
 
@@ -34,7 +35,7 @@ const Feedback = () => {
                 </div>
                 <div>
                   <h4 className="font-black text-gray-900">{feedback.studentId?.fullName || "Deleted User"}</h4>
-                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{feedback.createdAt}</p>
+                  <p className="text-xs text-gray-400 font-bold tracking-widest">{format(new Date(feedback.createdAt), 'PPP')}</p>
                 </div>
               </div>
               <div className="flex gap-0.5">

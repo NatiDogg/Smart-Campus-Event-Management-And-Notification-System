@@ -64,14 +64,14 @@ const CreateAnnouncement = () => {
               value={announcementData.title}
               type="text"
               className="w-full px-6 py-3 rounded-2xl bg-gray-50 border border-gray-100 text-sm"
-              placeholder="Organizer Name"
+              placeholder="announcement title.."
             />
           </div>
           <div className="space-y-1 flex flex-col gap-1">
             <label htmlFor='content-input' className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
               Content
             </label>
-            <textarea value={announcementData.content} onChange={(e)=>handleInput(e)} name="content" id="content-input" rows={4}  className="w-full resize-none px-6 py-3 text-sm rounded-2xl bg-gray-50 border border-gray-100"></textarea>
+            <textarea placeholder='announcement description...' value={announcementData.content} onChange={(e)=>handleInput(e)} name="content" id="content-input" rows={4}  className="w-full resize-none px-6 py-3 text-sm rounded-2xl bg-gray-50 border border-gray-100"></textarea>
           </div>
           
 

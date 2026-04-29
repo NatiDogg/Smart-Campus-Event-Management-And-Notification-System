@@ -50,6 +50,7 @@ export const useGetStudentEvents = ()=>{
 }
 
 
+
 {/*
 
     {success: true, message: 'Your Events Retrieved Successfully!', popularEvents: Array(2), registeredEvents: Array(0), interestedEvents: Array(0), …}
