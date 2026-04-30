@@ -158,7 +158,7 @@ export const createAnnouncementHandler = async(req:AuthRequest, res:Response)=>{
             void AuditService.logAction(adminId,"CREATED_ANNOUNCEMENT","announcement", newAnnouncement._id.toString())
             return res.status(201).json({
               success: true,
-              message: "New Announcement Created Successfully!",
+              message: "Announcement Created Successfully!",
               newAnnouncement
             });
           } catch (error) {

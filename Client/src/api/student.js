@@ -19,5 +19,10 @@ export const getStudentEvents = async()=>{
     return response.data;
 }
 
+export const getAnnouncements = async()=>{
+    const response = await api.get('/api/student/announcement');
+    return response.data.announcements;
+}
+
 
 

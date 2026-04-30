@@ -1,5 +1,5 @@
 import { useMutation,useQuery,useQueryClient } from "@tanstack/react-query";
-import { subscribeCategory,getSubscribedCategories,getRecommendations,getStudentEvents } from "../api/student";
+import { subscribeCategory,getSubscribedCategories,getRecommendations,getStudentEvents,getAnnouncements } from "../api/student";
 import toast from "react-hot-toast";
 
 
@@ -44,6 +44,15 @@ export const useGetStudentEvents = ()=>{
     return useQuery({
         queryKey: ['studentEvents'],
         queryFn: getStudentEvents,
+        staleTime: 60000,
+        refetchOnWindowFocus: false
+    })
+}
+
+export const useGetAnnouncements = ()=>{
+    return useQuery({
+        queryKey: ['studentAnnouncements'],
+        queryFn: getAnnouncements,
         staleTime: 60000,
         refetchOnWindowFocus: false
     })
