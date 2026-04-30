@@ -75,10 +75,7 @@ class RegistrationService{
         const registrationRecords = await findAllStudentRegisteredEvents(studentId);
         return registrationRecords.map(record=>record.eventId).filter(event=> event !==null);
     }
-    async getStudentEventsInDateRange(studentId: string, startDate: Date, endDate: Date){
-       const RegisteredEvents = await findStudentEventsByDateRange(studentId, startDate, endDate)
-       return RegisteredEvents.map(registered=> registered.eventId).filter(event=>event !== null);
-    }
+    
     async getAllEventRegistrationForOrganizer(organizerId: string){
         const totalRegistration = await findAllEventRegistrationForOrganizer(organizerId);
         if(!totalRegistration){

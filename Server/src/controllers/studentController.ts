@@ -61,11 +61,17 @@ export const getStudentCalendarHandler = async (req:AuthRequest, res:Response)=>
                message: "Invalid ID Format!"
             })
           }
-         const selectedMonth = parseInt(month as string) || new Date().getMonth() + 1;
-         const selectedYear = parseInt(year as string) || new Date().getFullYear();
+        const parsedMonth = Number(month);
+        const parsedYear = Number(year);
+        const selectedMonth = !isNaN(parsedMonth) ? parsedMonth : new Date().getMonth() + 1;
+        const selectedYear = !isNaN(parsedYear) ? parsedYear : new Date().getFullYear();
      try {
         const result = await StudentService.getStudentCalendarData(studentId,selectedMonth,selectedYear);
-        return res.status(200).json(result);
+        return res.status(200).json({
+          success: true,
+          message: 'Calender events retrieved successfully',
+          calendarEvents: result
+        });
      } catch (error) {
       return handleError(res,error);
      }
