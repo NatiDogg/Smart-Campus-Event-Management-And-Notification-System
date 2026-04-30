@@ -17,11 +17,11 @@ const EventCard = ({event}) => {
   return (
     <Link onMouseEnter={()=>handlePrefetch(event._id)} to={`/student/details/${event._id}`}>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
-        <div className="relative aspect-video overflow-hidden">
+        <div className="relative aspect-video  overflow-hidden">
           <img
             src={event.imageUrl}
             alt={event.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           />
 
           <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-gray-900 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">

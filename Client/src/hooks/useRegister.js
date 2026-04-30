@@ -33,6 +33,7 @@ export const useRegisterStudent = ()=>{
         onSettled:(data,error,eventId,context)=>{
             queryClient.invalidateQueries({queryKey: ['eventDetail', eventId]})
             queryClient.invalidateQueries({queryKey:['studentEvents']})
+            queryClient.invalidateQueries({queryKey: ['studentCalendar']})
         }
     })
 }
@@ -69,6 +70,7 @@ export const useUnregisterStudent = ()=>{
         onSettled:(data,error,eventId,context)=>{
           queryClient.invalidateQueries({queryKey: ['eventDetail', eventId]})
            queryClient.invalidateQueries({queryKey:['studentEvents']})
+           queryClient.invalidateQueries({queryKey: ['studentCalendar']})
         }
     })
 }

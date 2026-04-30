@@ -24,5 +24,9 @@ export const getAnnouncements = async()=>{
     return response.data.announcements;
 }
 
+export const getCalendarData = async(month, year)=>{
+    const response = await api.get('/api/student/calendar', {params: {month, year}})
+    return response.data.calendarEvents;
+}
 
 
