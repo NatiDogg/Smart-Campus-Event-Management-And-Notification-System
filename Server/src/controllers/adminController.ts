@@ -11,6 +11,7 @@ import UserService from "../services/userService.js";
 import RegistrationService from "../services/registrationService.js";
 import AuditService from "../services/auditService.js";
 import AttendanceService from "../services/attendanceService.js";
+import AnalyticsService from "../services/analyticsService.js";
 
 export const createOrganizerHandler  =async(req: AuthRequest, res:Response)=>{
         const parsed = createOrganizerSchema.safeParse(req.body);
@@ -198,5 +199,18 @@ export const getAdminDashboardDataHandler = async(req:Request, res:Response)=>{
          return handleError(res,error)
        }
 }  
+
+export const getAdminAnalyticsHandler = async(req:Request, res:Response)=>{
+       try {
+         const analytics = await AnalyticsService.getMonthlyDashboardAnalytics()
+         return res.status(200).json({
+          success: true,
+          message: 'analytics retrieved successfully!',
+          analytics
+         })
+       } catch (error) {
+        handleError(res,error)
+       }
+}
 
 
