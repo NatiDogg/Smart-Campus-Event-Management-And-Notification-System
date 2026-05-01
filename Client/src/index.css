@@ -3,3 +3,11 @@
 html{
   scroll-behavior: smooth;
 }
+
+
+/* Custom Calendar Overrides */
+.fc { --fc-border-color: #f3f4f6; --fc-button-bg-color: #2563eb; font-family: inherit; }
+.fc .fc-toolbar-title { font-weight: 900; font-size: 1.5rem; }
+.fc .fc-col-header-cell-cushion { padding: 12px 0; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; color: #6b7280; }
+.fc-theme-standard td, .fc-theme-standard th { border: 1px solid #f3f4f6 !important; }
+.fc-day-today { background: #f8faff !important; }
