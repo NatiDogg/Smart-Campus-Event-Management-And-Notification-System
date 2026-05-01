@@ -14,7 +14,7 @@ class AIService {
   constructor() {
     this.genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
     
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
   }
 
   
@@ -138,7 +138,7 @@ export default new AIService();
 
   
 
-
+//this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 
 
