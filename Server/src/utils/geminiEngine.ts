@@ -16,7 +16,7 @@ export const callGeminiEngine = async(briefingData: any) => {
     1. SUMMARY: Compare engagement across categories. Mention % increases if registrations are high. If data is sparse, provide an encouraging administrative overview.
     2. PREDICTION: Look at 'futurePipeline'. Pick the most prominent upcoming event and predict turnout based on past 'attendanceRate' for that category.
     3. RANKING: Identify the top 3 events from 'performance'. Label them as (High Engagement), (High Interest), or (Consistent Popularity).
-    4. TABLE DATA: For each event in 'performance',include the registration count, assign an 'engagementScore' (Low/Medium/High) and a calculated 'impact' percentage (e.g., "+12.4%") based on registration vs capacity.
+    4. TABLE DATA: For each event in 'performance',include the registration count, the attendanceRate (as a percentage string, e.g., "85%"), assign an 'engagementScore' (Low/Medium/High) and a calculated 'impact' percentage (e.g., "+12.4%") based on registration vs capacity.
 
     --- CRITICAL HANDLING & FALLBACK RULES ---
     1. NO DATA STATUS: If 'performance' and 'futurePipeline' are both empty, set 'summary' to: "Welcome to the new month! Currently, no event data is available to analyze. Start by approving pending events or creating new ones."
@@ -24,7 +24,7 @@ export const callGeminiEngine = async(briefingData: any) => {
     3. RANKING FALLBACK: If there are fewer than 3 events, only return the existing events. If zero events exist, return an empty array [].
     4. TABLE FALLBACK: If 'performance' is empty, return 'tableMetrics' as an empty array [].
     5. PENDING AWARENESS: If events exist in 'futurePipeline' but are all "pending", explicitly mention in the 'summary' that engagement insights are waiting on pending admin approvals.
-    6. NEW EVENT LOGIC: If an event has 0 registrations but is scheduled for the future or was just created, set impact to '0.0%' and score to 'Neutral' instead of 'Low' to avoid discouraging the admin.
+    6. NEW EVENT LOGIC: If an event has 0 registrations but is scheduled for the future or was just created, set impact to '0.0%', attendanceRate to '0%' and score to 'Neutral' instead of 'Low' to avoid discouraging the admin.
 
     --- OUTPUT REQUIREMENT ---
     Generate a JSON response that fits the Admin Dashboard perfectly. 
@@ -37,7 +37,7 @@ export const callGeminiEngine = async(briefingData: any) => {
       "engagementTrend": "string",
       "topEvents": ["string", "string", "string"],
       "tableMetrics": [
-        { "title": "string", "registrations": number, "score": "string", "impact": "string" }
+        { "title": "string", "registrations": number,"attendanceRate": "string", "score": "string", "impact": "string" }
       ]
     }
   `;

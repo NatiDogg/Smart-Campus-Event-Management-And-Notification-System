@@ -18,6 +18,11 @@ export const createAnnouncement = async(announcementData)=>{
     return response.data;
 }
 
+export const getAdminAnalytics = async()=>{
+    const response = await api.get("/api/admin/analytics");
+    return response.data;
+}
+
 
 
 
