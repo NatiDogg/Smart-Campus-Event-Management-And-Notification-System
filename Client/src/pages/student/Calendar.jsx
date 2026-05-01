@@ -97,7 +97,7 @@ const Calendar = () => {
         {/* Header Section */}
         <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-gray-50">
           <div className="text-center md:text-left">
-            <h1 className="text-3xl font-black tracking-tighter italic bg-clip-text text-transparent bg-linear-to-r from-blue-700 to-blue-500">
+            <h1 className="text-3xl font-black tracking-tighter bg-clip-text text-transparent bg-linear-to-r from-blue-700 to-blue-500">
               Your Calendar
             </h1>
             <p className="text-gray-400 text-sm font-medium">Your personalized academic schedule.</p>
