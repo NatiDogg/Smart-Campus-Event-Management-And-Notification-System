@@ -36,7 +36,7 @@ export const useGetRecommendations = ()=>{
     return useQuery({
        queryKey: ['aiRecommendations'],
        queryFn: getRecommendations,
-       staleTime: 60000,
+       staleTime: 5 * 60 * 1000,
        refetchOnWindowFocus: false
     })
 }

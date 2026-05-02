@@ -18,6 +18,19 @@ export const createAnnouncement = async(announcementData)=>{
     return response.data;
 }
 
+export const getAdminAnalytics = async()=>{
+    const response = await api.get("/api/admin/analytics");
+    return response.data;
+}
+
+export const getExportedPdf = async(analyticsData)=>{
+    const response = await api.post('/api/admin/export-pdf', 
+    { analyticsData },
+    { responseType: 'blob' } 
+  );
+  return response.data
+}
+
 
 
 

@@ -113,47 +113,59 @@ class NotificationService {
     await Promise.all(
       admins.map((admin) => {
         const html = `
-<div style="background-color: #f9fafb; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1f2937;">
-    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+<div style="background-color: #f9fafb; margin: 0; padding: 20px 0; width: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+    <!-- Background Wrapper Table -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f9fafb;">
         <tr>
-            <td style="padding: 40px 30px 20px 30px; text-align: center;">
-                <h1 style="margin: 0; font-size: 24px; color: #111827;">New Event Submission</h1>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="padding: 0 30px 20px 30px; line-height: 1.6;">
-                <p style="font-size: 16px; margin-bottom: 20px;">Hello <strong>${
-                  admin.fullName || "Admin"
-                }</strong>,</p>
-                <p style="font-size: 15px; margin-bottom: 20px;">
-                    A new event, <span style="color: #4f46e5; font-weight: 600;">${
-                      eventDetails.title
-                    }</span>, 
-                    has been submitted for review at <strong>${
-                      eventDetails.location
-                    }</strong>.
-                </p>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <img src="${
-                      eventDetails.imageUrl
-                    }" alt="Event Poster" style="width: 100%; max-width: 400px; height: auto; border-radius: 12px; border: 1px solid #d1d5db; display: block; margin: 0 auto;"/>
-                </div>
-            </td>
-        </tr>
+            <td align="center" style="padding: 20px;">
+                <!-- Main Content Table -->
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 40px 30px 20px 30px; text-align: center;">
+                            <h1 style="margin: 0; font-size: 24px; color: #111827; font-weight: bold;">New Event Submission</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Body Text -->
+                    <tr>
+                        <td style="padding: 0 30px 20px 30px; line-height: 1.6; color: #4b5563;">
+                            <p style="font-size: 16px; margin: 0 0 20px 0;">Hello <strong>${admin.fullName || "Admin"}</strong>,</p>
+                            <p style="font-size: 15px; margin: 0 0 20px 0;">
+                                A new event, <span style="color: #4f46e5; font-weight: 600;">${eventDetails.title}</span>, 
+                                has been submitted for review at <strong>${eventDetails.location}</strong>.
+                            </p>
+                            
+                            <!-- Refined Image Container -->
+                            <div style="text-align: center; margin: 30px 0;">
+                                <img 
+                                    src="${eventDetails.imageUrl}" 
+                                    alt="Event Poster" 
+                                    width="400" 
+                                    style="display: block; margin: 0 auto; width: 100%; max-width: 400px; height: auto; border-radius: 12px; border: 1px solid #d1d5db; vertical-align: middle;"
+                                />
+                            </div>
+                        </td>
+                    </tr>
 
-        <tr>
-            <td style="padding: 0 30px 40px 30px; text-align: center;">
-                <a href="YOUR_APP_URL_HERE" style="background-color: #4f46e5; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
-                    Review in App
-                </a>
-            </td>
-        </tr>
+                    <!-- CTA Button -->
+                    <tr>
+                        <td style="padding: 0 30px 40px 30px; text-align: center;">
+                            <a href="YOUR_APP_URL_HERE" style="background-color: #4f46e5; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
+                                Review in App
+                            </a>
+                        </td>
+                    </tr>
 
-        <tr>
-            <td style="background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 12px; color: #6b7280;">
-                <p style="margin: 0;">This is an automated notification from your Event Management System.</p>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb;">
+                            <p style="margin: 0;">This is an automated notification from your Event Management System.</p>
+                            <p style="margin: 5px 0 0 0;">&copy; ${new Date().getFullYear()} Campus Events</p>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
@@ -184,33 +196,32 @@ class NotificationService {
         </div>
         
         <div style="padding: 30px; line-height: 1.6; color: #334155;">
-            <p style="font-size: 18px;">Hello <b>${
-              organizer.fullName || "Organizer"
-            }</b>,</p>
+            <p style="font-size: 18px;">Hello <b>${organizer.fullName || "Organizer"}</b>,</p>
             
             <p>We have finished reviewing your event submission:</p>
             
             <div style="background-color: #f8fafc; border-left: 4px solid ${primaryColor}; padding: 15px; margin: 20px 0;">
-                <p style="margin: 0;"><strong>Event:</strong> ${
-                  eventDetails.title
-                }</p>
+                <p style="margin: 0;"><strong>Event:</strong> ${eventDetails.title}</p>
                 <p style="margin: 5px 0 0 0;"><strong>Status:</strong> <span style="color: ${primaryColor}; font-weight: bold; text-transform: uppercase;">${status}</span></p>
             </div>
 
+            <!-- Improved Image Container for Gmail -->
             <div style="text-align: center; margin: 25px 0;">
-                <img src="${eventDetails.imageUrl}" alt="${
-      eventDetails.title
-    }" style="width: 100%; max-width: 400px; height: auto; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);" />
+                <img 
+                    src="${eventDetails.imageUrl}" 
+                    alt="${eventDetails.title}" 
+                    width="400"
+                    style="display: block; margin: 0 auto; width: 100%; max-width: 400px; height: auto; border-radius: 8px; border: 1px solid #e2e8f0;" 
+                />
             </div>
 
-            ${
-              isApproved
+            ${isApproved
                 ? `<p>Congratulations! Your event is now <b>Live</b> and visible to all students on the platform. You can now track registrations through your dashboard.</p>`
                 : `<p>After reviewing your submission, we found that some details need to be adjusted before we can push it live. Please visit the dashboard to see the feedback and update your event.</p>`
             }
 
             <div style="text-align: center; margin-top: 30px;">
-                <a href="" style="background-color: ${primaryColor}; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                <a href="#" style="background-color: ${primaryColor}; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                     Go to Dashboard
                 </a>
             </div>
@@ -289,49 +300,71 @@ class NotificationService {
     const themeColor = isRegistered ? "#007bff" : "#6c757d";
     const actionText = isRegistered ? "is confirmed!" : "has been cancelled.";
 
-    const html = `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">
-        <div style="background-color: ${themeColor}; padding: 20px; text-align: center;">
-            <h2 style="color: white; margin: 0; font-size: 20px;">Event Update</h2>
-        </div>
+   const html = `
+<div style="background-color: #f4f4f4; padding: 20px 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #eeeeee; border-radius: 10px; overflow: hidden; border-collapse: separate;">
+        <!-- Header -->
+        <tr>
+            <td style="background-color: ${themeColor}; padding: 20px; text-align: center;">
+                <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: bold;">Event Update</h2>
+            </td>
+        </tr>
 
-        <div style="padding: 30px; color: #333;">
-            <h1 style="font-size: 1.5rem; margin-bottom: 10px;">Hi ${
-              student.fullName
-            },</h1>
-            <p style="font-size: 16px; line-height: 1.5;">
-                Your registration for <strong>${
-                  event.title
-                }</strong> ${actionText}
-            </p>
+        <!-- Main Content -->
+        <tr>
+            <td style="padding: 30px; color: #333333;">
+                <h1 style="font-size: 24px; margin: 0 0 10px 0; color: #111111;">Hi ${student.fullName},</h1>
+                <p style="font-size: 16px; line-height: 1.5; margin: 0 0 20px 0;">
+                    Your registration for <strong>${event.title}</strong> ${actionText}
+                </p>
 
-            <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid ${themeColor};">
-                <div style="margin-bottom: 5px;"><strong>When:</strong> ${new Date(
-                  event.startDate
-                ).toLocaleDateString()}</div>
-                <div><strong>Where:</strong> ${event.location || "TBD"}</div>
-            </div>
+                <!-- Optimized Event Image -->
+                <div style="text-align: center; margin: 25px 0;">
+                    <img 
+                        src="${event.imageUrl}" 
+                        alt="${event.title}" 
+                        width="400" 
+                        style="display: block; margin: 0 auto; width: 100%; max-width: 400px; height: auto; border-radius: 12px; border: 1px solid #d1d5db; vertical-align: middle;"
+                    />
+                </div>
 
-            ${
-              isRegistered
-                ? `
-                <p style="font-size: 14px; color: #666;">Please save this email for your records. See you there!</p>
-                <a href="" 
-                   style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: ${themeColor}; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                   View Event Page
-                </a>
-            `
-                : `
-                <p style="font-size: 14px; color: #666;">If this was a mistake, you can re-register on our portal anytime.</p>
-            `
-            }
-        </div>
+                <!-- Event Details Box -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 20px 0; background-color: #f9f9f9; border-left: 4px solid ${themeColor};">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <div style="margin-bottom: 5px; font-size: 14px; color: #333333;"><strong>When:</strong> ${new Date(event.startDate).toLocaleDateString()}</div>
+                            <div style="font-size: 14px; color: #333333;"><strong>Where:</strong> ${event.location || "TBD"}</div>
+                        </td>
+                    </tr>
+                </table>
 
-        <div style="padding: 15px; background: #f4f4f4; text-align: center; font-size: 12px; color: #999;">
-            © ${new Date().getFullYear()} Smart Campus
-        </div>
-    </div>
-    `;
+                ${isRegistered
+                    ? `
+                    <p style="font-size: 14px; color: #666666; margin: 20px 0 0 0;">Please save this email for your records. See you there!</p>
+                    <div style="margin-top: 25px; text-align: center;">
+                        <a href="YOUR_APP_URL" 
+                           style="display: inline-block; padding: 14px 28px; background-color: ${themeColor}; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
+                            View Event Page
+                        </a>
+                    </div>
+                    `
+                    : `
+                    <p style="font-size: 14px; color: #666666; margin: 20px 0 0 0;">If this was a mistake, you can re-register on our portal anytime.</p>
+                    `
+                }
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td style="padding: 15px; background-color: #f4f4f4; text-align: center; font-size: 12px; color: #999999; border-top: 1px solid #eeeeee;">
+                <p style="margin: 0;">© ${new Date().getFullYear()} Smart Campus</p>
+                <p style="margin: 5px 0 0 0;">This is an automated message regarding your event status.</p>
+            </td>
+        </tr>
+    </table>
+</div>
+`;
 
     return this.sendEmail(student.email, subject, html,student._id.toString(),event._id.toString());
   }
@@ -375,31 +408,60 @@ class NotificationService {
 
       // 2. Send Email
       if (student.email) {
-        const html = `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: ${statusColor}; padding: 20px; text-align: center;">
-                <h2 style="color: #ffffff; margin: 0;">${
-                  isCanceled ? "Event Cancellation" : "Event Update"
-                }</h2>
-            </div>
-            <div style="padding: 30px; color: #374151;">
-                <h3>${eventTitle}</h3>
-                <p>Hello,</p>
-                <p>${mainMessage}</p>
-                <div style="background-color: #f9fafb; border-left: 4px solid ${statusColor}; padding: 15px; margin: 25px 0;">
-                    "${subMessage}"
-                </div>
-                <div style="text-align: center;">
+       const html = `
+<div style="background-color: #f9fafb; padding: 20px 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; border-collapse: separate;">
+        
+        <!-- Status Header -->
+        <tr>
+            <td style="background-color: ${statusColor}; padding: 20px; text-align: center;">
+                <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: bold;">
+                    ${isCanceled ? "Event Cancellation" : "Event Update"}
+                </h2>
+            </td>
+        </tr>
+
+        <!-- Main Body -->
+        <tr>
+            <td style="padding: 30px; color: #374151; line-height: 1.6;">
+                <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #111827;">${eventTitle}</h3>
+                <p style="margin: 0 0 10px 0;">Hello,</p>
+                <p style="margin: 0 0 20px 0;">${mainMessage}</p>
+
+                <!-- Optional: Image Placeholder (If you want to show the event poster here) -->
+                <!-- 
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="YOUR_IMAGE_URL" width="400" style="width: 100%; max-width: 400px; height: auto; border-radius: 8px; border: 1px solid #eeeeee; display: block; margin: 0 auto;" />
+                </div> 
+                -->
+
+                <!-- Sub-Message Box -->
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-left: 4px solid ${statusColor}; margin: 25px 0;">
+                    <tr>
+                        <td style="padding: 15px; font-style: italic; color: #4b5563;">
+                            "${subMessage}"
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- CTA Button -->
+                <div style="text-align: center; margin-top: 30px;">
                     <a href="https://youruniversity.edu/dashboard" 
                        style="background-color: ${statusColor}; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
                        View My Dashboard
                     </a>
                 </div>
-            </div>
-            <div style="background-color: #f3f4f6; padding: 15px; text-align: center; font-size: 12px; color: #6b7280;">
-                <p>&copy; ${new Date().getFullYear()} Campus Events Team</p>
-            </div>
-        </div>`;
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td style="background-color: #f3f4f6; padding: 15px; text-align: center; font-size: 12px; color: #6b7280;">
+                <p style="margin: 0;">&copy; ${new Date().getFullYear()} Campus Events Team</p>
+            </td>
+        </tr>
+    </table>
+</div>`;
 
         await this.sendEmail(student.email, subjectLine, html,student._id.toString(),eventId);
       }

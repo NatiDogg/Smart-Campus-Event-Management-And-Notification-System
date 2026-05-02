@@ -1,5 +1,5 @@
 import {useQuery, useMutation,useQueryClient} from '@tanstack/react-query'
-import { getAllUsers,deleteUser,getAdminDashboard,createAnnouncement } from '../api/admin'
+import { getAllUsers,deleteUser,getAdminDashboard,createAnnouncement,getAdminAnalytics,getExportedPdf } from '../api/admin'
 import {toast} from 'react-hot-toast'
 
 export const useGetAllUsers = ()=>{
@@ -62,4 +62,58 @@ export const useCreateAnnouncement = ()=>{
           toast.error(errorMessage)
         }
     })
+}
+
+export const useGetAdminAnalytics = ()=>{
+    return useQuery({
+        queryKey: ['adminAnalytics'],
+        queryFn: getAdminAnalytics,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false
+    })
+}
+
+export const useGetExportedPdf = ()=>{
+    return useMutation({
+        mutationFn: getExportedPdf,
+        onSuccess:(blob)=>{
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement('a');
+              link.href = url;
+            link.setAttribute('download', `Campus_Event_Report.pdf`);
+            document.body.appendChild(link);
+             link.click();
+             link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+        },
+        onError:(error)=>{
+          toast.error(error?.response?.data?.message || 'PDF Export failed')
+        }
+    })
+}
+
+
+
+
+
+
+{
+    /*
+    analytics: 
+engagementTrend: "Engagement metrics are currently sparse. Consistent tracking and promotion of events will be key to observing trends."
+summary: "Welcome to May! Our initial event data for 'tech event 1' shows no registrations yet. As we build engagement, let's focus on promoting upcoming events and encouraging early sign-ups to foster a vibrant campus community."
+tableMetrics: [{…}]
+topEvents: []
+turnoutPrediction: "No upcoming events scheduled. Prediction will resume once events are approved."
+[[Prototype]]: Object
+message: "analytics retrieved successfully!"
+success: true
+    */
+}
+
+
+
+{
+    /* 
+{title: 'tech event 1', registrations: 0, score: 'Neutral', impact: '+0.0%'}*/
 }
