@@ -23,6 +23,14 @@ export const getAdminAnalytics = async()=>{
     return response.data;
 }
 
+export const getExportedPdf = async(analyticsData)=>{
+    const response = await api.post('/api/admin/export-pdf', 
+    { analyticsData },
+    { responseType: 'blob' } 
+  );
+  return response.data
+}
+
 
 
 

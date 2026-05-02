@@ -1,4 +1,4 @@
-import { request, type Request, type Response } from "express";
+import {  type Request, type Response } from "express";
 import { AuthRequest } from "../middlewares/authMiddleware.js";
 import { createOrganizerSchema } from "../utils/zodOrganizerValidator.js";
 import { isValid } from "../utils/validMongodbId.js";
@@ -12,6 +12,7 @@ import RegistrationService from "../services/registrationService.js";
 import AuditService from "../services/auditService.js";
 import AttendanceService from "../services/attendanceService.js";
 import AnalyticsService from "../services/analyticsService.js";
+import {generateAnalyticsPDF} from '../utils/pdfGenerator.js'
 
 export const createOrganizerHandler  =async(req: AuthRequest, res:Response)=>{
         const parsed = createOrganizerSchema.safeParse(req.body);
@@ -213,4 +214,25 @@ export const getAdminAnalyticsHandler = async(req:Request, res:Response)=>{
        }
 }
 
+export const exportAnalyticsPDFHandler = async (req: Request, res:Response)=>{
+    try {
+      const { analyticsData } = req.body;
+
+    if (!analyticsData) {
+       return res.status(400).json({ success: false, message: "No data provided for PDF" });
+    }
+
+    // 1. Set the headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition', 
+      `attachment; filename=Campus_Event_Report.pdf`
+    );
+
+    
+    generateAnalyticsPDF(analyticsData, res);
+    } catch (error) {
+      handleError(res,error)
+    }
+}
 

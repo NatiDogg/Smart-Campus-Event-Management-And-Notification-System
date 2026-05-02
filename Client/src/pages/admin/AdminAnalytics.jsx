@@ -1,12 +1,15 @@
 import React,{useEffect,useState} from 'react'
-import { useGetAdminAnalytics } from '../../hooks/useAdmin'
+import { useGetAdminAnalytics, useGetExportedPdf } from '../../hooks/useAdmin'
 import Loading from '../../components/Loading'
 import {Icons} from '../../components/Icons'
+
 
 const AdminAnalytics = () => {
 
      const {data,isLoading, error,refetch} = useGetAdminAnalytics()
      const [searchTerm, setSearchTerm] = useState("");
+
+     const {mutate, isPending} = useGetExportedPdf()
 
 
      
@@ -51,6 +54,12 @@ const AdminAnalytics = () => {
     const filteredMetrics = data?.analytics?.tableMetrics?.filter((event) =>
     event.title?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
+
+
+  const handleDownload = () => {
+  
+  mutate(data?.analytics);
+};
   return (
     <div className="space-y-10 p-5 ">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -64,10 +73,24 @@ const AdminAnalytics = () => {
         </div>
         <div className="flex gap-3">
           <button
-            disabled={data?.analytics?.isError}
-            className="px-6 py-3 cursor-pointer bg-gray-900 text-white rounded-xl font-bold shadow-sm disabled:cursor-not-allowed hover:bg-gray-800 transition-all flex items-center gap-2"
+            onClick={handleDownload}
+            // Disable if there's no data, an error, or currently exporting
+            disabled={ data?.analytics?.isError || isPending}
+            className="px-6 py-3 cursor-pointer bg-gray-900 text-white rounded-xl font-bold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-all flex items-center gap-2"
           >
-            <Icons.Report /> Export PDF
+            {isPending ? (
+              <>
+                
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Getting Report...</span>
+              </>
+            ) : (
+              <>
+                
+                <Icons.Report className="w-5 h-5" />
+                <span>Export PDF</span>
+              </>
+            )}
           </button>
         </div>
       </div>

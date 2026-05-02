@@ -1,5 +1,5 @@
 import {useQuery, useMutation,useQueryClient} from '@tanstack/react-query'
-import { getAllUsers,deleteUser,getAdminDashboard,createAnnouncement,getAdminAnalytics } from '../api/admin'
+import { getAllUsers,deleteUser,getAdminDashboard,createAnnouncement,getAdminAnalytics,getExportedPdf } from '../api/admin'
 import {toast} from 'react-hot-toast'
 
 export const useGetAllUsers = ()=>{
@@ -72,6 +72,30 @@ export const useGetAdminAnalytics = ()=>{
         refetchOnWindowFocus: false
     })
 }
+
+export const useGetExportedPdf = ()=>{
+    return useMutation({
+        mutationFn: getExportedPdf,
+        onSuccess:(blob)=>{
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement('a');
+              link.href = url;
+            link.setAttribute('download', `Campus_Event_Report.pdf`);
+            document.body.appendChild(link);
+             link.click();
+             link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+        },
+        onError:(error)=>{
+          toast.error(error?.response?.data?.message || 'PDF Export failed')
+        }
+    })
+}
+
+
+
+
+
 
 {
     /*
