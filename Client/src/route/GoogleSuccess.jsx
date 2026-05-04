@@ -3,6 +3,7 @@ import { useNavigate,useSearchParams } from 'react-router-dom'
 import { AppContext } from '../context/ContextProvider';
 import { useVerifyUser } from '../hooks/useAuth';
 import toast from 'react-hot-toast';
+import api from '../api/axios';
 
 const GoogleSuccess = () => {
       const [searchParams] = useSearchParams();
