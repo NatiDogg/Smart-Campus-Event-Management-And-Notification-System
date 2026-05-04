@@ -1,5 +1,5 @@
 import express from 'express'
-import type {Express} from 'express' 
+import type {Express,Request, Response} from 'express' 
 import {config} from 'dotenv'
 import { env } from './utils/zodEnvFilesValidator.js';
 import cookieParser from 'cookie-parser';
@@ -67,7 +67,9 @@ app.use("/api/user", userRouter);
 
 
 
-
+app.get('/',(req:Request, res:Response)=>{
+       res.send("api is connected successfully!")
+})
 
 const startServer = async()=>{
        try {

@@ -16,3 +16,8 @@ export const initCronJobs = () => {
 
   console.log("✅ Cron Jobs Initialized (Scheduled for 08:30 AM daily)");
 }
+
+
+
+
+//"30 8 * * *"
