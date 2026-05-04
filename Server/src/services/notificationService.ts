@@ -221,7 +221,7 @@ class NotificationService {
             }
 
             <div style="text-align: center; margin-top: 30px;">
-                <a href="#" style="background-color: ${primaryColor}; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                <a href="${env.VITE_FRONTEND_URL}" style="background-color: ${primaryColor}; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                     Go to Dashboard
                 </a>
             </div>
@@ -342,7 +342,7 @@ class NotificationService {
                     ? `
                     <p style="font-size: 14px; color: #666666; margin: 20px 0 0 0;">Please save this email for your records. See you there!</p>
                     <div style="margin-top: 25px; text-align: center;">
-                        <a href="YOUR_APP_URL" 
+                        <a href="${env.VITE_FRONTEND_URL}" 
                            style="display: inline-block; padding: 14px 28px; background-color: ${themeColor}; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
                             View Event Page
                         </a>
@@ -446,7 +446,7 @@ class NotificationService {
 
                 <!-- CTA Button -->
                 <div style="text-align: center; margin-top: 30px;">
-                    <a href="https://youruniversity.edu/dashboard" 
+                    <a href="${env.VITE_FRONTEND_URL}" 
                        style="background-color: ${statusColor}; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
                        View My Dashboard
                     </a>
@@ -537,7 +537,7 @@ class NotificationService {
             Click the button below to set a new one:
         </p>
         <div style="text-align: center; margin: 30px 0;">
-            <a href="${url}" 
+            <a href="${env.VITE_FRONTEND_URL}/reset-password" 
                style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
                Reset Your Password
             </a>
