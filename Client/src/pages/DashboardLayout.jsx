@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import { AppContext } from '../context/ContextProvider'
 import CreateOrganizer from '../components/CreateOrganizer'
 import DeleteUser from '../components/DeleteUser'
-import CreateAnnouncement from '../components/createAnnouncement'
+import CreateAnnouncement from '../components/CreateAnnouncement'
 import CancelEvent from './organizer/CancelEvent'
 
 const DashboardLayout = () => {
