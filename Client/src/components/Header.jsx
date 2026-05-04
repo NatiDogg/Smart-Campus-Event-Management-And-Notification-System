@@ -17,7 +17,7 @@ const Header = () => {
     mutate(undefined, {
       onSettled: () => {
         setOpenMenu(false); // Close sidebar on logout
-        navigate('/')
+       
       }
     })
   }

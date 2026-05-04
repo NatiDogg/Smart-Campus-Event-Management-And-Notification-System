@@ -42,7 +42,7 @@ export const useLoginUser = ()=>{
 
 export const useLogoutUser = ()=>{
     const queryClient = useQueryClient()
-    const { setUser, setToken } = useContext(AppContext);
+    const { setUser, setToken,navigate } = useContext(AppContext);
     return useMutation({
       mutationFn: async()=>{
          setIsLoggingOut(true);
@@ -55,6 +55,7 @@ export const useLogoutUser = ()=>{
       queryClient.clear();
       setIsLoggingOut(false);
       toast.success(data?.message || "Logged out Successfully")
+      navigate('/login', {replace: true})
       if (error) {
         toast.success("Logged out Successfully")
         console.error("Logout API failed, but local session cleared", error);
