@@ -1,4 +1,3 @@
-import emailTransporter from "../config/nodeMailer.js";
 import AppError from "../utils/appError.js";
 import { env } from "../utils/zodEnvFilesValidator.js";
 import AdminService from "./adminService.js";
@@ -10,6 +9,7 @@ import RegistrationService from "./registrationService.js";
 import StudentService from "./studentService.js";
 import {  deleteNotification, getAllUserNotifications, saveNotification } from "../repositories/notificationRepository.js";
 import { announcementType } from "../utils/zodAnnouncementValidator.js";
+import { sendBrevoEmail } from "../config/nodeMailer.js";
 
 
 
@@ -43,12 +43,7 @@ class NotificationService {
   }
   async sendEmail(to: string, subject: string, html: string, userId?: string,eventId?: string) {
     try {
-      const info = await emailTransporter.sendMail({
-        from: `"Campus Events" <${env.SENDER_EMAIL}>`,
-        to,
-        subject,
-        html,
-      });
+      await sendBrevoEmail(to,subject,html);
     } catch (error) {
       console.error(`Failed to send email to ${to}:`, error);
     }
