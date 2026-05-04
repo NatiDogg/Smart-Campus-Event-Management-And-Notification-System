@@ -8,7 +8,7 @@ import { AppContext } from './context/ContextProvider';
 import api from './api/axios';
 import GoogleSuccess from './route/GoogleSuccess';
 import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/resetPassword';
+import ResetPassword from './components/ResetPassword';
 
 import useFcmToken from './hooks/useFcmToken'
 
@@ -16,7 +16,7 @@ import useFcmToken from './hooks/useFcmToken'
 
 // Public Pages
 const Landing = lazy(() => import('./pages/Landing'));
-const Signin = lazy(() => import('./pages/SignIn'));
+const Signin = lazy(() => import('./pages/Signin'));
 const Login = lazy(() => import('./pages/Login'));
 // Shared Pages
 const Notifications = lazy(() => import('./pages/Notifications'));
