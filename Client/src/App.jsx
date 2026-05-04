@@ -82,8 +82,10 @@ function App() {
         }
      },[data, setUser, setToken])
 
-     if (isPending || (data && !user)) {
-         return <PageLoader />;
+    const isAuthRoute = window.location.pathname.includes('/auth/success');
+
+     if ((isPending && !isAuthRoute) || (data && !user && !isAuthRoute)) {
+        return <PageLoader />;
       }
   return (
     <main className='flex flex-col min-h-screen'>

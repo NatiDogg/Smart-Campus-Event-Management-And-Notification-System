@@ -54,7 +54,9 @@ api.interceptors.response.use(
             } catch (refreshError) {
             
                 delete api.defaults.headers.common['Authorization'];
-                window.location.href = '/login'; 
+                if (!window.location.pathname.includes('/auth/success')) {
+                  window.location.href = '/login'; 
+                }
                 return Promise.reject(refreshError);
             }
         }
