@@ -23,7 +23,7 @@ config();
 
 const app:Express = express();
 const port = env.PORT || 5000
-const allowedOrigins = ["http://localhost:5173"]
+const allowedOrigins = ["https://smartcampus-event.vercel.app","http://localhost:5173"]
 const corsOptions = {
     origin: allowedOrigins,
     credentials: true,
