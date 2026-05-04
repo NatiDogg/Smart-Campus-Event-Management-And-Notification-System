@@ -39,7 +39,7 @@ const Signin = () => {
        }
        
   return (
-    <section className="w-full min-h-screen flex flex-col justify-center items-center bg-gray-100">
+    <section className="w-full min-h-screen p-5 flex flex-col justify-center items-center bg-gray-100">
       <form
         onSubmit={onSubmitHandler}
         className="bg-white  shadow-2xl shadow-gray-500 text-gray-500 max-w-100 w-full mx-4 md:p-6 p-4 py-8 text-left text-sm rounded-lg"
