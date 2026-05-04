@@ -2,6 +2,7 @@ import React,{useEffect,useContext} from 'react'
 import { useNavigate,useSearchParams } from 'react-router-dom'
 import { AppContext } from '../context/ContextProvider';
 import { useVerifyUser } from '../hooks/useAuth';
+import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 const GoogleSuccess = () => {
@@ -19,7 +20,7 @@ const GoogleSuccess = () => {
         if(isSuccess && data?.user){
             setToken(token);
             setUser(data.user)
-           
+           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             navigate(`/${data.user.role}`, {replace: true});
         }
         // If verification failed
