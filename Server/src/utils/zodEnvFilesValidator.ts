@@ -21,7 +21,8 @@ const envSchema = z.object({
     GOOGLE_CLIENT_ID: z.string().min(4),
     GOOGLE_CLIENT_SECRET: z.string().min(4),
     GOOGLE_REDIRECT_URI: z.string().min(4),
-    VITE_FRONTEND_URL: z.string().min(4)
+    VITE_FRONTEND_URL: z.string().min(4),
+    IS_DEPLOYED: z.string().min(3)
 
 
 

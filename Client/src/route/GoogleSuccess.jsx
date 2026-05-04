@@ -19,7 +19,7 @@ const GoogleSuccess = () => {
         if(isSuccess && data?.user){
             setToken(token);
             setUser(data.user)
-           
+           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             navigate(`/${data.user.role}`, {replace: true});
         }
         // If verification failed

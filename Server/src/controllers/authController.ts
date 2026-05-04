@@ -10,12 +10,12 @@ import crypto from 'crypto'
 import NotificationService from "../services/notificationService.js";
 import { hashPassword } from "../utils/bcryptjs.js";
     
-const isProd = env.NODE_ENV === 'production'
+const isProd = env.IS_DEPLOYED === 'true' || env.NODE_ENV === 'production'
 
 const setResponseCookies = (res:Response, token: string)=>{
      res.cookie("refreshToken",token,{
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: isProd ? 'none' : 'lax',
         secure: isProd,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: '/'
