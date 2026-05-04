@@ -53,6 +53,7 @@ export const useLogoutUser = ()=>{
       setToken(null);
       delete api.defaults.headers.common['Authorization'];
       queryClient.clear();
+      setIsLoggingOut(false);
       toast.success(data?.message || "Logged out Successfully")
       if (error) {
         toast.success("Logged out Successfully")

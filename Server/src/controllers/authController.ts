@@ -121,7 +121,12 @@ export const refreshTokenHandler = async(req:Request, res:Response)=>{
 
 export const logOutHandler = async(req:Request, res:Response)=>{
            try {
-             res.clearCookie("refreshToken", {path: '/'});
+             res.clearCookie("refreshToken", {
+            httpOnly: true,
+            path: '/',
+            sameSite: isProd ? 'none' : 'lax',
+            secure: isProd,                     
+        });
              return res.status(200).json({
                 success:true,
                 message: "Logged out Successfully!"
