@@ -80,7 +80,7 @@ app.get('/',(req:Request, res:Response)=>{
 const startServer = async()=>{
        try {
           await connectToDb();
-          initCronJobs()
+          
         app.listen(port,()=>{
             console.log("Server has started and listening to port "+port);
         })
