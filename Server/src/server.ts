@@ -19,6 +19,7 @@ import notificationRouter from './routes/notificationRoutes.js';
 import feedBackRouter from './routes/feedBackRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
 import auditLogRouter from './routes/auditLogRoutes.js';
+import cronRouter from './routes/cronRoutes.js';
 config();
 
 const app:Express = express();
@@ -64,6 +65,11 @@ app.use("/api/organizer",organizerRouter);
 
 //all user action
 app.use("/api/user", userRouter);
+
+
+//cron route
+
+app.use("/api/cron", cronRouter);
 
 
 

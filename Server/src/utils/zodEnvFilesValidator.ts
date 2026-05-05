@@ -23,7 +23,8 @@ const envSchema = z.object({
     GOOGLE_REDIRECT_URI: z.string().min(4),
     VITE_FRONTEND_URL: z.string().min(4),
     IS_DEPLOYED: z.string().min(3),
-    BREVO_API_KEY: z.string().min(4)
+    BREVO_API_KEY: z.string().min(4),
+    CRON_SECRET: z.string().min(4)
 
 
 
