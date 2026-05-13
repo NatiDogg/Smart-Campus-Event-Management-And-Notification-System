@@ -532,7 +532,7 @@ class NotificationService {
             Click the button below to set a new one:
         </p>
         <div style="text-align: center; margin: 30px 0;">
-            <a href="${env.VITE_FRONTEND_URL}/reset-password" 
+            <a href="${url}" 
                style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
                Reset Your Password
             </a>
