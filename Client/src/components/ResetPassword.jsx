@@ -11,23 +11,20 @@ const ResetPassword = () => {
 
        const [error, setError] = useState(false)
        const [userData, setuserData] = useState({
-         token: '',
+         token: token || '',
          password: '',
          confirmPassword: ''
        });
        const {isPending,mutate} = useResetPassword()
 
-       useEffect(()=>{
-           if(token){
-             setuserData(prevData=>({
-                ...prevData,
-                token
-             }))
-           }
-           else{
-             navigate('/login')
-           }
-       },[token])
+        useEffect(()=>{
+        if(!token){
+            navigate('/login')
+        }
+    }, [token])
+    
+   
+
 
     const handleInput = (e)=>{
         const {name, value} = e.target
