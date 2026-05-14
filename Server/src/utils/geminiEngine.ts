@@ -5,7 +5,7 @@ import { env } from "./zodEnvFilesValidator.js";
 const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
 
 export const callGeminiEngine = async(briefingData: any) => {
-  // Use flash for speed and lower latency in a dashboard environment
+  // Using flash for speed and lower latency in a dashboard environment
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
   const prompt = `

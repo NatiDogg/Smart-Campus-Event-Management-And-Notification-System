@@ -30,7 +30,7 @@ class AnalyticsService {
       attendanceModel.find({ isPresent: true })
     ]);
 
-    // 2. Prepare the Briefing Document
+    // 2. Preparing the Briefing Document
     const briefingData = {
       metadata: {
         month: now.toLocaleString('default', { month: 'long' }),
@@ -46,7 +46,7 @@ class AnalyticsService {
           category: (event.category as any)?.name || "General",
           capacity: event.capacity,
           registrations: regs,
-          attendanceRate: regs > 0 ? Math.round((attended / regs) * 100) : 0,
+          attendanceRate: regs > 0 ? Math.min(Math.round((attended / regs) * 100), 100) : 0,
           interest: allInterests.filter(i => i.eventId.toString() === id).length
         };
       }),
@@ -58,7 +58,7 @@ class AnalyticsService {
       }))
     };
 
-    // 3. Call the external Gemini Engine utility we built
+    
     return await callGeminiEngine(briefingData);
   }
 }

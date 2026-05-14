@@ -11,9 +11,13 @@ const AdminAnalytics = () => {
 
      const {mutate, isPending} = useGetExportedPdf()
 
+     const capAttendanceRate = (rate) => {
+        if (!rate) return '0%'
+        const num = parseInt(rate)
+        if (isNaN(num)) return rate
+        return `${Math.min(num, 100)}%`
+    }
 
-     
-     
 
 
       if (isLoading) {
@@ -50,6 +54,7 @@ const AdminAnalytics = () => {
       if (value >= 50) return "bg-amber-500";
       return "bg-red-500";
     };
+
 
     const filteredMetrics = data?.analytics?.tableMetrics?.filter((event) =>
     event.title?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -221,11 +226,11 @@ const AdminAnalytics = () => {
                           className={`${getBarColor(
                             event?.attendanceRate || 0
                           )} h-1.5 rounded-full`}
-                          style={{ width: event?.attendanceRate || "0%" }}
+                          style={{ width: capAttendanceRate(event?.attendanceRate) }}
                         ></div>
                       </div>
                       <span className="text-xs font-bold text-gray-500">
-                        {event?.attendanceRate || "0%"}
+                        {capAttendanceRate(event?.attendanceRate)}
                       </span>
                     </div>
 
