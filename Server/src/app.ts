@@ -21,7 +21,7 @@ config()
 
 const app: Express = express()
 
-const allowedOrigins = ["https://smartcampus-event.vercel.app", "http://localhost:5173"]
+const allowedOrigins = ["https://smartcampus-event.vercel.app", "http://localhost:5173", "https://smart-campus-mobile.vercel.app"]
 const corsOptions = {
     origin: allowedOrigins,
     credentials: true,
