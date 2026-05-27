@@ -31,7 +31,7 @@ const Events = () => {
         event.location?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCategory = 
-        selectedCategory === 'All' || event.category._id === selectedCategory;
+        selectedCategory === 'All' || event.category?._id === selectedCategory;
 
      
       const matchesOrganizer = 

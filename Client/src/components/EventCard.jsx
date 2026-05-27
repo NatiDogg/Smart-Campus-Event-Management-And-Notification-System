@@ -14,6 +14,8 @@ const EventCard = ({event}) => {
           staleTime: 0
       })
    }
+   if (!event || !event.category) return null;
+
   return (
     <Link onMouseEnter={()=>handlePrefetch(event._id)} to={`/student/details/${event._id}`}>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
