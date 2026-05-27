@@ -73,7 +73,7 @@ const OrganizerEvents = () => {
             <div className="p-8 flex flex-col flex-1 space-y-3">
               <div className="flex items-center gap-2 text-[10px] font-black uppercase  text-gray-500">
                 <Tag className="w-3 h-3" />
-                {event.category.name}
+                {event.category?.name || "Deleted category"}
               </div>
               
               <div className="space-y-3">
