@@ -25,13 +25,13 @@ const EventCard = ({event}) => {
           />
 
           <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-gray-900 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
-            {event.category.name}
+            {event.category?.name || 'Deleted Category' }
           </div>
         </div>
 
         <div className="p-4 flex-1 flex flex-col">
           <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
-            {event.title}
+            {event?.title || 'Deleted Event Title' }
           </h3>
 
           <div className="space-y-1.5 mb-4 flex-1">
