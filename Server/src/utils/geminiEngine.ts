@@ -1,11 +1,11 @@
 // utils/geminiEngine.ts
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { env } from "./zodEnvFilesValidator.js";
-// Ensure your API key is set in your .env file
+
 const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
 
 export const callGeminiEngine = async(briefingData: any) => {
-  // Using flash for speed and lower latency in a dashboard environment
+
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
   const prompt = `
@@ -47,7 +47,7 @@ export const callGeminiEngine = async(briefingData: any) => {
     const responseText = result.response.text();
     console.log(responseText)
     
-    // Clean markdown blocks if the AI accidentally includes them
+  
     const cleanJson = responseText.replace(/```json|```/g, "").trim();
     
     return JSON.parse(cleanJson);
